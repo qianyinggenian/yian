@@ -25,6 +25,7 @@
             <div class="password">
               <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
                 <el-form-item prop="password">
+                  <!--  autocomplete="new-password" 浏览器不自动填充已记住的账号密码-->
                   <el-input
                       ref="password"
                       show-password
