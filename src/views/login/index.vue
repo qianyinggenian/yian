@@ -7,7 +7,7 @@
           <div class="welcome-info">WELCOME TO THE SYSTEM</div>
         </div>
         <div class="user-info">
-          <el-form ref="wkzForm" :model="wkzForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+          <el-form ref="wkzForm" :model="formData" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
             <div class="username">
               <el-form-item prop="username" >
                 <el-input
@@ -18,7 +18,7 @@
                     name="username"
                     autocomplete="on"
                     placeholder="输入用户名"
-                    v-model="wkzForm.username"
+                    v-model="formData.username"
                 />
               </el-form-item>
             </div>
@@ -36,7 +36,7 @@
                       :key="passwordType"
                       :type="passwordType"
                       placeholder="输入密码"
-                      v-model="wkzForm.password"
+                      v-model="formData.password"
                       @blur="capsTooltip = false"
                       @keyup.native="checkCapslock"
                       @keyup.enter.native="handleLogin"
@@ -55,23 +55,27 @@
 </template>
 
 <script>
+import JSEncrypt from 'jsencrypt/bin/jsencrypt';
+import { loginPost } from '@/api/login';
+import { PUBLICKEY } from '@/RSA';
 export default {
   name: 'indexView',
   data () {
     // 密钥对生成 http://web.chacuo.net/netrsakeypair
-    const publicKey = '';
-    const publicKeyFn = '';
-    const personalKey = '';
     return {
-      publicKey: publicKey,
-      publicKeyFn: publicKeyFn,
-      personalKey: personalKey,
-      wkzForm: {
+      publicKey: PUBLICKEY,
+      formData: {
         username: '',
         password: ''
       },
-      otherQuery: {},
-      loginRules: {},
+      loginRules: {
+        username: [
+          { required: true, message: '用户名', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '密码', trigger: 'blur' }
+        ]
+      },
       passwordType: 'password',
       loading: false,
       checked: false,
@@ -89,9 +93,54 @@ export default {
     // }
   },
   methods: {
+    /**
+     * @Description 加密
+     * @author wangkangzhang
+     * @date 2022/4/28
+     */
+    encryptFn (txt) {
+      const encryptor = new JSEncrypt();
+      encryptor.setPublicKey(this.publicKey); // 设置公钥
+      return encryptor.encrypt(txt); // 对需要加密的数据进行加密
+    },
+    /**
+     * @Description 解密
+     * @author wangkangzhang
+     * @date 2022/1/4
+     */
+    decrypt (txt) {
+      const decryptor = new JSEncrypt(); // 新建JSEncrypt对象
+      decryptor.setPrivateKey(this.personalKey); // 设置私钥
+      return decryptor.decrypt(txt); // 对需要解密的数据景行解密
+    },
     checkCapslock () {},
     handleLogin () {
-      this.$router.push('/layout');
+      try {
+        this.$refs.wkzForm.validate(async (valid) => {
+          if (valid) {
+            const params = {
+              username: this.encryptFn(this.formData.username),
+              password: this.encryptFn(this.formData.password)
+            };
+            const result = await loginPost(params);
+            const { code, data, msg } = result;
+            if (code === 200) {
+              this.$_store.commit('app/SET_USER_MSG', {
+                username: data.name,
+                userId: data.userId
+              });
+              this.$nextTick(() => {
+                this.$router.push('/layout');
+              });
+              this.$message.success(msg);
+            } else {
+              this.$message.error(msg);
+            }
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 };
