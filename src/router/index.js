@@ -2,7 +2,6 @@ import Vue from "vue";
 import VueRouter from 'vue-router';
 import login from '../views/login';
 import layout from '../views/layout';
-// import routes from "./config";
 Vue.use(VueRouter);
 const routes = [
   {
@@ -22,8 +21,8 @@ const routes = [
   }
 ];
 const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
+  mode: 'hash',
+  // base: process.env.BASE_URL,
   routes
 });
 console.log('router', router);

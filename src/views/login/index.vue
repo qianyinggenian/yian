@@ -90,7 +90,9 @@ export default {
   },
   methods: {
     checkCapslock () {},
-    handleLogin () {}
+    handleLogin () {
+      this.$router.push('/layout');
+    }
   }
 };
 </script>
