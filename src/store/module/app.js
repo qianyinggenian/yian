@@ -7,9 +7,13 @@ export default {
       username: '',
       userId: ''
     },
-    isShowWaterMark: sessionStorage.getItem('waterMark') || '1', // 是否显示水印， 1-是，0-否
-    WaterMarkArea: 'system', // 是否显示水印， 1-是，0-否
+    // 是否显示水印， 1-是，0-否
+    isShowWaterMark: sessionStorage.getItem('waterMark') || '1',
+    // 水印显示区域， system-系统，module-模块
+    waterMarkArea: sessionStorage.getItem('waterMarkArea') || 'system',
+    // logo url
     logoUrl: require('@/assets/小猫6.png'),
+    // 头像url
     avatarUrl: require('@/assets/45.jpg')
   },
   mutations: {
@@ -25,7 +29,8 @@ export default {
       sessionStorage.setItem('waterMark', value);
     },
     SET_WATER_MASK_AREA: (state, value) => {
-      state.WaterMarkArea = value;
+      state.waterMarkArea = value;
+      sessionStorage.setItem('waterMarkArea', value);
     },
     SET_MOVE_LEN: (state, value) => {
       state.moveLen = value;

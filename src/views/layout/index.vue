@@ -32,7 +32,7 @@ export default {
   },
   mounted() {},
   computed: {
-    ...mapState('app', ['isShowWaterMark','personalMsg','WaterMarkArea'])
+    ...mapState('app', ['isShowWaterMark','personalMsg','waterMarkArea'])
   },
   watch: {
     isShowWaterMark: {
@@ -43,9 +43,11 @@ export default {
       },
       immediate: true
     },
-    WaterMarkArea: {
-      handler () {
-        WaterMark.set(this.personalMsg.username, this.WaterMarkArea);
+    waterMarkArea: {
+      handler (newVal) {
+        if (newVal && this.isShowWaterMark) {
+          WaterMark.set(this.personalMsg.username, this.waterMarkArea);
+        }
       },
       immediate: true
     }
@@ -54,7 +56,7 @@ export default {
     showWaterMask (flag) {
       if (flag === '1') {
        this.$nextTick(() => {
-         WaterMark.set(this.personalMsg.username, this.WaterMarkArea);
+         WaterMark.set(this.personalMsg.username, this.waterMarkArea);
        });
       } else {
         this.$nextTick(() => {
