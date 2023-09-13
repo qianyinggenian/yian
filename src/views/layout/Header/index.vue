@@ -15,13 +15,7 @@
       <div class="username" @click="handleShowWaterMask">{{personalMsg.username}}</div>
       <svg-icon title="设置" @click="handleSetting" icon-class="setting"/>
     </div>
-    <el-drawer
-        title="我是标题"
-        size="15%"
-        :visible.sync="drawer"
-        direction="rtl">
-      <span>我来啦!</span>
-    </el-drawer>
+
   </div>
 </template>
 
@@ -34,8 +28,7 @@ export default {
   data () {
     return {
       date: '',
-      time: '',
-      drawer: false
+      time: ''
     };
   },
   computed: {
@@ -43,10 +36,12 @@ export default {
       'systemName',
       'personalMsg'
     ]),
-    ...mapState('app', ['logoUrl','avatarUrl','isShowWaterMask','WaterMarkArea'])
+    ...mapState('app', ['logoUrl','avatarUrl','isShowWaterMark','WaterMarkArea'])
   },
   mounted() {
+    this.waterMark = this.isShowWaterMark;
     this.date = dayjs().format("YYYY/MM/DD");
+    this.time = dayjs().format("HH:mm:ss");
     if (this.interval !== null) {
       // 判断计时器是否为空
       clearInterval(this.interval);
@@ -65,9 +60,8 @@ export default {
      * @author wangkangzhang
      * @date 2023/9/13
     */
-    handleShowWaterMask () {
-      const flag = this.isShowWaterMask === '1' ? '0' : '1';
-      this.$_store.commit('app/SET_WATER_MARK', flag);
+    handleShowWaterMask (value) {
+      this.$_store.commit('app/SET_WATER_MARK', value);
     },
     /**
      * @Description 点击设置图标触发
@@ -75,7 +69,6 @@ export default {
      * @date 2023/9/13
     */
     handleSetting () {
-      console.log(1111111);
       this.drawer = true;
     },
     handleShowWaterMask1 () {
