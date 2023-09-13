@@ -95,7 +95,7 @@ export default {
   methods: {
     /**
      * @Description 加密
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2022/4/28
      */
     encryptFn (txt) {
@@ -105,7 +105,7 @@ export default {
     },
     /**
      * @Description 解密
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2022/1/4
      */
     decrypt (txt) {

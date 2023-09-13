@@ -4,7 +4,9 @@
       size="15%"
       custom-class="custom-class-drawer"
       :visible.sync="drawer"
-      direction="rtl">
+      direction="rtl"
+      @close="closeDrawer"
+  >
     <el-divider content-position="left">水印设置</el-divider>
     <div class="setting-box">
       <div class="item">
@@ -36,11 +38,48 @@ export default {
       drawer: false
     };
   },
-  props: {},
-  watch: {},
+  props: {
+    isShowWaterMark: {
+      type: String
+    }
+  },
+  watch: {
+    isShowWaterMark: {
+      handler (newVal) {
+        this.waterMark = newVal;
+      },
+      immediate: true
+    }
+  },
   computed: {},
   mounted () {},
-  methods: {}
+  methods: {
+    /**
+     * @Description 是否显示水印
+     * @author qianyinggenian
+     * @date 2023/9/13
+     */
+    handleShowWaterMask (value) {
+      this.$_store.commit('app/SET_WATER_MARK', value);
+    },
+    getInfo () {
+      this.drawer = true;
+    },
+    /**
+     * @Description
+     * @author qianyinggenian
+     * @date 2023/9/13
+    */
+    closeDrawer () {
+      this.drawer = false;
+      this.$emit('close');
+    },
+
+    handleShowWaterMask1 () {
+      const area = this.WaterMarkArea === 'system' ? 'module' : 'system';
+      this.$_store.commit('app/SET_WATER_MASK_AREA', area);
+    }
+  }
 };
 </script>
 
