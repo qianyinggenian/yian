@@ -12,23 +12,32 @@
         <div class="date">{{date}}</div>
       </div>
       <el-avatar :size="30" fit="contain" :src="avatarUrl"></el-avatar>
-      <div class="username" @click="handleShowWaterMask">{{personalMsg.username}}</div>
+      <div class="username">{{personalMsg.username}}</div>
       <svg-icon title="设置" @click="handleSetting" icon-class="setting"/>
     </div>
-
+    <drawer-view
+        ref="drawerView"
+        :isShowWaterMark="isShowWaterMark"
+        v-if="isShowDrawerView"
+        @close="closeDrawer"
+    />
   </div>
 </template>
 
 <script>
 import dayjs from "dayjs";
 import { mapState, mapGetters } from 'vuex';
-// import { mapState } from 'vuex';
+import drawerView from "./components/drawerView.vue";
 export default {
   name: "indexView",
+  components: {
+    drawerView
+  },
   data () {
     return {
       date: '',
-      time: ''
+      time: '',
+      isShowDrawerView: false
     };
   },
   computed: {
@@ -39,7 +48,6 @@ export default {
     ...mapState('app', ['logoUrl','avatarUrl','isShowWaterMark','WaterMarkArea'])
   },
   mounted() {
-    this.waterMark = this.isShowWaterMark;
     this.date = dayjs().format("YYYY/MM/DD");
     this.time = dayjs().format("HH:mm:ss");
     if (this.interval !== null) {
@@ -55,25 +63,25 @@ export default {
     }, 1000);
   },
   methods: {
-    /**
-     * @Description 是否显示水印
-     * @author wangkangzhang
-     * @date 2023/9/13
-    */
-    handleShowWaterMask (value) {
-      this.$_store.commit('app/SET_WATER_MARK', value);
-    },
+
     /**
      * @Description 点击设置图标触发
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/9/13
     */
     handleSetting () {
-      this.drawer = true;
+      this.isShowDrawerView = true;
+      this.$nextTick(() => {
+         this.$refs.drawerView.getInfo();
+      });
     },
-    handleShowWaterMask1 () {
-      const area = this.WaterMarkArea === 'system' ? 'module' : 'system';
-      this.$_store.commit('app/SET_WATER_MASK_AREA', area);
+    /**
+     * @Description
+     * @author qianyinggenian
+     * @date 2023/9/13
+    */
+    closeDrawer () {
+      this.isShowDrawerView = false;
     }
   },
   destroyed() {
