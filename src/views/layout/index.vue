@@ -7,7 +7,9 @@
       <el-container>
         <el-aside width="200px">Aside</el-aside>
         <el-main>
-          <svg-icon icon-class="return"/>
+          <div  class="yian-module">
+            <svg-icon icon-class="return"/>
+          </div>
         </el-main>
       </el-container>
     </el-container>
@@ -15,23 +17,67 @@
 </template>
 
 <script>
+import WaterMark from '@/components/WaterMark';
 import Header from './Header/index.vue';
+import { mapState } from 'vuex';
 export default {
   name: "indexView",
   components: {
     Header
   },
+  data () {
+    return {
+      isUseDom: false
+    };
+  },
+  mounted() {},
+  computed: {
+    ...mapState('app', ['isShowWaterMark','personalMsg','WaterMarkArea'])
+  },
+  watch: {
+    isShowWaterMark: {
+      handler (newVal,oldVal) {
+        if (newVal !== oldVal) {
+          this.showWaterMask(newVal);
+        }
+      },
+      immediate: true
+    },
+    WaterMarkArea: {
+      handler () {
+        WaterMark.set(this.personalMsg.username, this.WaterMarkArea);
+      },
+      immediate: true
+    }
+  },
   methods:{
-   init(){
-     const a=1;
-     console.log(a);
-   }
+    showWaterMask (flag) {
+      if (flag === '1') {
+       this.$nextTick(() => {
+         WaterMark.set(this.personalMsg.username, this.WaterMarkArea);
+       });
+      } else {
+        this.$nextTick(() => {
+          WaterMark.del();
+        });
+      }
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.el-header {
-  padding: 0;
+.el-container {
+  .el-header {
+    padding: 0;
+  }
+  .el-aside {
+    height: 100%;
+  }
+  .el-main {
+    height: 100%;
+    width: 100%;
+    position: relative;
+  }
 }
 </style>

@@ -12,8 +12,10 @@
         <div class="date">{{date}}</div>
       </div>
       <el-avatar :size="30" fit="contain" :src="avatarUrl"></el-avatar>
-      <div class="username">{{personalMsg.username}}</div>
+      <div class="username" @click="handleShowWaterMask">{{personalMsg.username}}</div>
+      <svg-icon title="设置" @click="handleSetting" icon-class="setting"/>
     </div>
+
   </div>
 </template>
 
@@ -34,11 +36,12 @@ export default {
       'systemName',
       'personalMsg'
     ]),
-    ...mapState('app', ['logoUrl','avatarUrl']),
-    // ...mapState('app', ['systemName','logoUrl']),
+    ...mapState('app', ['logoUrl','avatarUrl','isShowWaterMark','WaterMarkArea'])
   },
   mounted() {
+    this.waterMark = this.isShowWaterMark;
     this.date = dayjs().format("YYYY/MM/DD");
+    this.time = dayjs().format("HH:mm:ss");
     if (this.interval !== null) {
       // 判断计时器是否为空
       clearInterval(this.interval);
@@ -51,7 +54,28 @@ export default {
       }
     }, 1000);
   },
-  methods: {},
+  methods: {
+    /**
+     * @Description 是否显示水印
+     * @author wangkangzhang
+     * @date 2023/9/13
+    */
+    handleShowWaterMask (value) {
+      this.$_store.commit('app/SET_WATER_MARK', value);
+    },
+    /**
+     * @Description 点击设置图标触发
+     * @author wangkangzhang
+     * @date 2023/9/13
+    */
+    handleSetting () {
+      this.drawer = true;
+    },
+    handleShowWaterMask1 () {
+      const area = this.WaterMarkArea === 'system' ? 'module' : 'system';
+      this.$_store.commit('app/SET_WATER_MASK_AREA', area);
+    }
+  },
   destroyed() {
     clearInterval(this.interval);
   }
@@ -96,6 +120,13 @@ export default {
       .time {
         font-size: var(--font-size-14);
       }
+    }
+    .username {
+      cursor: pointer;
+      margin: 0 10px;
+    }
+    .svg-icon {
+      cursor: pointer;
     }
   }
 }
