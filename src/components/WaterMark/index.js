@@ -17,13 +17,17 @@ export function setWatermark (str, area) {
     div.style.left = '0px';
     div.style.position = 'absolute';
     div.style.zIndex = '10000000';
-    div.style.width = `${document.documentElement.clientWidth}px`;
-    div.style.height = `${document.documentElement.clientHeight}px`;
     div.style.background = `url(${can.toDataURL('image/png')}) left top repeat`;
     if (area === 'system') {
+      div.style.width = `${document.documentElement.clientWidth}px`;
+      div.style.height = `${document.documentElement.clientHeight}px`;
       document.body.appendChild(div);
-    } else if ( document.getElementsByClassName('yian-module')[0] !== null ) {
-      document.getElementsByClassName('yian-module')[0].appendChild(div);
+    } else if ( document.getElementsByClassName('el-main')[0] !== null ) {
+      const clientWidth = document.getElementsByClassName('el-main')[0].clientWidth;
+      const clientHeight = document.getElementsByClassName('el-main')[0].clientHeight;
+      div.style.width = `${clientWidth}px`;
+      div.style.height = `${clientHeight}px`;
+      document.getElementsByClassName('el-main')[0].appendChild(div);
     } else {
       setTimeout(() => {
         id = setWatermark(str, area);
@@ -35,7 +39,7 @@ export function setWatermark (str, area) {
 function delMask() {
   const id = 'waterMaskCanvas';
   if (document.getElementById(id) !== null) {
-    const contentWrapper = document.getElementsByClassName('yian-module')[0];
+    const contentWrapper = document.getElementsByClassName('el-main')[0];
     if (contentWrapper && contentWrapper.contains(document.getElementById(id))) {
       contentWrapper.removeChild(document.getElementById(id));
     } else {

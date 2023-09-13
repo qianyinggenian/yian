@@ -13,7 +13,15 @@
       </div>
       <el-avatar :size="30" fit="contain" :src="avatarUrl"></el-avatar>
       <div class="username" @click="handleShowWaterMask">{{personalMsg.username}}</div>
+      <svg-icon title="设置" @click="handleSetting" icon-class="setting"/>
     </div>
+    <el-drawer
+        title="我是标题"
+        size="15%"
+        :visible.sync="drawer"
+        direction="rtl">
+      <span>我来啦!</span>
+    </el-drawer>
   </div>
 </template>
 
@@ -26,7 +34,8 @@ export default {
   data () {
     return {
       date: '',
-      time: ''
+      time: '',
+      drawer: false
     };
   },
   computed: {
@@ -34,7 +43,7 @@ export default {
       'systemName',
       'personalMsg'
     ]),
-    ...mapState('app', ['logoUrl','avatarUrl','isShowWaterMask'])
+    ...mapState('app', ['logoUrl','avatarUrl','isShowWaterMask','WaterMarkArea'])
   },
   mounted() {
     this.date = dayjs().format("YYYY/MM/DD");
@@ -58,7 +67,20 @@ export default {
     */
     handleShowWaterMask () {
       const flag = this.isShowWaterMask === '1' ? '0' : '1';
-      this.$_store.commit('app/SET_WATER_MASK', flag);
+      this.$_store.commit('app/SET_WATER_MARK', flag);
+    },
+    /**
+     * @Description 点击设置图标触发
+     * @author wangkangzhang
+     * @date 2023/9/13
+    */
+    handleSetting () {
+      console.log(1111111);
+      this.drawer = true;
+    },
+    handleShowWaterMask1 () {
+      const area = this.WaterMarkArea === 'system' ? 'module' : 'system';
+      this.$_store.commit('app/SET_WATER_MASK_AREA', area);
     }
   },
   destroyed() {
@@ -108,7 +130,10 @@ export default {
     }
     .username {
       cursor: pointer;
-      margin-left: 10px;
+      margin: 0 10px;
+    }
+    .svg-icon {
+      cursor: pointer;
     }
   }
 }
