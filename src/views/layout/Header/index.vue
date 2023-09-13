@@ -12,7 +12,7 @@
         <div class="date">{{date}}</div>
       </div>
       <el-avatar :size="30" fit="contain" :src="avatarUrl"></el-avatar>
-      <div class="username">{{personalMsg.username}}</div>
+      <div class="username" @click="handleShowWaterMask">{{personalMsg.username}}</div>
     </div>
   </div>
 </template>
@@ -34,8 +34,7 @@ export default {
       'systemName',
       'personalMsg'
     ]),
-    ...mapState('app', ['logoUrl','avatarUrl']),
-    // ...mapState('app', ['systemName','logoUrl']),
+    ...mapState('app', ['logoUrl','avatarUrl','isShowWaterMask'])
   },
   mounted() {
     this.date = dayjs().format("YYYY/MM/DD");
@@ -51,7 +50,17 @@ export default {
       }
     }, 1000);
   },
-  methods: {},
+  methods: {
+    /**
+     * @Description 是否显示水印
+     * @author wangkangzhang
+     * @date 2023/9/13
+    */
+    handleShowWaterMask () {
+      const flag = this.isShowWaterMask === '1' ? '0' : '1';
+      this.$_store.commit('app/SET_WATER_MASK', flag);
+    }
+  },
   destroyed() {
     clearInterval(this.interval);
   }
@@ -96,6 +105,10 @@ export default {
       .time {
         font-size: var(--font-size-14);
       }
+    }
+    .username {
+      cursor: pointer;
+      margin-left: 10px;
     }
   }
 }
