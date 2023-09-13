@@ -13,7 +13,7 @@
         <div>显示水印</div>
         <div>
           <el-switch
-              v-model="waterMark"
+              v-model="isShowWaterMark"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-value="1"
@@ -21,6 +21,25 @@
               @change="handleShowWaterMask"
           >
           </el-switch>
+        </div>
+      </div>
+      <div class="item">
+        <div>显示区域</div>
+        <div>
+          <el-select
+              size="mini"
+              :disabled="isShowWaterMark === '0'"
+              v-model="waterMarkArea"
+              placeholder="请选择"
+              @change="handleWaterMarkArea"
+          >
+            <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+            </el-option>
+          </el-select>
         </div>
       </div>
     </div>
@@ -34,22 +53,24 @@ export default {
   components: {},
   data () {
     return {
-      waterMark: '',
-      drawer: false
+      waterMarkArea: '',
+      isShowWaterMark: '',
+      drawer: false,
+      options: [
+        {
+          label: '系统',
+          value: 'system'
+        },
+        {
+          label: '模块',
+          value: 'module'
+        }
+      ]
     };
   },
   props: {
-    isShowWaterMark: {
-      type: String
-    }
   },
   watch: {
-    isShowWaterMark: {
-      handler (newVal) {
-        this.waterMark = newVal;
-      },
-      immediate: true
-    }
   },
   computed: {},
   mounted () {},
@@ -62,8 +83,23 @@ export default {
     handleShowWaterMask (value) {
       this.$_store.commit('app/SET_WATER_MARK', value);
     },
-    getInfo () {
+    /**
+     * @Description 显示区域切换
+     * @author qianyinggenian
+     * @date 2023/9/13
+    */
+    handleWaterMarkArea () {
+      this.$_store.commit('app/SET_WATER_MASK_AREA', this.waterMarkArea);
+    },
+    /**
+     * @Description 显示抽屉
+     * @author qianyinggenian
+     * @date 2023/9/13
+    */
+    getInfo (params) {
       this.drawer = true;
+      this.isShowWaterMark = params.isShowWaterMark;
+      this.waterMarkArea = params.waterMarkArea;
     },
     /**
      * @Description
@@ -73,11 +109,6 @@ export default {
     closeDrawer () {
       this.drawer = false;
       this.$emit('close');
-    },
-
-    handleShowWaterMask1 () {
-      const area = this.WaterMarkArea === 'system' ? 'module' : 'system';
-      this.$_store.commit('app/SET_WATER_MASK_AREA', area);
     }
   }
 };
@@ -100,7 +131,14 @@ export default {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 10px;
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
+  }
+  .el-select {
+    width: 100px;
   }
 }
 </style>

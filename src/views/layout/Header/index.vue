@@ -17,7 +17,6 @@
     </div>
     <drawer-view
         ref="drawerView"
-        :isShowWaterMark="isShowWaterMark"
         v-if="isShowDrawerView"
         @close="closeDrawer"
     />
@@ -45,7 +44,7 @@ export default {
       'systemName',
       'personalMsg'
     ]),
-    ...mapState('app', ['logoUrl','avatarUrl','isShowWaterMark','WaterMarkArea'])
+    ...mapState('app', ['logoUrl','avatarUrl','isShowWaterMark','waterMarkArea'])
   },
   mounted() {
     this.date = dayjs().format("YYYY/MM/DD");
@@ -72,7 +71,11 @@ export default {
     handleSetting () {
       this.isShowDrawerView = true;
       this.$nextTick(() => {
-         this.$refs.drawerView.getInfo();
+        const params = {
+          isShowWaterMark: this.isShowWaterMark,
+          waterMarkArea: this.waterMarkArea
+        };
+         this.$refs.drawerView.getInfo(params);
       });
     },
     /**
