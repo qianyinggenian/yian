@@ -1,5 +1,5 @@
 import test2 from '@/views/test2/index.vue';
-import redirect from '../views/redirect';
+import redirectComp from '../views/redirect';
 
 export const config = [
   {
@@ -16,7 +16,7 @@ export const config = [
     meta: {
       title: '基础设置'
     },
-    component: redirect,
+    component: redirectComp,
     children: [
       {
         path: '/menu',
