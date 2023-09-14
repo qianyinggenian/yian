@@ -6,6 +6,7 @@
       @close="handleClose"
       background-color="#545c64"
       text-color="#fff"
+      :router="true"
       active-text-color="#ffd04b">
     <submenu
         ref="submenu"
@@ -18,6 +19,7 @@
 
 <script>
 import submenu from './submenu.vue';
+import { config } from '@/router/config';
 
 export default {
   name: 'indexView',
@@ -26,45 +28,7 @@ export default {
   },
   data () {
     return {
-      authRoutes: [
-        {
-          path: '/test',
-          meta: {
-            title: '测试1'
-          },
-          id: '测试1',
-          children: [
-            {
-              path: '/test1-1',
-              id: '测试1-1',
-              meta: {
-                title: '测试1-1'
-              }
-            }
-          ]
-        },
-        {
-          path: '/test2',
-          id: '测试2',
-          meta: {
-            title: '测试2'
-          }
-        },
-        {
-          path: '/test3',
-          id: '测试3',
-          meta: {
-            title: '测试3'
-          }
-        },
-        {
-          path: '/test4',
-          id: '测试4',
-          meta: {
-            title: '测试4'
-          }
-        }
-      ]
+      authRoutes: config
     };
   },
   props: {},

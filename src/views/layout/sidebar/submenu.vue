@@ -6,8 +6,8 @@
       </el-menu-item>
     </router-link>
 
-    <el-submenu v-else ref="subMenu1" :index="menu.path" popper-append-to-body>
-      <template slot="title">
+    <el-submenu v-else ref="subMenu" :index="menu.path" popper-append-to-body>
+      <template v-slot:title>
         <item v-if="menu && menu.meta" :svgClass="menu && menu.meta && menu.meta.svgClass"
               :title="menu && menu.meta.title"/>
       </template>
@@ -54,6 +54,8 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+a {
+  text-decoration: none;
+}
 </style>

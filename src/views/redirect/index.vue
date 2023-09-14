@@ -1,7 +1,6 @@
 <template>
   <div>
-    导航设置
-    <router-view></router-view>
+    <router-view/>
   </div>
 </template>
 

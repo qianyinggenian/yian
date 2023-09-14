@@ -1,8 +1,5 @@
 <template>
-  <div>
-    导航设置
-    <router-view></router-view>
-  </div>
+  <div>权限</div>
 </template>
 
 <script>

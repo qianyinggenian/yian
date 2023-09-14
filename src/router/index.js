@@ -2,10 +2,9 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import login from '../views/login';
 import layout from '../views/layout';
-import test2 from '../views/test2';
-import home from '../views/home';
-import menu from '../views/menu';
 import errorView from '../views/404';
+import { config } from '@/router/config';
+import home from '@/views/home/index.vue';
 
 Vue.use(VueRouter);
 const routes = [
@@ -40,11 +39,6 @@ const routes = [
     redirect: '/home',
     children: [
       {
-        path: '/test2',
-        name: 'test2',
-        component: test2
-      },
-      {
         path: '/home',
         name: 'home',
         component: home,
@@ -52,17 +46,11 @@ const routes = [
           title: '首页'
         }
       },
-      {
-        path: '/menu',
-        name: 'menu',
-        component: menu,
-        meta: {
-          title: '导航设置'
-        }
-      }
+      ...config
     ]
   }
 ];
+console.log('routes', routes);
 const router = new VueRouter({
   mode: 'hash',
   // base: process.env.BASE_URL,
