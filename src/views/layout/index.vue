@@ -5,11 +5,11 @@
         <Header></Header>
       </el-header>
       <el-container>
-        <el-aside width="200px">Aside</el-aside>
+        <el-aside width="200px">
+          <sidebar ref="menu"></sidebar>
+        </el-aside>
         <el-main>
-          <div  class="yian-module">
-            <svg-icon icon-class="return"/>
-          </div>
+          <router-view/>
         </el-main>
       </el-container>
     </el-container>
@@ -18,11 +18,14 @@
 
 <script>
 import WaterMark from '@/components/WaterMark';
-import Header from './Header/index.vue';
+import Header from './header/index.vue';
+import sidebar from './sidebar/index.vue';
 import { mapState } from 'vuex';
+
 export default {
-  name: "indexView",
+  name: 'indexView',
   components: {
+    sidebar,
     Header
   },
   data () {
@@ -30,13 +33,14 @@ export default {
       isUseDom: false
     };
   },
-  mounted() {},
+  mounted () {
+  },
   computed: {
-    ...mapState('app', ['isShowWaterMark','personalMsg','waterMarkArea'])
+    ...mapState('app', ['isShowWaterMark', 'personalMsg', 'waterMarkArea'])
   },
   watch: {
     isShowWaterMark: {
-      handler (newVal,oldVal) {
+      handler (newVal, oldVal) {
         if (newVal !== oldVal) {
           this.showWaterMask(newVal);
         }
@@ -52,12 +56,12 @@ export default {
       immediate: true
     }
   },
-  methods:{
+  methods: {
     showWaterMask (flag) {
       if (flag === '1') {
-       this.$nextTick(() => {
-         WaterMark.set(this.personalMsg.username, this.waterMarkArea);
-       });
+        this.$nextTick(() => {
+          WaterMark.set(this.personalMsg.username, this.waterMarkArea);
+        });
       } else {
         this.$nextTick(() => {
           WaterMark.del();
@@ -73,9 +77,11 @@ export default {
   .el-header {
     padding: 0;
   }
+
   .el-aside {
     height: 100%;
   }
+
   .el-main {
     height: 100%;
     width: 100%;
