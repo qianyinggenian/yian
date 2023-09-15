@@ -9,7 +9,10 @@
           <sidebar ref="menu"></sidebar>
         </el-aside>
         <el-main>
-          <router-view/>
+          <navbar></navbar>
+          <div class="router-view-container">
+            <router-view style="height: 100%;width: 100%"/>
+          </div>
         </el-main>
       </el-container>
     </el-container>
@@ -21,12 +24,14 @@ import WaterMark from '@/components/WaterMark';
 import Header from './header/index.vue';
 import sidebar from './sidebar/index.vue';
 import { mapState } from 'vuex';
+import navbar from './navbar/index.vue';
 
 export default {
   name: 'indexView',
   components: {
     sidebar,
-    Header
+    Header,
+    navbar
   },
   data () {
     return {
@@ -86,6 +91,13 @@ export default {
     height: 100%;
     width: 100%;
     position: relative;
+    padding: 0;
+
+    .router-view-container {
+      width: 100%;
+      height: calc(100% - 56px);
+      overflow-y: auto;
+    }
   }
 }
 </style>

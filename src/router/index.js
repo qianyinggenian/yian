@@ -50,13 +50,11 @@ const routes = [
     ]
   }
 ];
-console.log('routes', routes);
 const router = new VueRouter({
   mode: 'hash',
   // base: process.env.BASE_URL,
   routes
 });
-console.log('router', router);
 // router.beforeEach(async (to, from, next) => {
 //   console.log('to', to);
 //   console.log('from', from);

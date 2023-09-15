@@ -4,7 +4,7 @@
       class="el-menu-vertical-demo"
       @open="handleOpen"
       @close="handleClose"
-      background-color="#545c64"
+      background-color="#0a1a34"
       text-color="#fff"
       :router="true"
       active-text-color="#ffd04b">
@@ -35,7 +35,6 @@ export default {
   watch: {},
   computed: {
     activeMenu () {
-      console.log('$route', this.$route);
       const route = this.$route;
       const { meta, path } = route;
       if (meta.activeMenu) {
@@ -45,16 +44,11 @@ export default {
     }
   },
   mounted () {
-    console.log('$route', this.$route);
   },
   methods: {
     handleOpen (key, keyPath) {
-      console.log(key, keyPath);
     },
     handleClose (key, keyPath) {
-      const a = 1;
-      console.log(a);
-      console.log(key, keyPath);
     }
   }
 };
