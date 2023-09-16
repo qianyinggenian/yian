@@ -1,7 +1,7 @@
 <template>
   <el-drawer
       title="设置"
-      size="15%"
+      :size="250"
       custom-class="custom-class-drawer"
       :visible.sync="drawer"
       direction="rtl"
@@ -49,7 +49,7 @@
 
 <script>
 export default {
-  name: "drawerView",
+  name: 'drawerView',
   components: {},
   data () {
     return {
@@ -68,12 +68,11 @@ export default {
       ]
     };
   },
-  props: {
-  },
-  watch: {
-  },
+  props: {},
+  watch: {},
   computed: {},
-  mounted () {},
+  mounted () {
+  },
   methods: {
     /**
      * @Description 是否显示水印
@@ -87,7 +86,7 @@ export default {
      * @Description 显示区域切换
      * @author qianyinggenian
      * @date 2023/9/13
-    */
+     */
     handleWaterMarkArea () {
       this.$_store.commit('app/SET_WATER_MASK_AREA', this.waterMarkArea);
     },
@@ -95,7 +94,7 @@ export default {
      * @Description 显示抽屉
      * @author qianyinggenian
      * @date 2023/9/13
-    */
+     */
     getInfo (params) {
       this.drawer = true;
       this.isShowWaterMark = params.isShowWaterMark;
@@ -105,7 +104,7 @@ export default {
      * @Description
      * @author qianyinggenian
      * @date 2023/9/13
-    */
+     */
     closeDrawer () {
       this.drawer = false;
       this.$emit('close');
@@ -122,23 +121,27 @@ export default {
     box-sizing: border-box;
     border-bottom: 1px solid #dcdfe6;
   }
+
   .el-drawer__body {
     box-sizing: border-box;
     padding: 0 15px;
   }
+
   .setting-box {
     .item {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 10px;
+
       &:last-child {
         margin-bottom: 0;
       }
     }
   }
+
   .el-select {
-    width: 100px;
+    width: 75px;
   }
 }
 </style>
