@@ -87,8 +87,8 @@ export default {
       };
       if (path !== '/home') {
         this.$_store.commit('navbar/SET_ADD_TAB', params);
-        this.activePath = path;
       }
+      this.activePath = path;
     },
     /**
      * @Description 关闭右键菜单
@@ -127,7 +127,6 @@ export default {
      * @date 2023/9/15
      */
     closeFn (item) {
-      console.log(item);
       this.$_store.commit('navbar/SET_CLOSE_TAB', item);
     },
     /**
@@ -136,8 +135,10 @@ export default {
      * @date 2023/9/15
      */
     closeOther (item) {
-      console.log(item);
-      this.$_store.commit('navbar/SET_CLOSE_OTHER_TABS', {});
+      if (this.$route.path !== item.path) {
+        this.$router.push(item.path);
+      }
+      this.$_store.commit('navbar/SET_CLOSE_OTHER_TABS', item);
     },
     /**
      * @Description closeAll
@@ -145,7 +146,9 @@ export default {
      * @date 2023/9/15
      */
     closeAll (item) {
-      console.log(item);
+      if (item.path !== '/home' && this.$route.path !== '/home') {
+        this.$router.push('/home');
+      }
       this.$_store.commit('navbar/SET_CLOSE_ALL_TABS', {});
     }
   }

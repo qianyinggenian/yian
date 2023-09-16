@@ -33,6 +33,14 @@ export const config = [
         meta: {
           title: '权限设置'
         }
+      },
+      {
+        path: '/user',
+        name: 'user',
+        component: () => import('@/views/user/index.vue'),
+        meta: {
+          title: '用户管理'
+        }
       }
     ]
   }
