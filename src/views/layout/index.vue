@@ -4,7 +4,7 @@
       <el-header>
         <Header></Header>
       </el-header>
-      <el-container>
+      <el-container class="yiAn-container">
         <el-aside width="200px">
           <sidebar ref="menu"></sidebar>
         </el-aside>
@@ -83,6 +83,10 @@ export default {
     padding: 0;
   }
 
+  .yiAn-container {
+    height: calc(100% - 60px);
+  }
+
   .el-aside {
     height: 100%;
   }
@@ -95,7 +99,7 @@ export default {
 
     .router-view-container {
       width: 100%;
-      height: calc(100% - 56px);
+      height: calc(100% - 34px);
       overflow-y: auto;
     }
   }

@@ -1,15 +1,40 @@
 'use strict';
 const path = require('path');
 
+// const webpack = require('webpack');
+
 function resolve (dir) {
   return path.join(__dirname, dir);
 }
 
 module.exports = {
-  // publicPath: "./",
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/yian/' : '/',
+  publicPath: './',
+  // publicPath: process.env.NODE_ENV === 'production'
+  //   ? '/yian/' : './',
   devServer: {},
+  pages: {
+    index: {
+      entry: 'src/main.js',
+      template: 'public/index.html',
+      title: '浅影歌年'
+    }
+  },
+  configureWebpack: {
+    externals: {
+      jquery: '$',
+      $: 'jquery',
+      jQuery: 'jquery',
+      'windows.jQuery': 'jquery',
+      echarts: 'echarts'
+    },
+    plugins: [
+      // new webpack.optimize.CommonsChunkPlugin('common.js'),
+      // new webpack.ProvidePlugin({
+      //   jQuery: 'jquery',
+      //   $: 'jquery'
+      // })
+    ]
+  },
   chainWebpack (config) {
     config.module
       .rule('svg')

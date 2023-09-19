@@ -157,7 +157,7 @@ export default {
       this.$_store.commit('navbar/SET_CLOSE_OTHER_TABS', item);
     },
     /**
-     * @Description closeAll
+     * @Description 关闭所有
      * @author qianyinggenian
      * @date 2023/9/15
      */

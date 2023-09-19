@@ -119,6 +119,9 @@ export default {
           // });
           sessionStorage.clear();
           localStorage.clear();
+          this.$_store.commit('navbar/SET_CLOSE_ALL_TABS', {});
+
+          this.$_store.commit('app/SET_WATER_MARK', '0');
           this.$nextTick(() => {
             this.$router.push('/login');
           });

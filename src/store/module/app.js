@@ -8,7 +8,7 @@ export default {
       userId: ''
     },
     // 是否显示水印， 1-是，0-否
-    isShowWaterMark: sessionStorage.getItem('waterMark') || '1',
+    isShowWaterMark: sessionStorage.getItem('waterMark') || '0',
     // 水印显示区域， system-系统，module-模块
     waterMarkArea: sessionStorage.getItem('waterMarkArea') || 'system',
     // 网站是否置灰， 1-是，0-否

@@ -12,6 +12,7 @@ import 'dayjs/locale/zh-cn';
 import mock from 'mockjs';
 import axios from 'axios';
 import '@/mock/mockServe.js';
+import '@/common/ztree/index';
 
 dayjs.locale('zh-cn');
 // 配置vue原型，(在任何组件中都可以正常使用 axios ）
