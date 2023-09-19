@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-container">
+  <div class="layout-container" :class="{'bg-disable': isGreyOut === '1'}">
     <el-container>
       <el-header>
         <Header></Header>
@@ -41,7 +41,7 @@ export default {
   mounted () {
   },
   computed: {
-    ...mapState('app', ['isShowWaterMark', 'personalMsg', 'waterMarkArea'])
+    ...mapState('app', ['isGreyOut', 'isShowWaterMark', 'personalMsg', 'waterMarkArea'])
   },
   watch: {
     isShowWaterMark: {
@@ -99,5 +99,16 @@ export default {
       overflow-y: auto;
     }
   }
+}
+
+.bg-disable {
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -ms-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
+  -webkit-filter: progid:dximagetransform.microsoft.basicimage(grayscale=1);
+  filter: progid:dximagetransform.microsoft.basicimage(grayscale=1);
 }
 </style>

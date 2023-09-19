@@ -50,7 +50,12 @@ export default {
       'systemName',
       'personalMsg'
     ]),
-    ...mapState('app', ['logoUrl', 'avatarUrl', 'isShowWaterMark', 'waterMarkArea'])
+    ...mapState('app', [
+      'isGreyOut',
+      'logoUrl',
+      'avatarUrl',
+      'isShowWaterMark',
+      'waterMarkArea'])
   },
   mounted () {
     this.date = dayjs().format('YYYY/MM/DD');
@@ -66,6 +71,9 @@ export default {
         this.date = dayjs().format('YYYY/MM/DD');
       }
     }, 1000);
+    if (['07/07', '09/18', '09/30', '12/13'].includes(dayjs().format('MM/DD'))) {
+      this.$_store.commit('app/SET_GREY_OUT', '1');
+    }
   },
   methods: {
 
@@ -78,8 +86,9 @@ export default {
       this.isShowDrawerView = true;
       this.$nextTick(() => {
         const params = {
-          isShowWaterMark: this.isShowWaterMark,
-          waterMarkArea: this.waterMarkArea
+          isGreyOut: this.isGreyOut,
+          waterMarkArea: this.waterMarkArea,
+          isShowWaterMark: this.isShowWaterMark
         };
         this.$refs.drawerView.getInfo(params);
       });

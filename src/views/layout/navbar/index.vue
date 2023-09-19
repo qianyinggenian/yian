@@ -16,11 +16,15 @@
         <span>{{ item.label }}</span>
       </li>
     </ul>
-    <el-card v-show="visible" class="contextmenu" :style="{
+    <el-card
+        v-show="visible"
+        class="contextmenu"
+        :style="{
             top: `${top}px`,
             left: `${left}px`
-         }" shadow="always">
-      <div class="contextmenu-item" @click="closeFn(selectedTag)">关闭</div>
+         }"
+        shadow="always">
+      <div class="contextmenu-item" v-if="selectedTag.path !== '/home'" @click="closeFn(selectedTag)">关闭</div>
       <div class="contextmenu-item" @click="closeOther(selectedTag)">关闭其他</div>
       <div class="contextmenu-item" @click="closeAll(selectedTag)">关闭所有</div>
     </el-card>
@@ -127,6 +131,18 @@ export default {
      * @date 2023/9/15
      */
     closeFn (item) {
+      if (this.$route.path === item.path) {
+        // const length = this.visibleTabs.length;
+        const index = this.visibleTabs.findIndex(value => value.path === item.path);
+        if (index !== -1) {
+          if (index === 0) {
+            this.$router.push('/home');
+          } else {
+            const result = this.visibleTabs[index - 1];
+            this.$router.push(result.path);
+          }
+        }
+      }
       this.$_store.commit('navbar/SET_CLOSE_TAB', item);
     },
     /**

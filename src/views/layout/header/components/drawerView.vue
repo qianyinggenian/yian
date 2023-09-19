@@ -5,6 +5,7 @@
       custom-class="custom-class-drawer"
       :visible.sync="drawer"
       direction="rtl"
+      :modal-append-to-body="false"
       @close="closeDrawer"
   >
     <el-divider content-position="left">水印设置</el-divider>
@@ -43,7 +44,23 @@
         </div>
       </div>
     </div>
-    <el-divider content-position="left">水印设置</el-divider>
+    <el-divider content-position="left">网站置灰</el-divider>
+    <div class="setting-box">
+      <div class="item">
+        <div>是否置灰</div>
+        <div>
+          <el-switch
+              v-model="isGreyOut"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-value="1"
+              inactive-value="0"
+              @change="handleSetGreyOut"
+          >
+          </el-switch>
+        </div>
+      </div>
+    </div>
   </el-drawer>
 </template>
 
@@ -53,6 +70,7 @@ export default {
   components: {},
   data () {
     return {
+      isGreyOut: '',
       waterMarkArea: '',
       isShowWaterMark: '',
       drawer: false,
@@ -74,6 +92,14 @@ export default {
   mounted () {
   },
   methods: {
+    /**
+     * @Description 是否置灰
+     * @author qianyinggenian
+     * @date 2023/9/13
+     */
+    handleSetGreyOut (value) {
+      this.$_store.commit('app/SET_GREY_OUT', value);
+    },
     /**
      * @Description 是否显示水印
      * @author qianyinggenian
@@ -98,6 +124,7 @@ export default {
     getInfo (params) {
       this.drawer = true;
       this.isShowWaterMark = params.isShowWaterMark;
+      this.isGreyOut = params.isGreyOut;
       this.waterMarkArea = params.waterMarkArea;
     },
     /**

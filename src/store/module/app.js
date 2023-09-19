@@ -11,6 +11,8 @@ export default {
     isShowWaterMark: sessionStorage.getItem('waterMark') || '1',
     // 水印显示区域， system-系统，module-模块
     waterMarkArea: sessionStorage.getItem('waterMarkArea') || 'system',
+    // 网站是否置灰， 1-是，0-否
+    isGreyOut: sessionStorage.getItem('isGreyOut') || '0',
     // logo url
     logoUrl: require('@/assets/小猫6.png'),
     // 头像url
@@ -31,6 +33,10 @@ export default {
     SET_WATER_MASK_AREA: (state, value) => {
       state.waterMarkArea = value;
       sessionStorage.setItem('waterMarkArea', value);
+    },
+    SET_GREY_OUT: (state, value) => {
+      state.isGreyOut = value;
+      sessionStorage.setItem('isGreyOut', value);
     },
     SET_MOVE_LEN: (state, value) => {
       state.moveLen = value;
