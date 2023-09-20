@@ -1,6 +1,7 @@
 <template>
-  <div ref="navRef" class="navbar-container">
-    <ul class="nav">
+  <div ref="swiperScroll" class="navbar-container">
+    <i v-if="isShowIcon" class="el-icon-d-arrow-left direction" @click="scrollTab('left')"></i>
+    <ul class="nav" ref="swiperScrollContent">
       <li class="nav-item"
           :class="{active: activePath === '/home'}"
           @click="handleClickMenu({label: '首页',path: '/home'})"
@@ -9,13 +10,17 @@
       </li>
       <li class="nav-item"
           v-for="item in visibleTabs"
+          :ref="`li${item.name}`"
           :key="item.path"
           :class="{active: activePath === item.path}"
-          @click="handleClickMenu(item)"
+          @click="handleClickMenu(item,`li${item.name}`)"
           @contextmenu.prevent.stop="openMenu($event,item)">
-        <span>{{ item.label }}</span>
+        <span>
+          {{ item.label }}<i class="el-icon-circle-close" @click="closeFn(item)"></i>
+        </span>
       </li>
     </ul>
+    <i v-if="isShowIcon" class="el-icon-d-arrow-right direction" @click="scrollTab('right')"></i>
     <el-card
         v-show="visible"
         class="contextmenu"
@@ -45,7 +50,18 @@ export default {
       activeTab: '首页',
       activePath: '/home',
       visible: false,
-      selectedTag: {}
+      selectedTag: {},
+      ulWidth: 0,
+      liWidth: 0,
+      offsetCount: 0,
+      isShowIcon: false,
+      showRightIcon: false, // 是否显示右箭头
+      swiperScrollWidth: 0, // 盒子的宽度
+      swiperScrollContentWidth: 0, // 内容的宽度
+      maxClickNum: 0, // 最大点击次数
+      lastLeft: 0, // 上次滑动距离
+      clickNum: 0, // 点击次数
+      childrenList: []
     };
   },
   props: {},
@@ -67,6 +83,9 @@ export default {
       handler (newVal) {
         this.visibleTabs = newVal;
         sessionStorage.setItem('tabs', JSON.stringify(newVal));
+        this.$nextTick(() => {
+          this.initWidth();
+        });
       },
       immediate: true
     }
@@ -75,8 +94,50 @@ export default {
     ...mapState('navbar', ['tabs'])
   },
   mounted () {
+
   },
   methods: {
+    initWidth () {
+      // 获取 HTMLCollection 转为 数组
+      this.childrenList = [...this.$refs.swiperScrollContent.children];
+      // 盒子的宽度
+      this.ulWidth = this.$refs.swiperScrollContent.getBoundingClientRect().width;
+      // 内容的宽度
+      this.liWidth = 0;
+      this.childrenList.forEach(value => {
+        this.liWidth += value.clientWidth;
+      });
+      this.isShowIcon = this.liWidth > this.ulWidth;
+      console.log('liWidth', this.liWidth);
+      console.log('ulWidth', this.ulWidth);
+      if (this.isShowIcon) {
+        this.scrollTab('right');
+      }
+    },
+    scrollTab (direction) {
+      if (this.liWidth < this.ulWidth) {
+        return false;
+      }
+      let distance = this.offsetCount * 100;
+
+      if (direction === 'left') {
+        if (this.offsetCount > 0) {
+          this.offsetCount = this.offsetCount - 1;
+        }
+      } else if (direction === 'right') {
+        if ((this.ulWidth + distance) < this.liWidth) {
+          this.offsetCount = this.offsetCount + 1;
+        }
+      }
+      distance = this.offsetCount * 100;
+      console.log('distance', distance);
+      this.$nextTick(() => {
+        this.$refs.swiperScrollContent.scrollTo({
+          left: distance,
+          behavior: 'smooth'
+        });
+      });
+    },
     /**
      * @Description 添加
      * @author wangkangzhang
@@ -118,10 +179,19 @@ export default {
      * @author wangkangzhang
      * @date 2023/9/15
      */
-    handleClickMenu (item) {
+    handleClickMenu (item, ref) {
       if (this.$route.path !== item.path) {
         this.$nextTick(() => {
           this.$router.push(item.path);
+        });
+      }
+      if (ref) {
+        this.$nextTick(() => {
+          // const offsetLeft = this.$refs[ref][0].offsetLeft;
+          // this.$refs.swiperScrollContent.scrollTo({
+          //   left: offsetLeft,
+          //   behavior: 'smooth'
+          // });
         });
       }
     },
@@ -174,6 +244,16 @@ export default {
 <style lang="scss" scoped>
 .navbar-container {
   position: relative;
+  display: flex;
+  align-items: center;
+  background: rgb(26, 16, 122);
+  background: linear-gradient(90deg, rgba(26, 16, 122, 1) 7%, rgba(161, 11, 130, 1) 46%, rgba(0, 255, 248, 1) 100%);
+
+  > i {
+    color: white;
+    cursor: pointer;
+    margin: 0 5px;
+  }
 
   * {
     margin: 0;
@@ -202,7 +282,7 @@ export default {
   }
 
   ::v-deep .el-card__body {
-    padding: 0px;
+    padding: 0;
   }
 
   ul {
@@ -212,18 +292,23 @@ export default {
   .nav {
     display: flex;
     height: var(--tabs-height);
-    background: rgb(26, 16, 122);
-    background: linear-gradient(90deg, rgba(26, 16, 122, 1) 7%, rgba(161, 11, 130, 1) 46%, rgba(0, 255, 248, 1) 100%);
+    overflow: hidden;
+    white-space: nowrap;
+    //background: rgb(26, 16, 122);
+    //background: linear-gradient(90deg, rgba(26, 16, 122, 1) 7%, rgba(161, 11, 130, 1) 46%, rgba(0, 255, 248, 1) 100%);
   }
 
   .nav-item {
-    display: flex;
-    flex: 0 1 auto;
-    max-width: 160px;
+    display: inline-block;
+    //float: left;
+    //display: flex;
+    //flex: 0 1 auto;
+    //max-width: 160px;
+    min-width: 80px;
     font-size: 14px;
     position: relative;
     cursor: pointer;
-    margin-left: -1px;
+    //margin-left: -1px;
 
     &::before, &::after {
       position: absolute;
@@ -243,7 +328,10 @@ export default {
     }
 
     span {
-      display: block;
+      //display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 0 16px;
       line-height: var(--tabs-height);
       color: var(--tabs-text-color);
@@ -267,6 +355,21 @@ export default {
 
       &::after {
         right: -8px;
+      }
+
+      i {
+        margin-left: 8px;
+        display: none;
+
+        &:hover {
+          color: #156db9;
+        }
+      }
+
+      &:hover {
+        i {
+          display: block;
+        }
       }
     }
   }
