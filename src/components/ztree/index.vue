@@ -6,12 +6,14 @@
 
 <script>
 import { deptZtreeList } from './js/data';
+import ZTreeTool from './js/tool';
 
 export default {
   name: 'index',
   components: {},
   data () {
     return {
+      treeTool: null,
       zTreeObj: {},
       defaultSetting: {
         view: {
@@ -51,6 +53,19 @@ export default {
       type: Object,
       default: () => {
       }
+    },
+    /** 自定义点击前函数 */
+    diyBeforeClick: {
+      type: Function
+    },
+    /** 自定义勾选前函数 */
+    diyBeforeCheck: {
+      type: Function
+    },
+    /** 是否默认选中第一个节点 */
+    isSelectFirstNode: {
+      type: Boolean,
+      default: true
     }
   },
   watch: {},
@@ -61,13 +76,18 @@ export default {
   methods: {
     initZTree () {
       const setting = { ...this.defaultSetting, ...this.setting };
-      this.zTreeObj = $.fn.zTree.init($('#treeDemo'), setting, this.zNodes);
-      console.log('zTreeObj', this.zTreeObj);
-      this.zTreeObj.setting.callback.onClick = this.clickNode;
-      this.zTreeObj.setting.callback.onCheck = this.checkNode;
-      this.zTreeObj.setting.callback.beforeClick = this.beforeClick;
-      this.zTreeObj.setting.callback.beforeClick = this.beforeClick;
-      this.zTreeObj.setting.callback.beforeCheck = this.beforeCheck;
+      const resourcesTree = $.fn.zTree.init($('#treeDemo'), setting, this.zNodes);
+      this.zTreeObj = resourcesTree;
+      this.treeTool = new ZTreeTool(resourcesTree);
+      this.treeTool.setBeforeClick(this.beforeClick);
+      this.treeTool.setBeforeCheck(this.beforeCheck);
+      this.treeTool.setOnClick(this.clickNode);
+      this.treeTool.setOnCheck(this.checkNode);
+      if (this.isSelectFirstNode) {
+        const nodes = this.zTreeObj.getNodes();
+        this.zTreeObj.selectNode(nodes[0]);
+        this.$emit('click', nodes[0]);
+      }
     },
     /**
      * @Description 点击节点触发
@@ -76,6 +96,7 @@ export default {
      */
     clickNode (event, treeId, treeNode, clickFlag) {
       event.preventDefault();
+      console.log(treeNode);
       this.$emit('click', treeNode);
     },
     /**
@@ -84,6 +105,11 @@ export default {
      * @date 2023/9/19
      */
     beforeClick (treeId, treeNode, clickFlag) {
+      if (this.diyBeforeClick && typeof this.diyBeforeClick === 'function') {
+        return this.diyBeforeClick(treeId, treeNode, clickFlag);
+      } else {
+        return true;
+      }
     },
     /**
      * @Description 勾选节点触发
@@ -101,7 +127,11 @@ export default {
      * @date 2023/9/19
      */
     beforeCheck (treeId, treeNode) {
-      console.log(treeId, treeNode);
+      if (this.diyBeforeCheck && typeof this.diyBeforeCheck === 'function') {
+        return this.diyBeforeCheck(treeId, treeNode);
+      } else {
+        return true;
+      }
     }
   }
 };

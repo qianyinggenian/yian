@@ -1,7 +1,9 @@
 <template>
   <layout>
     <div slot="left">
-      <ztree ref="ztree"></ztree>
+      <ztree
+          ref="ztree"
+      />
     </div>
     <div slot="right"></div>
   </layout>
@@ -23,7 +25,17 @@ export default {
   computed: {},
   mounted () {
   },
-  methods: {}
+  methods: {
+    /**
+     * @Description
+     * @author wangkangzhang
+     * @date 2023/9/20
+     */
+    diyBeforeClick (treeId, treeNode, clickFlag) {
+      console.log();
+      return treeNode.text === '研发部-技术部';
+    }
+  }
 };
 </script>
 

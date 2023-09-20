@@ -8,10 +8,10 @@
       </div>
       <div class="layout-left-bottom">
         <div v-if="isExpand">
-          <img src="./images/折叠.png" alt="" title="折叠" @click="handleClick('折叠')">
+          <img src="../../assets/折叠.png" alt="" title="折叠" @click="handleClick('折叠')">
         </div>
         <div v-else>
-          <img src="./images/展开.png" alt="" title="展开" @click="handleClick('展开')">
+          <img src="../../assets/展开.png" alt="" title="展开" @click="handleClick('展开')">
         </div>
       </div>
     </div>

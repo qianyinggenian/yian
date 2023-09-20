@@ -5,7 +5,7 @@
         <Header></Header>
       </el-header>
       <el-container class="yiAn-container">
-        <el-aside width="200px">
+        <el-aside :style="{width: isCollapse ? '65px': '200px'}">
           <sidebar ref="menu"></sidebar>
         </el-aside>
         <el-main>
@@ -41,7 +41,12 @@ export default {
   mounted () {
   },
   computed: {
-    ...mapState('app', ['isGreyOut', 'isShowWaterMark', 'personalMsg', 'waterMarkArea'])
+    ...mapState('app', [
+      'isCollapse',
+      'isGreyOut',
+      'isShowWaterMark',
+      'personalMsg',
+      'waterMarkArea'])
   },
   watch: {
     isShowWaterMark: {
@@ -85,6 +90,7 @@ export default {
 
   .yiAn-container {
     height: calc(100% - 60px);
+    background-color: #060d24;
   }
 
   .el-aside {

@@ -7,6 +7,7 @@ export default {
       username: '',
       userId: ''
     },
+    isCollapse: false,
     // 是否显示水印， 1-是，0-否
     isShowWaterMark: sessionStorage.getItem('waterMark') || '0',
     // 水印显示区域， system-系统，module-模块
