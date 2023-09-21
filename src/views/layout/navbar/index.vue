@@ -109,8 +109,6 @@ export default {
         this.liWidth += value.clientWidth;
       });
       this.isShowIcon = this.liWidth > this.ulWidth;
-      console.log('liWidth', this.liWidth);
-      console.log('ulWidth', this.ulWidth);
       if (this.isShowIcon) {
         this.scrollTab('right');
       }
@@ -131,7 +129,6 @@ export default {
         }
       }
       distance = this.offsetCount * 100;
-      console.log('distance', distance);
       this.$nextTick(() => {
         this.$refs.swiperScrollContent.scrollTo({
           left: distance,
