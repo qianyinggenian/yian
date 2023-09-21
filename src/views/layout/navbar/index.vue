@@ -32,6 +32,7 @@
       <div class="contextmenu-item" v-if="selectedTag.path !== '/home'" @click="closeFn(selectedTag)">关闭</div>
       <div class="contextmenu-item" @click="closeOther(selectedTag)">关闭其他</div>
       <div class="contextmenu-item" @click="closeAll(selectedTag)">关闭所有</div>
+      <div class="contextmenu-item" @click="closeRight(selectedTag)">关闭右侧</div>
     </el-card>
   </div>
 </template>
@@ -153,6 +154,12 @@ export default {
       if (path !== '/home') {
         this.$_store.commit('navbar/SET_ADD_TAB', params);
       }
+      const index = this.visibleTabs.findIndex(value => value.path === path);
+      if (index !== -1) {
+        this.$nextTick(() => {
+          this.$refs[`li${name}`][0].scrollIntoView();
+        });
+      }
       this.activePath = path;
     },
     /**
@@ -187,11 +194,7 @@ export default {
       }
       if (ref) {
         this.$nextTick(() => {
-          // const offsetLeft = this.$refs[ref][0].offsetLeft;
-          // this.$refs.swiperScrollContent.scrollTo({
-          //   left: offsetLeft,
-          //   behavior: 'smooth'
-          // });
+          this.$refs[ref][0].scrollIntoView();
         });
       }
     },
@@ -236,6 +239,32 @@ export default {
         this.$router.push('/home');
       }
       this.$_store.commit('navbar/SET_CLOSE_ALL_TABS', {});
+    },
+    /**
+     * @Description 关闭右侧
+     * @author qianyinggenian
+     * @date 2023/9/21
+     */
+    closeRight (item) {
+      const activePath = this.$route.path;
+      if (item.path !== '/home') {
+        const index = this.visibleTabs.findIndex(value => value.path === item.path);
+        const activeIndex = this.visibleTabs.findIndex(value => value.path === activePath);
+        const len = this.visibleTabs.length;
+        if (index !== -1) {
+          if (index < len - 1) {
+            this.$_store.commit('navbar/SET_CLOSE_RIGHT', index);
+          }
+          if (activeIndex > index && item.path !== activePath) {
+            this.$router.push(item.path);
+          }
+        }
+      } else {
+        if (item.path !== '/home' && activePath !== '/home') {
+          this.$router.push('/home');
+        }
+        this.$_store.commit('navbar/SET_CLOSE_ALL_TABS', {});
+      }
     }
   }
 };
