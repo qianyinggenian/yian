@@ -87,7 +87,6 @@ export default {
         }, 1000);
       }, function (error) {
         console.log('error', error);
-        // failure
       });
     },
     showWaterMask (flag) {
