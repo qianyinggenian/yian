@@ -1,0 +1,27 @@
+//@import "variables";
+/* 改变主题色变量 */
+$border-color: #409EFF;
+$bgColor: #153552;
+$--form-label-font-size: 16px;
+$--color-text-regular: #ffffff;
+$--input-background-color: $bgColor;
+$--input-border: 1px solid #409EFF !default;
+$--input-hover-border: rgba(81, 209, 255, 0.7);
+$--input-focus-border: red;
+$--input-placeholder-color: rgba(255, 255, 255, 0.6);
+$--input-disabled-fill: $bgColor;
+$--input-disabled-border: $border-color;
+$--input-clear-hover-color: $border-color;
+// 下拉选择文本颜色
+$--select-option-color: #ffffff;
+$--select-border-color-hover: rgba(81, 209, 255, 0.7);
+$--select-disabled-border: $border-color;
+$--select-dropdown-background: $bgColor;
+$--select-dropdown-border: 1px solid $border-color;
+$--select-option-hover-background: #8f2790;
+$--popover-border-color: $border-color;
+$--popover-background-color: $bgColor;
+/* 改变 icon 字体路径变量，必需 */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+
+@import "~element-ui/packages/theme-chalk/src/index";

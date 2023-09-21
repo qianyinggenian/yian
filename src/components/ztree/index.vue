@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { deptZtreeList } from './js/data';
+// import { menuData } from '@/common/data';
 import ZTreeTool from './js/tool';
 
 export default {
@@ -44,7 +44,7 @@ export default {
           enable: true
         }
       },
-      zNodes: deptZtreeList
+      zNodes: []
     };
   },
   props: {
@@ -53,6 +53,10 @@ export default {
       type: Object,
       default: () => {
       }
+    },
+    nodes: {
+      type: Array,
+      default: () => []
     },
     /** 自定义点击前函数 */
     diyBeforeClick: {
@@ -68,10 +72,19 @@ export default {
       default: true
     }
   },
-  watch: {},
+  watch: {
+    nodes: {
+      handler (newVal) {
+        this.zNodes = JSON.parse(JSON.stringify(newVal));
+        this.$nextTick(() => {
+          this.initZTree();
+        });
+      },
+      immediate: true
+    }
+  },
   computed: {},
   mounted () {
-    this.initZTree();
   },
   methods: {
     initZTree () {

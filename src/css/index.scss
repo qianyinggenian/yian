@@ -5,6 +5,12 @@
   margin: 0;
 }
 
+@mixin flexStyle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .layout-container {
   height: 100%;
   width: 100%;
@@ -12,5 +18,60 @@
   .el-container {
     width: 100%;
     height: 100%;
+  }
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
+  width: 100%;
+
+  .el-form {
+    height: calc(100% - 32px);
+
+    .el-select {
+      width: 100%;
+    }
+  }
+
+  .btns-box {
+    bottom: 0;
+    width: 100%;
+    @include flexStyle;
+    position: absolute;
+  }
+}
+
+.layout-responsive-auto {
+  &--row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  &--column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  &__shrink {
+    flex: 0 0 auto !important;
+  }
+
+  &__grow {
+    flex: 1 1 auto !important;
+    overflow: auto;
+  }
+
+  .el-table {
+    max-height: none !important;
+  }
+
+  .el-form {
+    height: auto;
+    padding: 0 10px 0 0;
   }
 }

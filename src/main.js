@@ -7,6 +7,7 @@ import './css/index.scss';
 import './components/index.js';
 import '@/common/icons/index';
 import 'element-ui/lib/theme-chalk/index.css';
+import '@/css/element-variables.scss';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import mock from 'mockjs';
