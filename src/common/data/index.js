@@ -1,10 +1,10 @@
-export const menuData = [
+export const menuTree = [
   {
     id: 'root',
     parentId: 'root',
     parentIds: 'root',
     text: '系统设置',
-    code: 'YJS',
+    code: 'setting',
     actionUrl: '',
     type: 'DeptRoot',
     showOperatePrivilege: true,
@@ -20,7 +20,7 @@ export const menuData = [
     parentId: 'root',
     parentIds: 'root',
     text: '基础设置',
-    code: 'setting',
+    code: 'BasicSettings',
     actionUrl: '',
     type: 'DeptRoot',
     showOperatePrivilege: true,
@@ -36,7 +36,7 @@ export const menuData = [
     parentId: '8a7480426fa34894016fa721b5c000f1',
     parentIds: 'root,8a7480426fa34894016fa721b5c000f1',
     text: '导航设置',
-    code: 'menu',
+    code: 'menuSetting',
     actionUrl: '',
     type: 'DeptRoot',
     showOperatePrivilege: true,
@@ -78,5 +78,57 @@ export const menuData = [
     checked: false,
     open: true,
     nocheck: false
+  }
+];
+export const menuData = [
+  {
+    id: 'root',
+    code: 'setting',
+    type: 'menu',
+    name: '系统设置',
+    permission: 'sys_setting',
+    path: '',
+    comp: '',
+    sort: '0'
+  },
+  {
+    id: '8a7480426fa34894016fa721b5c000f1',
+    code: 'BasicSettings',
+    type: 'menu',
+    name: '基础设置',
+    permission: 'sys_basic_setting',
+    path: '',
+    comp: '',
+    sort: '0'
+  },
+  {
+    id: '8a7480426fa34894016fa721b5c000f2',
+    code: 'menu',
+    type: 'menu',
+    name: '导航设置',
+    permission: 'sys_menu',
+    path: '/menu',
+    comp: '/views/menu/index',
+    sort: '0'
+  },
+  {
+    id: '8a7480426fa34894016fa721b5c000f3',
+    code: 'permission',
+    type: 'menu',
+    name: '权限设置',
+    permission: 'sys_permission',
+    path: '/permission',
+    comp: '/views/permission/index',
+    sort: '1'
+  },
+  {
+    id: '8a7480426fa34894016fa721b5c000f4',
+    code: 'user',
+    type: 'menu',
+    name: '用户管理',
+    permission: 'sys_user',
+    path: '/user',
+    comp: '/views/user/index',
+    sort: '2'
   }
 ];

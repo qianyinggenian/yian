@@ -1,7 +1,5 @@
-//@import "variables";
+@import "variables";
 /* 改变主题色变量 */
-$border-color: #409EFF;
-$bgColor: #153552;
 $--form-label-font-size: 16px;
 $--color-text-regular: #ffffff;
 $--input-background-color: $bgColor;
@@ -21,6 +19,13 @@ $--select-dropdown-border: 1px solid $border-color;
 $--select-option-hover-background: #8f2790;
 $--popover-border-color: $border-color;
 $--popover-background-color: $bgColor;
+// el-dropdown
+$--dropdown-menuItem-hover-color: #ffffff;
+$--dropdown-menuItem-hover-fill: #8f2790;
+// message
+//0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+$--message-background-color: $bgColor;
+
 /* 改变 icon 字体路径变量，必需 */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 

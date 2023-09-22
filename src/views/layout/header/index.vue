@@ -12,7 +12,7 @@
         <div class="date">{{ date }}</div>
       </div>
       <el-avatar :size="30" fit="contain" :src="avatarUrl"></el-avatar>
-      <el-dropdown @command="handleCommand">
+      <el-dropdown trigger="click" @command="handleCommand">
         <div class="username">{{ personalMsg.username }} <i class="el-icon-arrow-down el-icon--right"></i></div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="logout">退出登录</el-dropdown-item>

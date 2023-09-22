@@ -4,6 +4,7 @@
       <ztree
           :nodes="nodes"
           :setting="setting"
+          @click="handleClick"
           ref="ztree"
       />
     </div>
@@ -14,7 +15,7 @@
 </template>
 
 <script>
-import { menuData } from '@/common/data';
+import { menuTree } from '@/common/data';
 import ztree from '@/components/ztree';
 import AddEdit from './comp/add-edit.vue';
 
@@ -26,12 +27,13 @@ export default {
   },
   data () {
     return {
-      nodes: menuData,
+      nodes: menuTree,
       setting: {
         check: {
           enable: false
         }
-      }
+      },
+      treeNode: {}
     };
   },
   props: {},
@@ -41,13 +43,14 @@ export default {
   },
   methods: {
     /**
-     * @Description
-     * @author wangkangzhang
-     * @date 2023/9/20
+     * @Description 点击触发
+     * @author qianyinggenian
+     * @date 2023/9/22
      */
-    diyBeforeClick (treeId, treeNode, clickFlag) {
-      console.log();
-      return treeNode.text === '研发部-技术部';
+    handleClick (treeNode) {
+      this.$nextTick(() => {
+        this.$refs.addEdit.getInfo(treeNode);
+      });
     }
   }
 };

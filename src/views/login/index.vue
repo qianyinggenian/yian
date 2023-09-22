@@ -7,7 +7,7 @@
           <div class="welcome-info">WELCOME TO THE SYSTEM</div>
         </div>
         <div class="user-info">
-          <el-form ref="wkzForm" :model="formData" :rules="loginRules" class="login-form" autocomplete="on"
+          <el-form ref="ruleForm" :model="formData" :rules="loginRules" class="login-form" autocomplete="on"
                    label-position="left">
             <div class="username">
               <el-form-item prop="username">
@@ -145,7 +145,7 @@ export default {
     },
     handleLogin () {
       try {
-        this.$refs.wkzForm.validate(async (valid) => {
+        this.$refs.ruleForm.validate(async (valid) => {
           if (valid) {
             const params = {
               username: this.encrypt(this.formData.username),

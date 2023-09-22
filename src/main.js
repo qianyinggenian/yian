@@ -3,16 +3,16 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import ElementUI from 'element-ui';
-import './css/index.scss';
 import './components/index.js';
 import '@/common/icons/index';
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/css/element-variables.scss';
+import './css/index.scss';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import mock from 'mockjs';
 import axios from 'axios';
-import '@/mock/mockServe.js';
+import '@/mock/index.js';
 import '@/common/ztree/index';
 
 dayjs.locale('zh-cn');
