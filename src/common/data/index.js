@@ -89,7 +89,9 @@ export const menuData = [
     permission: 'sys_setting',
     path: '',
     comp: '',
-    sort: '0'
+    sort: '0',
+    parentId: 'root',
+    parentIds: 'root'
   },
   {
     id: '8a7480426fa34894016fa721b5c000f1',
@@ -99,7 +101,9 @@ export const menuData = [
     permission: 'sys_basic_setting',
     path: '',
     comp: '',
-    sort: '0'
+    sort: '0',
+    parentId: 'root',
+    parentIds: 'root'
   },
   {
     id: '8a7480426fa34894016fa721b5c000f2',
@@ -109,7 +113,9 @@ export const menuData = [
     permission: 'sys_menu',
     path: '/menu',
     comp: '/views/menu/index',
-    sort: '0'
+    sort: '0',
+    parentId: '8a7480426fa34894016fa721b5c000f1',
+    parentIds: 'root,8a7480426fa34894016fa721b5c000f1'
   },
   {
     id: '8a7480426fa34894016fa721b5c000f3',
@@ -119,7 +125,10 @@ export const menuData = [
     permission: 'sys_permission',
     path: '/permission',
     comp: '/views/permission/index',
-    sort: '1'
+    sort: '1',
+    parentId: '8a7480426fa34894016fa721b5c000f1',
+    parentIds: 'root,8a7480426fa34894016fa721b5c000f1'
+
   },
   {
     id: '8a7480426fa34894016fa721b5c000f4',
@@ -129,6 +138,9 @@ export const menuData = [
     permission: 'sys_user',
     path: '/user',
     comp: '/views/user/index',
-    sort: '2'
+    sort: '2',
+    parentId: '8a7480426fa34894016fa721b5c000f1',
+    parentIds: 'root,8a7480426fa34894016fa721b5c000f1'
+
   }
 ];

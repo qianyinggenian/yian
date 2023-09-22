@@ -148,4 +148,11 @@ export default class ZTreeTool {
   setBeforeCheck (beforeCheckFn) {
     this.resourcesTree.setting.callback.beforeCheck = beforeCheckFn;
   }
+
+  getSelectNode (event) {
+    const id = event.target.id;
+    const arr = id.split('Btn_');
+    const tId = $('#' + arr[0] + arr[1]).val();
+    return this.resourcesTree.getNodeByTId(tId);
+  }
 }

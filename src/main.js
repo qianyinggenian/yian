@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import mock from 'mockjs';
 import axios from 'axios';
+import '@/indexedDB';
 import '@/mock/index.js';
 import '@/common/ztree/index';
 

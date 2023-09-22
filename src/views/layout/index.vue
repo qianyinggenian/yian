@@ -25,8 +25,11 @@ import Header from './header/index.vue';
 import sidebar from './sidebar/index.vue';
 import { mapState } from 'vuex';
 import navbar from './navbar/index.vue';
-import { openDB, addData } from '@/indexedDB';
+// import { openDB, addData } from '@/indexedDB';
+import { menuData } from '@/common/data';
+import { addData, instanceDB } from '@/indexedDB';
 //
+// import instanceDB from '@/indexedDB';
 export default {
   name: 'indexView',
   components: {
@@ -36,7 +39,7 @@ export default {
   },
   data () {
     return {
-      instanceDB: null,
+      // instanceDB: null,
       isUseDom: false
     };
   },
@@ -72,22 +75,28 @@ export default {
   },
   methods: {
     initIndexedDB () {
-      const Promise = openDB('yian', '1');
-      const that = this;
-      Promise.then(function (value) {
-        console.log('value', value);
-        // success
-        that.instanceDB = value;
-        setTimeout(() => {
-          addData(value, 'signalChat', {
-            id: new Date().getTime(),
-            link: '11111',
-            messageType: 'dsf'
-          });
-        }, 1000);
-      }, function (error) {
-        console.log('error', error);
-      });
+      // const Promise = openDB('yian', '1');
+      // const that = this;
+      // Promise.then(function (value) {
+      //   console.log('value', value);
+      //   // success
+      //   that.instanceDB = value;
+      //   setTimeout(() => {
+      //     addData(value, 'menuList', {
+      //       id: new Date().getTime(),
+      //       link: '11111',
+      //       messageType: 'dsf'
+      //     });
+      //   }, 1000);
+      // }, function (error) {
+      //   console.log('error', error);
+      // });
+      // const list = menuData;
+      setTimeout(() => {
+        for (const key of menuData) {
+          addData(instanceDB, 'menuList', key);
+        }
+      }, 1000);
     },
     showWaterMask (flag) {
       if (flag === '1') {

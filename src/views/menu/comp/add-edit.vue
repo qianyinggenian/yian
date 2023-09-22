@@ -15,7 +15,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="类型" prop="type">
-            <el-select :disabled="disabled" v-model="ruleForm.type" placeholder="请选择">
+            <el-select :disabled="disabled" clearable v-model="ruleForm.type" placeholder="请选择">
               <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -29,31 +29,31 @@
       <el-row type="flex" justify="space-between">
         <el-col :span="12">
           <el-form-item label="名称" prop="name">
-            <el-input :disabled="disabled" v-model="ruleForm.name"></el-input>
+            <el-input :disabled="disabled" clearable placeholder="请输入" v-model="ruleForm.name"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="权限" prop="permission">
-            <el-input :disabled="disabled" v-model="ruleForm.permission"></el-input>
+            <el-input :disabled="disabled" clearable placeholder="请输入" v-model="ruleForm.permission"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row type="flex" justify="space-between">
         <el-col :span="12">
-          <el-form-item label="路由" prop="path">
-            <el-input :disabled="disabled" v-model="ruleForm.path"></el-input>
+          <el-form-item label="路由" prop="path" :rules="ruleForm.type === 'menu'? rules.path: []">
+            <el-input :disabled="disabled" clearable placeholder="请输入" v-model="ruleForm.path"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="组件路径" prop="comp">
-            <el-input :disabled="disabled" v-model="ruleForm.comp"></el-input>
+            <el-input :disabled="disabled" clearable placeholder="请输入" v-model="ruleForm.comp"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row type="flex" justify="space-between">
         <el-col :span="12">
           <el-form-item label="排序" prop="sort">
-            <el-input :disabled="disabled" v-model="ruleForm.sort"></el-input>
+            <el-input :disabled="disabled" clearable placeholder="请输入" v-model="ruleForm.sort"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -75,8 +75,8 @@ export default {
   data () {
     return {
       ruleForm: {
-        code: '编码',
-        type: 'btn'
+        code: '',
+        type: ''
       },
       disabled: false,
       checkList: [],
@@ -86,6 +86,9 @@ export default {
           { validator: this.codeValidator, trigger: 'blur', transform: this.codeValidateTransform }
         ],
         name: [
+          { required: true, message: '请输入', trigger: 'blur' }
+        ],
+        path: [
           { required: true, message: '请输入', trigger: 'blur' }
         ],
         permission: [
@@ -152,15 +155,21 @@ export default {
      * @author qianyinggenian
      * @date 2023/9/22
      */
-    async getInfo (treeNode) {
+    async getInfo ({ treeNode, disabled, type }) {
       this.treeNode = treeNode;
-      this.disabled = treeNode.id === 'root';
-      const result = await api.menuDetail({ id: treeNode.id });
-      const { code, data, msg } = result;
-      if (code === 200) {
-        this.ruleForm = data;
+      this.disabled = disabled;
+      if (type !== 'add') {
+        const result = await api.menuDetail({ id: treeNode.id });
+        const { code, data, msg } = result;
+        if (code === 200) {
+          this.ruleForm = data;
+        } else {
+          this.$message.error(msg);
+        }
       } else {
-        this.$message.error(msg);
+        this.$nextTick(() => {
+          this.$refs.ruleForm.resetFields();
+        });
       }
     },
     /**

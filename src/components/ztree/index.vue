@@ -70,6 +70,13 @@ export default {
     isSelectFirstNode: {
       type: Boolean,
       default: true
+    },
+    isSetOperatePrivilege: {
+      type: Boolean,
+      default: false
+    },
+    setOperatePrivilege: {
+      type: Function
     }
   },
   watch: {
@@ -96,11 +103,20 @@ export default {
       this.treeTool.setBeforeCheck(this.beforeCheck);
       this.treeTool.setOnClick(this.clickNode);
       this.treeTool.setOnCheck(this.checkNode);
+      if (this.isSetOperatePrivilege) {
+        if (this.setOperatePrivilege && typeof this.setOperatePrivilege === 'function') {
+          this.setOperatePrivilege(this.zTreeObj);
+        }
+      }
       if (this.isSelectFirstNode) {
         const nodes = this.zTreeObj.getNodes();
         this.zTreeObj.selectNode(nodes[0]);
         this.$emit('click', nodes[0]);
       }
+      this.$emit('treeObj', {
+        zTreeObj: this.zTreeObj,
+        treeTool: this.treeTool
+      });
     },
     /**
      * @Description 点击节点触发
@@ -109,7 +125,6 @@ export default {
      */
     clickNode (event, treeId, treeNode, clickFlag) {
       event.preventDefault();
-      console.log(treeNode);
       this.$emit('click', treeNode);
     },
     /**
@@ -131,7 +146,6 @@ export default {
      */
     checkNode (event, treeId, treeNode) {
       event.preventDefault();
-      console.log(event, treeId, treeNode);
       this.$emit('check', treeNode);
     },
     /**
