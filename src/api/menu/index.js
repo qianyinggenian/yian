@@ -12,13 +12,37 @@ export default {
     data
   }),
   /**
-   * @Description 保存
+   * @Description 新增保存
    * @author qianyinggenian
    * @date 2023/9/22
    */
   menuSave: (data) => {
     return request({
       url: '/menu/save',
+      method: 'post',
+      data
+    });
+  },
+  /**
+   * @Description 编辑保存
+   * @author qianyinggenian
+   * @date 2023/9/22
+   */
+  menuUpdate: (data) => {
+    return request({
+      url: '/menu/update',
+      method: 'post',
+      data
+    });
+  },
+  /**
+   * @Description 保存
+   * @author qianyinggenian
+   * @date 2023/9/22
+   */
+  menuTree: (data) => {
+    return request({
+      url: '/menu/tree',
       method: 'post',
       data
     });

@@ -12,17 +12,16 @@
       />
     </div>
     <div slot="right">
-      <add-edit ref="addEdit"/>
+      <add-edit ref="addEdit" @refresh="refreshTree"/>
     </div>
   </layout>
 </template>
 
 <script>
-import { menuTree } from '@/common/data';
+// import { menuTree } from '@/common/data';
 import ztree from '@/components/ztree';
 import AddEdit from './comp/add-edit.vue';
-
-import { getDataByKey, instanceDB } from '@/indexedDB';
+import api from '@/api/menu';
 
 export default {
   name: 'index',
@@ -34,8 +33,14 @@ export default {
     return {
       zTreeObj: {},
       treeTool: null,
-      nodes: menuTree,
+      // nodes: menuTree,
+      nodes: [],
       setting: {
+        data: {
+          key: {
+            name: 'name'
+          }
+        },
         check: {
           enable: false
         }
@@ -53,20 +58,23 @@ export default {
   computed: {},
   mounted () {
     this.$nextTick(() => {
-      this.getInfo();
+      this.getTree();
     });
   },
   methods: {
-    getInfo () {
-      setTimeout(() => {
-        const promise = getDataByKey(instanceDB, 'menuList', '8a7480426fa34894016fa721b5c000f2');
-        promise.then(function (value) {
-          console.log('value', value);
-          // success
-        }, function (error) {
-          console.log('error', error);
-        });
-      }, 1000);
+    /**
+     * @Description 获取导航数据
+     * @author qianyinggenian
+     * @date 2023/9/25
+     */
+    async getTree () {
+      const res = await api.menuTree();
+      const { code, data, msg } = res;
+      if (code === 200) {
+        this.nodes = data.list || [];
+      } else {
+        this.$message.error(msg);
+      }
     },
     getTreeObj (params) {
       this.zTreeObj = params.zTreeObj;
@@ -78,10 +86,19 @@ export default {
      * @date 2023/9/22
      */
     handleClick (treeNode) {
-      this.$nextTick(() => {
-        const params = { treeNode, disabled: true, type: 'show' };
-        this.$refs.addEdit.getInfo(params);
-      });
+      if (treeNode) {
+        this.$nextTick(() => {
+          const params = { treeNode, disabled: true, type: 'show' };
+          this.$refs.addEdit.getInfo(params);
+        });
+      }
+    },
+    /**
+     * @Description 刷新树
+     * @author qianyinggenian
+     * @date 2023/9/25
+     */
+    refreshTree (treeNode) {
     },
     /**
      * @Description 新增
@@ -93,10 +110,11 @@ export default {
     },
     /**
      * @Description 编辑
-     * @author wangkangzhang
-     * @date 2023/9/22
+     * @author qianyinggenian
+     * @date 2023/9/25
      */
     editFn (event) {
+      console.log('编辑', '编辑');
       this.addEditFn(event, 'edit');
     },
     addEditFn (event, type) {

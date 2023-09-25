@@ -57,18 +57,47 @@ export function openDB (dbName, version = '1') {
  * @param {string} data 数据
  */
 export function addData (db, storeName, data) {
-  var request = db
-    .transaction(storeName, 'readwrite') // 事务对象 指定表格名称和操作模式（"只读"或"读写"）
-    .objectStore(storeName) // 仓库对象
-    .add(data);
+  return new Promise((resolve, reject) => {
+    var request = db
+      .transaction(storeName, 'readwrite') // 事务对象 指定表格名称和操作模式（"只读"或"读写"）
+      .objectStore(storeName) // 仓库对象
+      .add(data);
+    request.onsuccess = function (event) {
+      console.log('数据写入成功');
+      resolve({ code: 200, msg: '数据写入成功' });
+    };
 
-  request.onsuccess = function (event) {
-    console.log('数据写入成功');
-  };
+    request.onerror = function (event) {
+      console.log('数据写入失败');
+      resolve({ code: 500, msg: '数据写入失败' });
+    };
+  });
+}
 
-  request.onerror = function (event) {
-    console.log('数据写入失败');
-  };
+// 通过游标查所有的数据
+export function cursorGetData (db, storeName) {
+  return new Promise((resolve, reject) => {
+    const list = [];
+    var store = db
+      .transaction(storeName, 'readwrite') // 事务
+      .objectStore(storeName); // 仓库对象
+    var request = store.openCursor(); // 指针对象
+    // 游标开启成功，逐行读数据
+    request.onsuccess = (e) => {
+      var cursor = e.target.result;
+      if (cursor) {
+        // 必须要检查
+        list.push(cursor.value);
+        cursor.continue(); // 遍历了存储对象中的所有内容
+      } else {
+        resolve({ code: 200, list });
+      }
+    };
+    request.onerror = (e) => {
+      // eslint-disable-next-line prefer-promise-reject-errors
+      reject({ code: 500, msg: '网络错误' });
+    };
+  });
 }
 
 /**
@@ -88,7 +117,6 @@ export function getDataByKey (db, storeName, key) {
     };
 
     request.onsuccess = function (event) {
-      console.log('主键查询结果: ', request.result);
       resolve(request.result);
     };
   });
@@ -100,7 +128,32 @@ const promise = openDB('yian', '1');
 export let instanceDB;
 promise.then(function (value) {
   instanceDB = value;
-  console.log('indexedDB', indexedDB);
 }, function (error) {
   console.log('error', error);
 });
+
+/**
+ * 更新数据
+ * @param {object} db 数据库实例
+ * @param {string} storeName 仓库名称
+ * @param {object} data 数据
+ */
+export function updateDB (db, storeName, data) {
+  return new Promise((resolve, reject) => {
+    var request = db
+      .transaction([storeName], 'readwrite') // 事务对象
+      .objectStore(storeName) // 仓库对象
+      .put(data);
+
+    request.onsuccess = () => {
+      console.log('数据更新成功');
+      resolve(200);
+    };
+
+    request.onerror = () => {
+      console.log('数据更新失败');
+      // eslint-disable-next-line prefer-promise-reject-errors
+      reject(500);
+    };
+  });
+}

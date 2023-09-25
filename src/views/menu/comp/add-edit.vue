@@ -67,7 +67,11 @@
 </template>
 
 <script>
+import Mock from 'mockjs';
 import api from '@/api/menu';
+
+const Random = Mock.Random;
+// import { instanceDB, getDataByKey } from '@/indexedDB';
 
 export default {
   name: 'add-edit',
@@ -130,21 +134,19 @@ export default {
         // 新增的情况下value中的id为undefind
         const obj = {
           key: 'code',
-          value: this.ruleForm.code
+          value: this.ruleForm.code,
+          type: this.type,
+          id: this.ruleForm.id
         };
-        console.log(obj);
         api.menuUniqueness(obj).then((result) => {
-          console.log('data', result);
           const { data } = result;
           if (result.code === 200) {
             if (data.exist) {
               // eslint-disable-next-line standard/no-callback-literal
-              // callback({ state: 'success', message: '验证通过' });
               callback();
             } else {
               // eslint-disable-next-line standard/no-callback-literal
               callback({ state: 'error', message: '该编码已存在' });
-              // callback('该路由或url已存在');
             }
           }
         });
@@ -158,6 +160,7 @@ export default {
     async getInfo ({ treeNode, disabled, type }) {
       this.treeNode = treeNode;
       this.disabled = disabled;
+      this.type = type;
       if (type !== 'add') {
         const result = await api.menuDetail({ id: treeNode.id });
         const { code, data, msg } = result;
@@ -181,11 +184,27 @@ export default {
       try {
         this.$refs.ruleForm.validate(async (valid) => {
           if (valid) {
-            const result = await api.menuSave(this.ruleForm);
-            const { code, data, msg } = result;
+            let params = {};
+            if (this.type === 'add') {
+              params = {
+                ...this.ruleForm,
+                id: Random.guid(),
+                parentId: this.treeNode.id,
+                parentIds: this.treeNode.parentIds
+              };
+            } else {
+              params = {
+                ...this.ruleForm,
+                id: this.treeNode.id,
+                parentId: this.treeNode.parentId,
+                parentIds: this.treeNode.parentIds
+              };
+            }
+            const result = await api[this.type === 'add' ? 'menuSave' : 'menuUpdate'](params);
+            const { code, msg } = result;
             if (code === 200) {
-              console.log('data', data);
               this.$message.success(msg);
+              this.$emit('refresh', this.treeNode);
             } else {
               this.$message.error(msg);
             }

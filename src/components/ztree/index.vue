@@ -81,11 +81,13 @@ export default {
   },
   watch: {
     nodes: {
-      handler (newVal) {
-        this.zNodes = JSON.parse(JSON.stringify(newVal));
-        this.$nextTick(() => {
-          this.initZTree();
-        });
+      handler (newVal, oldVal) {
+        if (newVal !== oldVal) {
+          this.zNodes = JSON.parse(JSON.stringify(newVal));
+          this.$nextTick(() => {
+            this.initZTree();
+          });
+        }
       },
       immediate: true
     }
@@ -95,7 +97,7 @@ export default {
   },
   methods: {
     initZTree () {
-      const setting = { ...this.defaultSetting, ...this.setting };
+      const setting = $.extend(true, this.defaultSetting, this.setting);
       const resourcesTree = $.fn.zTree.init($('#treeDemo'), setting, this.zNodes);
       this.zTreeObj = resourcesTree;
       this.treeTool = new ZTreeTool(resourcesTree);
