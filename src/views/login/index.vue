@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+  <div id="particles-js" class="login-container">
     <div class="login-content">
       <div class="info">
         <div class="system-title">
@@ -68,6 +68,9 @@ import JSEncrypt from 'jsencrypt/bin/jsencrypt';
 import { loginPost } from '@/api/login';
 import { PUBLICKEY, encryptionKey, decryptKey } from '@/RSA';
 
+import 'particles.js';
+import particlesConfig from './Json/particles.json';
+
 export default {
   name: 'indexView',
   data () {
@@ -106,8 +109,17 @@ export default {
       this.$set(this.formData, 'password', this.decrypt(localStorage.getItem('pr')));
     }
     this.checked = localStorage.getItem('checked');
+    this.$nextTick(() => {
+      this.initParticlesJS();
+    });
   },
   methods: {
+    initParticlesJS () {
+      this.$nextTick(() => {
+        // eslint-disable-next-line no-undef
+        particlesJS('particles-js', particlesConfig);
+      });
+    },
     /**
      * @Description 加密
      * @author qianyinggenian
