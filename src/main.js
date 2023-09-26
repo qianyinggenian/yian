@@ -23,7 +23,7 @@ Vue.prototype.http = axios;
 Vue.config.productionTip = false;
 Vue.prototype.$_store = store;
 Vue.prototype.$Mock = mock;
-Vue.prototype.$constant = constants;
+Vue.prototype.$constants = constants;
 Vue.use(ElementUI);
 new Vue({
   router,
