@@ -113,12 +113,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          // this.$message({
-          //   type: 'success',
-          //   message: '删除成功!'
-          // });
           sessionStorage.clear();
-          localStorage.clear();
           this.$_store.commit('navbar/SET_CLOSE_ALL_TABS', {});
 
           this.$_store.commit('app/SET_WATER_MARK', '0');

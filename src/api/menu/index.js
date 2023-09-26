@@ -48,6 +48,18 @@ export default {
     });
   },
   /**
+   * @Description 保存
+   * @author qianyinggenian
+   * @date 2023/9/22
+   */
+  menuDelete: (data) => {
+    return request({
+      url: '/menu/delete',
+      method: 'post',
+      data
+    });
+  },
+  /**
    * @Description 唯一性校验
    * @author qianyinggenian
    * @date 2023/9/22

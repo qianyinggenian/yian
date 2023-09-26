@@ -15,6 +15,7 @@ import axios from 'axios';
 import '@/indexedDB';
 import '@/mock/index.js';
 import '@/common/ztree/index';
+import constants from '@/common/constants';
 
 dayjs.locale('zh-cn');
 // 配置vue原型，(在任何组件中都可以正常使用 axios ）
@@ -22,6 +23,7 @@ Vue.prototype.http = axios;
 Vue.config.productionTip = false;
 Vue.prototype.$_store = store;
 Vue.prototype.$Mock = mock;
+Vue.prototype.$constant = constants;
 Vue.use(ElementUI);
 new Vue({
   router,

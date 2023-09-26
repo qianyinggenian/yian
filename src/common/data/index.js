@@ -141,6 +141,41 @@ export const menuData = [
     sort: '2',
     parentId: '8a7480426fa34894016fa721b5c000f1',
     parentIds: 'root,8a7480426fa34894016fa721b5c000f1'
-
+  },
+  {
+    id: '8a7480426fa34894016fa721b5c000f41',
+    code: 'add',
+    type: 'btn',
+    name: '新增',
+    permission: 'sys_user_add',
+    path: '',
+    comp: '',
+    sort: '0',
+    parentId: '8a7480426fa34894016fa721b5c000f4',
+    parentIds: 'root,8a7480426fa34894016fa721b5c000f1,8a7480426fa34894016fa721b5c000f4'
+  },
+  {
+    id: '8a7480426fa34894016fa721b5c000f42',
+    code: 'edit',
+    type: 'btn',
+    name: '编辑',
+    permission: 'sys_user_edit',
+    path: '',
+    comp: '',
+    sort: '1',
+    parentId: '8a7480426fa34894016fa721b5c000f4',
+    parentIds: 'root,8a7480426fa34894016fa721b5c000f1,8a7480426fa34894016fa721b5c000f4'
+  },
+  {
+    id: '8a7480426fa34894016fa721b5c000f43',
+    code: 'remove',
+    type: 'btn',
+    name: '删除',
+    permission: 'sys_user_remove',
+    path: '',
+    comp: '',
+    sort: '2',
+    parentId: '8a7480426fa34894016fa721b5c000f4',
+    parentIds: 'root,8a7480426fa34894016fa721b5c000f1,8a7480426fa34894016fa721b5c000f4'
   }
 ];

@@ -77,6 +77,16 @@ export default {
     },
     setOperatePrivilege: {
       type: Function
+    },
+    /** 自定义展开的层级 */
+    expandLevel: {
+      type: Number,
+      default: 1
+    },
+    /** 是否展开全部，是则展开全部，否则自定义展开到相应的层级 */
+    expandAll: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -105,15 +115,31 @@ export default {
       this.treeTool.setBeforeCheck(this.beforeCheck);
       this.treeTool.setOnClick(this.clickNode);
       this.treeTool.setOnCheck(this.checkNode);
+      // 树节点自定按钮
       if (this.isSetOperatePrivilege) {
         if (this.setOperatePrivilege && typeof this.setOperatePrivilege === 'function') {
           this.setOperatePrivilege(this.zTreeObj);
         }
       }
+      // 是否默认选中第一个节点
       if (this.isSelectFirstNode) {
         const nodes = this.zTreeObj.getNodes();
         this.zTreeObj.selectNode(nodes[0]);
         this.$emit('click', nodes[0]);
+      }
+      if (this.expandAll) {
+        // 展开全部
+        this.zTreeObj.expandAll(true);
+      } else {
+        // 自定义展开层级
+        let list = [];
+        for (let level = 0; level <= this.expandLevel; level++) {
+          const nodes = this.zTreeObj.getNodesByParam('level', level, null);
+          list = [...list, ...nodes];
+        }
+        list.forEach(value => {
+          this.zTreeObj.expandNode(value, true, false, false);
+        });
       }
       this.$emit('treeObj', {
         zTreeObj: this.zTreeObj,

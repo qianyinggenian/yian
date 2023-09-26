@@ -55,14 +55,14 @@ const router = new VueRouter({
   // base: process.env.BASE_URL,
   routes
 });
-// router.beforeEach(async (to, from, next) => {
-//   console.log('to', to);
-//   console.log('from', from);
-//   // if () {
-//   //   // 将用户重定向到登录页面
-//   //   return { name: 'Login' }
-//   // }
-//   // next('/login');
-//   next()
-// })
+router.beforeEach(async (to, from, next) => {
+  console.log('to', to);
+  console.log('from', from);
+  // if () {
+  //   // 将用户重定向到登录页面
+  //   return { name: 'Login' }
+  // }
+  // next('/login');
+  next();
+});
 export default router;

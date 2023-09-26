@@ -1,6 +1,13 @@
 import Mock from 'mockjs-async';
 import { menuData } from '@/common/data';
-import { getDataByKey, addData, instanceDB, cursorGetData, updateDB } from '@/indexedDB';
+import {
+  getDataByKey,
+  addData,
+  instanceDB,
+  cursorGetData,
+  updateDB,
+  deleteDB
+} from '@/indexedDB';
 
 // const Random = Mock.Random;
 // 第一个参数：模拟的url，第二个参数：请求方式， 第三个参数：数据模版，也就是响应回来的值
@@ -80,6 +87,17 @@ Mock.mock('/mock/menu/tree', 'post', () => {
       };
     }
     return Promise.resolve(params);
+  });
+});
+/**
+ * @Description 删除导航树
+ * @author qianyinggenian
+ * @date 2023/9/26
+ */
+Mock.mock('/mock/menu/delete', 'post', (data) => {
+  const bodyParams = JSON.parse(data.body);
+  return deleteDB(instanceDB, 'menuList', bodyParams.id).then((result) => {
+    return result;
   });
 });
 /**

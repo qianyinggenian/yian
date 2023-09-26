@@ -86,6 +86,7 @@ export default {
      * @date 2023/9/22
      */
     handleClick (treeNode) {
+      console.log('treeNode', treeNode);
       if (treeNode) {
         this.$nextTick(() => {
           const params = { treeNode, disabled: true, type: 'show' };
@@ -99,6 +100,9 @@ export default {
      * @date 2023/9/25
      */
     refreshTree (treeNode) {
+      this.$nextTick(() => {
+        this.getTree();
+      });
     },
     /**
      * @Description 新增
@@ -114,7 +118,6 @@ export default {
      * @date 2023/9/25
      */
     editFn (event) {
-      console.log('编辑', '编辑');
       this.addEditFn(event, 'edit');
     },
     addEditFn (event, type) {
@@ -129,6 +132,40 @@ export default {
         };
         this.$refs.addEdit.getInfo(params);
       });
+    },
+
+    /**
+     * @Description 删除
+     * @author qianyinggenian
+     * @date 2023/9/26
+     */
+    removeFn (event) {
+      event.stopPropagation();
+      const treeNode = this.treeTool.getSelectNode(event);
+      if (treeNode.id !== 'root') {
+        const msg = '确定删除该节点吗？';
+        this.$confirm(msg, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          const res = await api.menuDelete({ id: treeNode.id });
+          console.log(res);
+          if (res.code === 200) {
+            this.$nextTick(() => {
+              this.getTree();
+            });
+            this.$message.success(res.msg);
+          } else {
+            this.$message.error(res.msg);
+          }
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '已取消删除'
+          });
+        });
+      }
     },
     /**
      * @Description 自定义显示按钮
@@ -155,8 +192,13 @@ export default {
           operates.forEach((value, key, mapObj) => {
             const style = `color:${key.color};margin-left:8px;font-size: 16px;text-decoration: none!important;`;
             // value:键值对的值;key:键值对的键;mapObj:Map对象
+            // 根节点只有新增
             if ((treeNode.id === 'root' && key.name === 'add') ||
-                (treeNode.id !== 'root' && (['add', 'edit', 'remove'].includes(key.name)))) {
+                // 非根节点和按钮节点有新增、编辑和删除
+                (treeNode.id !== 'root' && treeNode.type !== 'btn' && (['add', 'edit', 'remove'].includes(key.name))) ||
+                // 按钮节点只有编辑和删除
+                ((treeNode.type === 'btn') && (['edit', 'remove'].includes(key.name)))
+            ) {
               if ($(`#${key.name}Btn_${treeNode.id}`).length > 0) return;
               let addStr = `<a style='${style}' class='zTreeButton ${key.name}_ico_docu ${key.icon}' title='${key.hoverTitle}' lang='${treeNode.tId}' id='${key.name}Btn_${treeNode.id}'></a>`;
               addStr += `<input type='hidden' id='${key.name}${treeNode.id}' value='${treeNode.tId}'/>`;

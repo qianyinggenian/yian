@@ -9,13 +9,13 @@
         class="demo-ruleForm">
       <el-row type="flex" justify="space-between">
         <el-col :span="12">
-          <el-form-item label="编码" prop="code">
-            <el-input :disabled="disabled" clearable placeholder="请输入" v-model="ruleForm.code"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
           <el-form-item label="类型" prop="type">
-            <el-select :disabled="disabled" clearable v-model="ruleForm.type" placeholder="请选择">
+            <el-select
+                :disabled="disabled"
+                clearable
+                v-model="ruleForm.type"
+                placeholder="请选择"
+                @change="handleChangeType">
               <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -23,6 +23,11 @@
                   :value="item.value">
               </el-option>
             </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="编码" prop="code">
+            <el-input :disabled="disabled" clearable placeholder="请输入" v-model="ruleForm.code"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -121,11 +126,31 @@ export default {
   mounted () {
   },
   methods: {
-    // 验证标准中文名称唯一性.
+    /**
+     * @Description 切换类型触发
+     * @author qianyinggenian
+     * @date 2023/9/26
+     */
+    handleChangeType (type) {
+      if (type === 'btn') {
+        this.rules.code = [
+          { required: true, message: '请输入', trigger: 'blur' }
+        ];
+      } else {
+        this.rules.code = [
+          { required: true, message: '请输入', trigger: 'blur' },
+          { validator: this.codeValidator, trigger: 'blur', transform: this.codeValidateTransform }
+        ];
+      }
+      this.$nextTick(() => {
+        this.$refs.ruleForm.validateField('code');
+      });
+    },
+    // 验证编码唯一性.
     codeValidateTransform (val) {
       return { code: val, id: this.ruleForm.id };
     },
-    // 验证标准中文名称唯一性.
+    // 验证编码唯一性.
     codeValidator (rule, value, callback) {
       if (!value.code) {
         // eslint-disable-next-line standard/no-callback-literal

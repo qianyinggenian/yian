@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { getToKen } from '@/common/Cookie';
+import constants from '@/common/constants';
 
 const mockAjax = axios.create({
   baseURL: '/mock',
@@ -7,6 +9,14 @@ const mockAjax = axios.create({
 
 // 请求拦截
 mockAjax.interceptors.request.use((config) => {
+  if (constants.whiteRequestList.includes(config.url.split('?')[0])) {
+    return config;
+  }
+  if (getToKen() !== undefined) {
+    config.headers.yiAnToKen = `yiAnToken ${getToKen()}`;
+  } else {
+    window.open('/', '_self');
+  }
   return config;
 });
 // 响应拦截

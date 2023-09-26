@@ -64,12 +64,12 @@ export function addData (db, storeName, data) {
       .add(data);
     request.onsuccess = function (event) {
       console.log('数据写入成功');
-      resolve({ code: 200, msg: '数据写入成功' });
+      resolve({ code: 200, msg: '操作成功' });
     };
 
     request.onerror = function (event) {
       console.log('数据写入失败');
-      resolve({ code: 500, msg: '数据写入失败' });
+      resolve({ code: 500, msg: '操作失败' });
     };
   });
 }
@@ -154,6 +154,27 @@ export function updateDB (db, storeName, data) {
       console.log('数据更新失败');
       // eslint-disable-next-line prefer-promise-reject-errors
       reject(500);
+    };
+  });
+}
+
+// 通过主键删除数据（数据库对象，表名，主键值）
+export function deleteDB (db, storeName, id) {
+  return new Promise((resolve, reject) => {
+    var request = db
+      .transaction([storeName], 'readwrite')
+      .objectStore(storeName)
+      .delete(id);
+
+    request.onsuccess = function () {
+      //   console.log("数据删除成功");
+      resolve({ code: 200, msg: '删除成功！' });
+    };
+
+    request.onerror = function () {
+      //   console.log("数据删除失败");
+      // eslint-disable-next-line prefer-promise-reject-errors
+      reject({ code: 500, msg: '删除失败' });
     };
   });
 }

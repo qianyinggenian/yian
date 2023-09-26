@@ -1,4 +1,4 @@
-import Mock from 'mockjs';
+import Mock from 'mockjs-async';
 import { PRIVATEKEY, uStr, pStr } from '@/RSA';
 import JSEncrypt from 'jsencrypt/bin/jsencrypt';
 // import login from './json/login.json' // 模拟接口返回的数据 对应data后面跟的值
@@ -13,7 +13,9 @@ Mock.mock('/mock/login', 'post', (data) => {
       code: 200,
       data: {
         name: Random.cname(),
-        userId: Random.guid()
+        userId: Random.guid(),
+        // 随机字符串
+        token: Random.string('lower', 20)
       },
       msg: '登录成功，正在跳转！'
     };
