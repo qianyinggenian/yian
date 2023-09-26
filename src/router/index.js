@@ -56,8 +56,8 @@ const router = new VueRouter({
   routes
 });
 router.beforeEach(async (to, from, next) => {
-  console.log('to', to);
-  console.log('from', from);
+  // console.log('to', to);
+  // console.log('from', from);
   // if () {
   //   // 将用户重定向到登录页面
   //   return { name: 'Login' }

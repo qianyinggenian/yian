@@ -67,7 +67,7 @@
 import JSEncrypt from 'jsencrypt/bin/jsencrypt';
 import { loginPost } from '@/api/login';
 import { PUBLICKEY, encryptionKey, decryptKey } from '@/RSA';
-import { setToken, yiAnToken } from '@/common/Cookie';
+import { setRefreshToken, setToken, yiAnToken } from '@/common/Cookie';
 import 'particles.js';
 import particlesConfig from './Json/particles.json';
 
@@ -174,7 +174,8 @@ export default {
             const result = await loginPost(params);
             const { code, data, msg } = result;
             if (code === 200) {
-              setToken(yiAnToken, data.token, 24 * 60 * 60);
+              setToken(yiAnToken, data.token);
+              setRefreshToken(data.token);
               this.$_store.commit('app/SET_USER_MSG', {
                 username: data.name,
                 userId: data.userId

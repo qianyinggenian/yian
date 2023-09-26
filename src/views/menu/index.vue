@@ -18,7 +18,6 @@
 </template>
 
 <script>
-// import { menuTree } from '@/common/data';
 import ztree from '@/components/ztree';
 import AddEdit from './comp/add-edit.vue';
 import api from '@/api/menu';
@@ -33,7 +32,6 @@ export default {
     return {
       zTreeObj: {},
       treeTool: null,
-      // nodes: menuTree,
       nodes: [],
       setting: {
         data: {

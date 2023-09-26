@@ -1,5 +1,9 @@
 <template>
-  <div>用户管理</div>
+  <layout :is-show-left="false">
+    <div slot="right">
+      sdf
+    </div>
+  </layout>
 </template>
 
 <script>

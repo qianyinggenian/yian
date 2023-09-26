@@ -32,6 +32,7 @@
 import dayjs from 'dayjs';
 import { mapState, mapGetters } from 'vuex';
 import drawerView from './components/drawerView.vue';
+import { removeToken } from '@/common/Cookie';
 
 export default {
   name: 'indexView',
@@ -114,6 +115,7 @@ export default {
           type: 'warning'
         }).then(() => {
           sessionStorage.clear();
+          removeToken();
           this.$_store.commit('navbar/SET_CLOSE_ALL_TABS', {});
 
           this.$_store.commit('app/SET_WATER_MARK', '0');
