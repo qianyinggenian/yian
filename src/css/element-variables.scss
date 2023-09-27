@@ -25,7 +25,14 @@ $--dropdown-menuItem-hover-fill: #8f2790;
 // message
 //0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
 $--message-background-color: $bgColor;
-
+// table
+$--table-row-hover-background-color: #1d507d;
+$--table-header-background-color: #133553;
+$--table-header-font-color: #ffffff;
+$--table-border-color: #1d507d;
+$--table-border: 1px solid #1d507d;
+$--table-current-row-background-color: #156fbb;
+//$--table-fixed-box-shadow: 0 0 10px red;
 /* 改变 icon 字体路径变量，必需 */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 

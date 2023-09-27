@@ -5,6 +5,8 @@ import layout from '../views/layout';
 import errorView from '../views/404';
 import { config } from '@/router/config';
 import home from '@/views/home/index.vue';
+import { getToKen, getRefreshToken } from '@/common/Cookie';
+import constants from '@/common/constants';
 
 Vue.use(VueRouter);
 const routes = [
@@ -55,14 +57,19 @@ const router = new VueRouter({
   // base: process.env.BASE_URL,
   routes
 });
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
   // console.log('to', to);
   // console.log('from', from);
-  // if () {
-  //   // 将用户重定向到登录页面
-  //   return { name: 'Login' }
-  // }
-  // next('/login');
-  next();
+  if (constants.whiteRequestList.includes(to.path)) {
+    next();
+    return;
+  }
+  if (getToKen() !== undefined || getRefreshToken() !== undefined) {
+    next();
+  } else {
+    sessionStorage.clear();
+    next('/login');
+  }
+  // next();
 });
 export default router;

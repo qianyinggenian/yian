@@ -22,6 +22,7 @@ mockAjax.interceptors.request.use((config) => {
       setRefreshToken(token);
     }
   } else {
+    sessionStorage.clear();
     window.open('/', '_self');
   }
   return config;

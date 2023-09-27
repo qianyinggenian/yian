@@ -83,11 +83,7 @@
 }
 
 .el-message {
-  //border-color: $border-color;
   background-color: $bgColor;
-  //&--success, &--info, &--error, &--warning {
-  //  background-color: $bgColor;
-  //}
 
   &--success {
     border-color: #67C23A !important;
@@ -152,5 +148,26 @@
     //    line-height: 22px;
     //  }
     //}
+  }
+}
+
+.el-table {
+  background-color: transparent;
+  font-size: var(--font-size-16);
+
+  .el-table__body tr {
+    background-color: #0a1a34;
+
+    td.el-table__cell {
+      border-color: #0a1a34;
+    }
+
+    &.el-table__row--striped td.el-table__cell {
+      background-color: #133553;
+    }
+
+    &:nth-child(even) {
+      background-color: #133553;
+    }
   }
 }
