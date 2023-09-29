@@ -63,7 +63,7 @@
           :render-header="item.renderHeader || renderHeader"
           :key="item.label"
       >
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <slot
               :name="item.slot"
               :column="item"
