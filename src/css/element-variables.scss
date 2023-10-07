@@ -33,6 +33,7 @@ $--table-border-color: #1d507d;
 $--table-border: 1px solid #1d507d;
 $--table-current-row-background-color: #156fbb;
 //$--table-fixed-box-shadow: 0 0 10px red;
+$--table-fixed-box-shadow: 0 0 10px rgba(0, 0, 0, .12) !default;
 /* 改变 icon 字体路径变量，必需 */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
