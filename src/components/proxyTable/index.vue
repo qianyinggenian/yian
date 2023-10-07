@@ -1,126 +1,138 @@
 <template>
-  <el-table
-      ref="table"
-      :data="tableData"
-      :border="border"
-      :stripe="stripe"
-      :lazy="lazy"
-      :load="load"
-      :size="size"
-      :fit="fit"
-      row-key="id"
-      height="100%"
-      :show-header="showHeader"
-      :highlight-current-row="highlightCurrentRow"
-      :show-summary="showSummary"
-      :sum-text="sumText"
-      :summary-method="getSummaries"
-      :span-method="spanMethod"
-      style="width: 100%"
-      @select="handleSelect"
-      @select-all="handleSelectAllFn"
-  >
-    <!-- 是否显示多选框-->
-    <el-table-column
-        v-if="showCheckbox"
-        type="selection"
-        :fixed="isCheckboxFixed"
-        :selectable="hasCheckBox"
-        reserve-selection
-        class-name="choose-input-table-selection"
-        :show-overflow-tooltip="false"
-        align="center"
-        header-align="center"
-        width="50">
-    </el-table-column>
-    <!-- 是否显示序号-->
-    <el-table-column
-        v-if="showIndex"
-        type="index"
-        :fixed="isIndexFixed"
-        :index="indexMethod"
-        label="序号"
-        class-name="choose-input-table-index"
-        :show-overflow-tooltip="false"
-        header-align="center"
-        align="center"
-        width="80">
-    </el-table-column>
-    <template v-for="item in columns">
-      <!-- 是否有插槽-->
+  <div class="layout-responsive-auto--column">
+    <slot v-if="isShowToolBar" name="toolBar"></slot>
+    <div v-else class="default-toolBar">
+      <el-button type="primary">搜索</el-button>
+    </div>
+    <el-table
+        ref="table"
+        class="layout-responsive-auto__grow"
+        :data="tableData"
+        :border="border"
+        :stripe="stripe"
+        :lazy="lazy"
+        :load="load"
+        :size="size"
+        :fit="fit"
+        row-key="id"
+        height="100%"
+        :show-header="showHeader"
+        :highlight-current-row="highlightCurrentRow"
+        :show-summary="showSummary"
+        :sum-text="sumText"
+        :summary-method="getSummaries"
+        :span-method="spanMethod"
+        style="width: 100%"
+        @select="handleSelect"
+        @select-all="handleSelectAllFn"
+    >
+      <!-- 是否显示多选框-->
       <el-table-column
-          :prop="item.prop || item.name"
-          :label="item.label"
-          :sortable="item.sortable"
-          :fixed="item.fixed"
-          :sort-method="sortMethod"
-          :filters="item.filters"
-          :align="item.align"
-          :show-overflow-tooltip="showOverflowTooltip"
-          :width="item.width"
-          :min-width="item.minWidth"
-          v-if="item.slot"
-          :render-header="item.renderHeader || renderHeader"
-          :key="item.label"
-      >
-        <template slot-scope="scope">
-          <slot
-              :name="item.slot"
-              :column="item"
-              :row="scope.row"
-              :index="scope.$index"
-          />
-        </template>
+          v-if="showCheckbox"
+          type="selection"
+          :fixed="isCheckboxFixed"
+          :selectable="hasCheckBox"
+          reserve-selection
+          class-name="choose-input-table-selection"
+          :show-overflow-tooltip="false"
+          align="center"
+          header-align="center"
+          width="50">
       </el-table-column>
-      <tableColumn
-          v-else
-          :key="item.id"
-          :col="item"
-      >
-      </tableColumn>
-    </template>
-    <el-table-column
-        align="right"
-        fixed="right"
-        class-name="operation"
-        prop="operation"
-        width="250px"
-        label="操作">
-      <template v-if="slotOperation" v-slot="scope">
-        <slot name="operation" :row="scope.row"/>
+      <!-- 是否显示序号-->
+      <el-table-column
+          v-if="showIndex"
+          type="index"
+          :fixed="isIndexFixed"
+          :index="indexMethod"
+          label="序号"
+          class-name="choose-input-table-index"
+          :show-overflow-tooltip="false"
+          header-align="center"
+          align="center"
+          width="80">
+      </el-table-column>
+      <template v-for="item in columns">
+        <!-- 是否有插槽-->
+        <el-table-column
+            :prop="item.prop || item.name"
+            :label="item.label"
+            :sortable="item.sortable"
+            :fixed="item.fixed"
+            :sort-method="sortMethod"
+            :filters="item.filters"
+            :align="item.align"
+            :show-overflow-tooltip="showOverflowTooltip"
+            :width="item.width"
+            :min-width="item.minWidth"
+            v-if="item.slot"
+            :render-header="item.renderHeader || renderHeader"
+            :key="item.label"
+        >
+          <!-- 列值插槽 -->
+          <template v-if="item.slotColumn" v-slot="scope">
+            <slot
+                :name="item.slotColumn"
+                :column="item"
+                :row="scope.row"
+                :index="scope.$index"
+            />
+          </template>
+          <!-- 表格头部插槽 -->
+          <template v-if="item.slotHeader" v-slot:header>
+            <slot :name="item.slotHeader"></slot>
+          </template>
+        </el-table-column>
+        <tableColumn
+            v-else
+            :key="item.id"
+            :col="item"
+        >
+        </tableColumn>
       </template>
-      <template v-else v-slot="scope">
-        <div ref="btns" class="operation-btns-box" v-if="isShowTextBtn">
-          <template
-              v-for="item in tableBtns">
-            <div class="btn"
+      <el-table-column
+          align="right"
+          fixed="right"
+          class-name="operation"
+          prop="operation"
+          width="250px"
+          label="操作">
+        <template v-if="slotOperation" v-slot="scope">
+          <slot name="operation" :row="scope.row"/>
+        </template>
+        <template v-else v-slot="scope">
+          <div ref="btns" class="operation-btns-box" v-if="isShowTextBtn">
+            <template
+                v-for="item in tableBtns">
+              <div class="btn"
+                   :key="item.value"
+                   v-if="(scope.row.rowBtns ? scope.row.rowBtns.includes(item.value): true)"
+                   :style="{color: item?.color?item.color:(btnColor[item.value]?btnColor[item.value]: '#1b6ef3')}"
+              >
+                <div @click="handleClickBtn(item.value,scope.row)">{{ item.label }}
+                </div>
+              </div>
+            </template>
+          </div>
+          <div ref="btns" class="operation-btns-box" v-else>
+            <div class="btn svg-btn"
+                 v-for="item in tableBtns"
                  :key="item.value"
-                 v-if="(scope.row.rowBtns ? scope.row.rowBtns.includes(item.value): true)"
                  :style="{color: item?.color?item.color:(btnColor[item.value]?btnColor[item.value]: '#1b6ef3')}"
             >
-              <div @click="handleClickBtn(item.value,scope.row)">{{ item.label }}
-              </div>
+              <svg-icon
+                  :icon-class="item?.svg?item.svg:(btnSvg[item.value]?btnSvg[item.value]: 'btn4')"
+                  :title="item.label"
+                  :fill="item?.fill?item.fill: ''"
+                  @click="handleClickBtn(item.value,scope.row)"
+              >
+              </svg-icon>
             </div>
-          </template>
-        </div>
-        <div ref="btns" class="operation-btns-box" v-else>
-          <div class="btn svg-btn"
-               v-for="item in tableBtns"
-               :key="item.value"
-               :style="{color: item?.color?item.color:(btnColor[item.value]?btnColor[item.value]: '#1b6ef3')}"
-          >
-            <svg-icon
-                :icon-class="item?.svg?item.svg:(btnSvg[item.value]?btnSvg[item.value]: 'btn4')"
-                :title="item.label"
-                :fill="item?.fill?item.fill: ''"
-                @click="handleClickBtn(item.value,scope.row)"
-            >
-            </svg-icon>
           </div>
-        </div>
-      </template>
-    </el-table-column>
-  </el-table>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
@@ -151,6 +163,10 @@ export default {
     };
   },
   props: {
+    isShowToolBar: {
+      type: Boolean,
+      default: false
+    },
     tableData: {
       type: Array,
       default: () => []
@@ -336,6 +352,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.proxy-table-container {
+  height: 100%;
+  width: 100%;
+  background-color: #42b983;
+}
+
 .operation-btns-box {
   display: flex;
   justify-content: flex-end;

@@ -1,5 +1,6 @@
 @import "variables";
 /* 改变主题色变量 */
+$--color-primary: $primaryColor;
 $--form-label-font-size: 16px;
 $--color-text-regular: #ffffff;
 $--input-background-color: $bgColor;
@@ -26,11 +27,11 @@ $--dropdown-menuItem-hover-fill: #8f2790;
 //0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
 $--message-background-color: $bgColor;
 // table
-$--table-row-hover-background-color: #1d507d;
+$--table-row-hover-background-color: $primaryColor;
 $--table-header-background-color: #133553;
 $--table-header-font-color: #ffffff;
-$--table-border-color: #1d507d;
-$--table-border: 1px solid #1d507d;
+$--table-border-color: $primaryColor;
+$--table-border: 1px solid $primaryColor;
 $--table-current-row-background-color: #156fbb;
 //$--table-fixed-box-shadow: 0 0 10px red;
 $--table-fixed-box-shadow: 0 0 10px rgba(0, 0, 0, .12) !default;

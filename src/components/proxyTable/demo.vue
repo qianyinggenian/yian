@@ -7,12 +7,18 @@
       @edit="handleEdit"
   >
     <template v-slot:operation="{row}">
+      <!--操作列插槽-->
       <div class="btns">
         <span @click="handleEdit(row)">编辑</span>
       </div>
     </template>
     <template v-slot:province="{row}">
-      <span>列表插槽：{{ row.province }}</span>
+      <!--省份列插槽-->
+      <span>省份列插槽：{{ row.province }}</span>
+    </template>
+    <template v-slot:region>
+      <!--区域头部插槽-->
+      <span>区域头部插槽</span>
     </template>
   </proxyTable>
 </template>
@@ -37,12 +43,15 @@ export default {
         {
           prop: 'region',
           label: '区域',
-          minWidth: '250px'
+          minWidth: '250px',
+          slot: true,
+          slotHeader: 'region' // slotHeader： 列表操作
         },
         {
           prop: 'province',
           label: '省份',
-          slot: 'province',
+          slot: true, // 使用插槽
+          slotColumn: 'province', // slotColumn： 列表操作
           minWidth: '250px'
         },
         {
