@@ -1,8 +1,52 @@
 <template>
-  <div class="layout-responsive-auto--column">
-    <slot v-if="isShowToolBar" name="toolBar"></slot>
-    <div v-else class="default-toolBar">
-      <el-button type="primary">搜索</el-button>
+  <div class="layout-responsive-auto--column proxy-table-container">
+    <slot v-if="isShowSlotToolBar" name="toolBar"></slot>
+    <div v-if="isShowDefaultToolBar" class="default-toolBar">
+      <div class="table-title" v-if="tableTitle">
+        {{ tableTitle }}
+      </div>
+      <div class="toolbar" v-if="isShowToolBar">
+        <el-input
+            clearable
+            :title="searchValue"
+            :placeholder="placeholder"
+            size="small"
+            v-model="searchValue"></el-input>
+        <el-button
+            icon="el-icon-search"
+            type="primary"
+            size="small"
+            @click="handleSearch"
+        >
+          {{ searchBtnLabel }}
+        </el-button>
+        <el-dropdown :hide-on-click="false" trigger="click">
+          <el-button class="filter-btn" size="small">筛选</el-button>
+          <template #dropdown>
+            <el-dropdown-menu class="filter-dropdown">
+              <el-dropdown-item>
+                <el-checkbox-group
+                    class="filter-group"
+                    v-model="checkList"
+                    @change="handleCheckedChange"
+                >
+                  <el-checkbox
+                      v-for="item in columns"
+                      :key="item.prop || item.name"
+                      :label="item.prop">
+                    {{ item.label }}
+                  </el-checkbox>
+                </el-checkbox-group>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button size="small">确定</el-button>
+                <el-button size="small" @click="handleReset">重置</el-button>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+
+        </el-dropdown>
+      </div>
     </div>
     <el-table
         ref="table"
@@ -145,6 +189,8 @@ export default {
   },
   data () {
     return {
+      checkList: [],
+      searchValue: '',
       operationWidth: '0px',
       btnColor: {
         add: '#1b6ef3',
@@ -163,9 +209,29 @@ export default {
     };
   },
   props: {
-    isShowToolBar: {
+    isShowSlotToolBar: {
       type: Boolean,
       default: false
+    },
+    isShowToolBar: {
+      type: Boolean,
+      default: true
+    },
+    isShowDefaultToolBar: {
+      type: Boolean,
+      default: true
+    },
+    tableTitle: {
+      type: String,
+      default: '表格标题'
+    },
+    placeholder: {
+      type: String,
+      default: '请输入'
+    },
+    searchBtnLabel: {
+      type: String,
+      default: '搜索'
     },
     tableData: {
       type: Array,
@@ -279,6 +345,9 @@ export default {
     diyIndexMethod: {
       type: Function
     },
+    diyGetList: {
+      type: Function
+    },
 
     /* 表头样式自定义 */
     renderHeader: {
@@ -346,6 +415,32 @@ export default {
     handleClickBtn (type, row) {
       console.log('row', row);
       this.$emit(type, row);
+    },
+    /**
+     * @Description 点击搜索按钮触发
+     * @author qianyinggenian
+     * @date 2023/10/7
+     */
+    handleSearch () {
+      if (this.diyGetList && typeof this.diyGetList === 'function') {
+        this.diyGetList(this.searchValue);
+      }
+    },
+    /**
+     * @Description 筛选选择触发
+     * @author qianyinggenian
+     * @date 2023/10/7
+     */
+    handleCheckedChange (value) {
+      console.log('value', value);
+    },
+    /**
+     * @Description 筛选重置触发
+     * @author qianyinggenian
+     * @date 2023/10/7
+     */
+    handleReset () {
+      this.checkList = [];
     }
   }
 };
@@ -353,9 +448,44 @@ export default {
 
 <style lang="scss" scoped>
 .proxy-table-container {
-  height: 100%;
-  width: 100%;
-  background-color: #42b983;
+
+  .default-toolBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+
+    .table-title {
+      font-size: var(--font-size-16);
+      color: var(--body-title-color);
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: flex-end;
+
+      .el-input {
+        margin-right: 10px;
+      }
+
+      .filter-btn {
+        margin-left: 10px;
+      }
+
+    }
+  }
+
+}
+
+:deep(.filter-group) {
+  display: flex;
+  flex-direction: column;
+}
+
+:deep(.el-dropdown-menu__item) {
+  &:hover {
+    background: transparent !important;
+  }
 }
 
 .operation-btns-box {

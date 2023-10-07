@@ -35,6 +35,8 @@ $--table-current-row-background-color: #156fbb;
 //$--table-fixed-box-shadow: 0 0 10px red;
 $--table-fixed-box-shadow: 0 0 10px rgba(0, 0, 0, .12) !default;
 // button
+$--button-default-background-color: $primaryColor;
+$--button-default-border-color: $primaryColor;
 $--button-primary-border-color: $primaryColor;
 $--button-primary-background-color: $primaryColor;
 /* 改变 icon 字体路径变量，必需 */

@@ -4,6 +4,8 @@
       :table-btns="tableBtns"
       :table-data="tableData"
       :columns="columns"
+      :diy-get-list="diyGetList"
+      :is-show-default-tool-bar="true"
       @edit="handleEdit"
   >
     <template v-slot:operation="{row}">
@@ -149,6 +151,14 @@ export default {
   methods: {
     handleEdit (row) {
       console.log('rowrow', row);
+    },
+    /**
+     * @Description 点击搜索按钮触发
+     * @author qianyinggenian
+     * @date 2023/10/7
+     */
+    diyGetList (searchValue) {
+      console.log('搜索搜索', searchValue);
     }
   }
 };
