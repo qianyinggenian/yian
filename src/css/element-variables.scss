@@ -1,6 +1,5 @@
 @import "variables";
 /* 改变主题色变量 */
-$--color-primary: $primaryColor;
 $--form-label-font-size: 16px;
 $--color-text-regular: #ffffff;
 $--input-background-color: $bgColor;
@@ -35,6 +34,9 @@ $--table-border: 1px solid $primaryColor;
 $--table-current-row-background-color: #156fbb;
 //$--table-fixed-box-shadow: 0 0 10px red;
 $--table-fixed-box-shadow: 0 0 10px rgba(0, 0, 0, .12) !default;
+// button
+$--button-primary-border-color: $primaryColor;
+$--button-primary-background-color: $primaryColor;
 /* 改变 icon 字体路径变量，必需 */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 

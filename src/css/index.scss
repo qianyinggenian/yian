@@ -121,6 +121,8 @@
       width: 60px;
       height: 32px;
       border-radius: 4px;
+      background-color: $primaryColor;
+      border-color: $primaryColor;
     }
 
     .el-button--default {
@@ -136,18 +138,6 @@
         }
       }
     }
-
-    //.el-button {
-    //  padding: 5px 16px;
-    //  box-sizing: border-box;
-    //
-    //  span {
-    //    height: 22px;
-    //    font-size: 14px;
-    //    font-weight: 400;
-    //    line-height: 22px;
-    //  }
-    //}
   }
 }
 
