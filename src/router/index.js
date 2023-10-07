@@ -7,6 +7,7 @@ import { config } from '@/router/config';
 import home from '@/views/home/index.vue';
 import { getToKen, getRefreshToken } from '@/common/Cookie';
 import constants from '@/common/constants';
+import store from '@/store';
 
 Vue.use(VueRouter);
 const routes = [
@@ -68,6 +69,7 @@ router.beforeEach((to, from, next) => {
     next();
   } else {
     sessionStorage.clear();
+    store.commit('navbar/SET_CLOSE_ALL_TABS', {});
     next('/login');
   }
   // next();

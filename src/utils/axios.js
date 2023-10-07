@@ -2,6 +2,7 @@ import axios from 'axios';
 import Mock from 'mockjs-async';
 import { getRefreshToken, getToKen, setRefreshToken, setToken, yiAnToken } from '@/common/Cookie';
 import constants from '@/common/constants';
+import store from '@/store';
 
 const Random = Mock.Random;
 const mockAjax = axios.create({
@@ -22,6 +23,7 @@ mockAjax.interceptors.request.use((config) => {
       setRefreshToken(token);
     }
   } else {
+    store.commit('navbar/SET_CLOSE_ALL_TABS', {});
     sessionStorage.clear();
     window.open('/', '_self');
   }
