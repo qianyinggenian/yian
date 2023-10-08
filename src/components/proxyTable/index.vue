@@ -11,7 +11,7 @@
             :title="searchValue"
             :placeholder="placeholder"
             size="small"
-            v-model="searchValue"></el-input>
+            v-model="searchValue"/>
         <el-button
             icon="el-icon-search"
             type="primary"
@@ -20,7 +20,7 @@
         >
           {{ searchBtnLabel }}
         </el-button>
-        <el-dropdown :hide-on-click="false" trigger="click">
+        <el-dropdown v-if="isShowFilter" :hide-on-click="false" trigger="click">
           <el-button class="filter-btn" size="small">筛选</el-button>
           <template #dropdown>
             <el-dropdown-menu class="filter-dropdown">
@@ -28,7 +28,6 @@
                 <el-checkbox-group
                     class="filter-group"
                     v-model="checkList"
-                    @change="handleCheckedChange"
                 >
                   <el-checkbox
                       v-for="item in columns"
@@ -39,12 +38,11 @@
                 </el-checkbox-group>
               </el-dropdown-item>
               <el-dropdown-item>
-                <el-button size="small">确定</el-button>
+                <el-button size="small" @click="handleConfirm">确定</el-button>
                 <el-button size="small" @click="handleReset">重置</el-button>
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>
-
         </el-dropdown>
       </div>
     </div>
@@ -57,7 +55,6 @@
         :lazy="lazy"
         :load="load"
         :size="size"
-        :fit="fit"
         row-key="id"
         height="100%"
         :show-header="showHeader"
@@ -96,7 +93,7 @@
           align="center"
           width="80">
       </el-table-column>
-      <template v-for="item in columns">
+      <template v-for="item in columnsFn(columns,filterCheckList)">
         <!-- 是否有插槽-->
         <el-table-column
             :prop="item.prop || item.name"
@@ -111,7 +108,7 @@
             :min-width="item.minWidth"
             v-if="item.slot"
             :render-header="item.renderHeader || renderHeader"
-            :key="item.label"
+            :key="item.prop"
         >
           <!-- 列值插槽 -->
           <template v-if="item.slotColumn" v-slot="scope">
@@ -129,7 +126,7 @@
         </el-table-column>
         <tableColumn
             v-else
-            :key="item.id"
+            :key="item.prop"
             :col="item"
         >
         </tableColumn>
@@ -176,6 +173,19 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="pagination" v-show="isShowPagination">
+      <el-pagination
+          background
+          popper-class="custom-pagination"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="1"
+          :page-sizes="[20, 50, 100, 200]"
+          :page-size="100"
+          layout="total, prev, pager, next, sizes, jumper"
+          :total="400">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -190,7 +200,9 @@ export default {
   data () {
     return {
       checkList: [],
+      filterCheckList: [],
       searchValue: '',
+      rowKey: 'rowKey',
       operationWidth: '0px',
       btnColor: {
         add: '#1b6ef3',
@@ -209,38 +221,52 @@ export default {
     };
   },
   props: {
+    /* 是否显示自定义表格顶部工具栏插槽 */
     isShowSlotToolBar: {
       type: Boolean,
       default: false
     },
+    /* 是否显示默认搜索工具栏 */
     isShowToolBar: {
       type: Boolean,
       default: true
     },
+    /* 是否显示默认工具栏 */
     isShowDefaultToolBar: {
       type: Boolean,
       default: true
     },
+    /* 是否显示分页 */
+    isShowPagination: {
+      type: Boolean,
+      default: true
+    },
+    /* 表格标题 */
     tableTitle: {
       type: String,
       default: '表格标题'
     },
+    /* 搜索框提示语 */
     placeholder: {
       type: String,
       default: '请输入'
     },
+    /* 搜索按钮文字 */
     searchBtnLabel: {
       type: String,
       default: '搜索'
     },
+    /* 表格数据 */
     tableData: {
       type: Array,
       default: () => []
     },
+    /* 列数据 */
     columns: {
       type: Array,
       default: () => []
     },
+    /* 表格列表按钮 */
     tableBtns: {
       type: Array,
       default: () => []
@@ -249,6 +275,11 @@ export default {
     border: {
       type: Boolean,
       default: false
+    },
+    /* 是否显示筛选，这里的筛选是筛选列的显示 */
+    isShowFilter: {
+      type: Boolean,
+      default: true
     },
     /* 是否斑马条纹 */
     stripe: {
@@ -269,12 +300,6 @@ export default {
     size: {
       type: String,
       default: 'small'
-    },
-
-    /* 列的宽度是否自撑开 */
-    fit: {
-      type: Boolean,
-      default: true
     },
     /* 是否显示表头 */
     showHeader: {
@@ -309,22 +334,27 @@ export default {
     spanMethod: {
       type: Function
     },
+    /* 是否显示多选框 */
     showCheckbox: {
       type: Boolean,
       default: true
     },
+    /* 是否显示序号 */
     showIndex: {
       type: Boolean,
       default: true
     },
+    /* 是否固定多选框 */
     isCheckboxFixed: {
       type: Boolean,
       default: false
     },
+    /* 是否固定序号 */
     isIndexFixed: {
       type: Boolean,
       default: false
     },
+    /* 是否超出隐藏浮现 */
     showOverflowTooltip: {
       type: Boolean,
       default: true
@@ -339,12 +369,15 @@ export default {
       type: Boolean,
       default: true
     },
+    /* 自定义多选框可选 */
     diyHasCheckBox: {
       type: Function
     },
+    /* 自定义序号 */
     diyIndexMethod: {
       type: Function
     },
+    /* 查询函数 */
     diyGetList: {
       type: Function
     },
@@ -358,15 +391,48 @@ export default {
     table: {
       handler (newVal) {
         this.$nextTick(() => {
-          // this.$refs.table.doLayout();
+          this.$refs.table.doLayout();
         });
       },
       immediate: true
+    },
+    columns: {
+      handler (newVal) {
+        if (newVal && newVal.length > 0) {
+          this.checkList = newVal.map(item => item.prop);
+          this.filterCheckList = this.checkList;
+        }
+      },
+      immediate: true
+    }
+  },
+  computed: {
+    columnsFn () {
+      return (columns, filterCheckList) => {
+        const list = JSON.parse(JSON.stringify(columns));
+        return list.filter(item => {
+          return filterCheckList.some(val => item.prop === val);
+        });
+      };
     }
   },
   mounted () {
   },
   methods: {
+    /**
+     * @Description 切换条数触发
+     * @author qianyinggenian
+     * @date 2023/10/8
+     */
+    handleSizeChange (val) {
+    },
+    /**
+     * @Description 切换页码触发
+     * @author qianyinggenian
+     * @date 2023/10/8
+     */
+    handleCurrentChange (val) {
+    },
     /**
      * @Description 复选框
      * @author qianyinggenian
@@ -427,12 +493,12 @@ export default {
       }
     },
     /**
-     * @Description 筛选选择触发
+     * @Description 筛选确定触发
      * @author qianyinggenian
-     * @date 2023/10/7
+     * @date 2023/10/8
      */
-    handleCheckedChange (value) {
-      console.log('value', value);
+    handleConfirm () {
+      this.filterCheckList = this.checkList;
     },
     /**
      * @Description 筛选重置触发
@@ -440,7 +506,8 @@ export default {
      * @date 2023/10/7
      */
     handleReset () {
-      this.checkList = [];
+      this.checkList = this.columns.map(item => item.prop);
+      this.filterCheckList = this.checkList;
     }
   }
 };
@@ -448,7 +515,6 @@ export default {
 
 <style lang="scss" scoped>
 .proxy-table-container {
-
   .default-toolBar {
     display: flex;
     align-items: center;
@@ -475,6 +541,16 @@ export default {
     }
   }
 
+  .el-pagination {
+    //margin-top: 5px;
+  }
+
+  .pagination {
+    z-index: 3000;
+    margin-top: 5px;
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 
 :deep(.filter-group) {
@@ -508,7 +584,4 @@ export default {
   }
 }
 
-::v-deep .operation {
-  width: 150px;
-}
 </style>

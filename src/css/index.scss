@@ -2,9 +2,6 @@
 @import "reset";
 @import "variables";
 
-* {
-  margin: 0;
-}
 
 @mixin flexStyle {
   display: flex;
@@ -167,7 +164,48 @@
     }
   }
 
+  .el-table__fixed {
+    &::before {
+      background-color: #0a1a34;
+    }
+  }
+
   .el-table__fixed-right-patch {
     background-color: #1d507d;
   }
+}
+
+.el-pagination {
+  .el-pager {
+    .number {
+      background: $primaryColor !important;
+    }
+
+    .number:not(.disabled).active {
+      color: #409eff !important;
+      font-size: var(--font-size-16);
+      border: 1px solid #409eff !important;
+    }
+  }
+
+  .btn-prev:disabled, .btn-next:disabled {
+    background-color: rgba(29, 100, 110, 1);
+  }
+
+  .btn-prev:not(:disabled), .btn-next:not(:disabled) {
+    background-color: $primaryColor;
+  }
+
+  .el-pagination__jump {
+    margin-left: 2px;
+  }
+}
+
+.el-select {
+  z-index: 3000 !important;
+}
+
+.el-select-dropdown {
+  //position: absolute;
+
 }

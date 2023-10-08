@@ -43,5 +43,13 @@ export const config = [
         }
       }
     ]
+  },
+  {
+    path: '/table',
+    name: '表格',
+    component: () => import('@/views/proxyTable/index.vue'),
+    meta: {
+      title: '表格'
+    }
   }
 ];

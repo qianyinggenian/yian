@@ -3,7 +3,10 @@
       ref="proxyTable"
       :table-btns="tableBtns"
       :table-data="tableData"
+      table-title="表格标题（注：表中数据均为MockJs随机生成的数据）"
       :columns="columns"
+      :isCheckboxFixed="true"
+      :is-index-fixed="true"
       :diy-get-list="diyGetList"
       :is-show-default-tool-bar="true"
       @edit="handleEdit"
@@ -27,7 +30,7 @@
 
 <script>
 import proxyTable from './index.vue';
-import { list } from './data';
+// import { list } from './data';
 
 export default {
   name: 'demo',
@@ -103,7 +106,7 @@ export default {
           value: 'association'
         },
         {
-          label: '设置设置',
+          label: '设置',
           svg: 'setting',
           value: 'setting'
         }
@@ -114,7 +117,7 @@ export default {
   watch: {},
   computed: {},
   mounted () {
-    const Random = this.$Mock.Random;
+    // const Random = this.$Mock.Random;
     const data = this.$Mock.mock({
       // 属性 list 的值是一个数组，其中含有 1 到 10 个元素
       'list|100': [{
@@ -122,28 +125,28 @@ export default {
         'id|+1': 1,
         name: '@cname',
         'age|40-50': 40,
-        region: Random.region(), // 随机生成一个（中国）大区。
-        province: Random.province(), // 随机生成一个（中国）省（或直辖市、自治区、特别行政区）。
-        city: Random.city(true), // 随机生成一个（中国）市。 布尔值。指示是否生成所属的省。
-        county: Random.county(true), // 随机生成一个（中国）县。布尔值。指示是否生成所属的省、市。
-        zip: Random.zip(), // 随机生成一个邮政编码（六位数字）。
-        text: Random.cparagraph(),
-        IDNumber: Random.id(),
-        creatDate: Random.date('yyyy-MM-dd HH:mm:ss')
+        area: '@region',
+        region: '@region', // 随机生成一个（中国）大区。
+        province: '@province', // 随机生成一个（中国）省（或直辖市、自治区、特别行政区）。
+        city: '@city', // 随机生成一个（中国）市。 布尔值。指示是否生成所属的省。
+        county: '@county(true)', // 随机生成一个（中国）县。布尔值。指示是否生成所属的省、市。
+        zip: '@zip', // 随机生成一个邮政编码（六位数字）。
+        text: '@cparagraph',
+        IDNumber: '@id',
+        creatDate: "@date('yyyy-MM-dd HH:mm:ss')"
       }]
     });
     console.log('data', data.list);
 
-    this.tableData = list.map(value => {
-      if (value.name === '姜超') {
-        value.rowBtns = ['show'];
-      } else if (value.name === '苏秀英') {
-        value.rowBtns = [];
-      } else if (value.name === '夏杰') {
+    this.tableData = data.list.map(value => {
+      if (value.province === '北京') {
+        value.rowBtns = ['show', 'edit'];
+      } else if (value.province === '上海') {
         value.rowBtns = ['show', 'edit', 'remove', 'setting'];
-      } else {
-        // value.rowBtns = this.tableBtns.map(item => item.value);
+      } else if (value.province === '安徽省') {
         value.rowBtns = ['show', 'edit', 'remove'];
+      } else {
+        value.rowBtns = ['show', 'edit', 'remove', 'setting'];
       }
       return value;
     });
