@@ -1,13 +1,13 @@
-import test2 from '@/views/test2/index.vue';
+import test from '@/views/test/index.vue';
 import redirectComp from '../views/redirect';
 
 export const config = [
   {
-    path: '/test1',
-    name: 'test1',
-    component: test2,
+    path: '/test',
+    name: 'test',
+    component: test,
     meta: {
-      title: '测试1'
+      title: '测试'
     }
   },
   {

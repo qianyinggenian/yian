@@ -119,6 +119,7 @@ export default {
       width: 100%;
       height: calc(100% - 34px);
       overflow-y: auto;
+      color: white;
     }
   }
 }
