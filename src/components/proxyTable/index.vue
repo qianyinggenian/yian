@@ -202,6 +202,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="1"
+          :pager-count="5"
           :page-sizes="[20, 50, 100, 200]"
           :page-size="100"
           layout="total, prev, pager, next, sizes, jumper"
@@ -477,6 +478,7 @@ export default {
      * @date 2023/10/8
      */
     handleSizeChange (val) {
+      console.log('sizeVal', val);
     },
     /**
      * @Description 切换页码触发
@@ -484,6 +486,7 @@ export default {
      * @date 2023/10/8
      */
     handleCurrentChange (val) {
+      console.log('pageVal', val);
     },
     /**
      * @Description 复选框
