@@ -1,12 +1,31 @@
 <template>
   <div class="layout-responsive-auto--column proxy-table-container">
     <slot v-if="isShowSlotToolBar" name="toolBar"></slot>
-    <div v-if="isShowDefaultToolBar" class="default-toolBar">
-      <div class="table-title" v-if="tableTitle">
-        {{ tableTitle }}
+    <div v-if="isShowDefaultToolBar"
+         class="default-toolBar"
+         :class="{'default-toolBar-end':operations.length === 0}"
+    >
+      <div class="operations-box" v-if="operations && operations.length">
+        <el-button
+            size="small"
+            :type="item?.type?item.type:(typeObj[item.value]?typeObj[item.value]:'primary')"
+            v-for="item in operations"
+            :key="item.value"
+            @click="handleClick(item)"
+        >
+          <svg-icon
+              :size="12"
+              :icon-class="item?.svg?item.svg:(operationSvg[item.value]?operationSvg[item.value]: 'btn4')"
+              :fill="item?.fill?item.fill: ''"
+          >
+          </svg-icon>
+          {{ item.label }}
+        </el-button>
       </div>
       <div class="toolbar" v-if="isShowToolBar">
+        <slot class="search-box" name="search-box"></slot>
         <el-input
+            v-if="isShowSearchInput"
             clearable
             :title="searchValue"
             :placeholder="placeholder"
@@ -45,6 +64,9 @@
           </template>
         </el-dropdown>
       </div>
+    </div>
+    <div class="table-title" v-if="tableTitle">
+      {{ tableTitle }}
     </div>
     <el-table
         ref="table"
@@ -211,6 +233,18 @@ export default {
         remove: '#f9620e',
         delete: '#f9620e'
       },
+      typeObj: {
+        add: 'primary',
+        remove: 'danger',
+        delete: 'danger'
+      },
+      operationSvg: {
+        add: '新增',
+        edit: 'edit',
+        show: 'show',
+        remove: '删除',
+        delete: '删除'
+      },
       btnSvg: {
         add: 'add',
         edit: 'edit',
@@ -225,6 +259,11 @@ export default {
     isShowSlotToolBar: {
       type: Boolean,
       default: false
+    },
+    /* 是否显示搜索输入框 */
+    isShowSearchInput: {
+      type: Boolean,
+      default: true
     },
     /* 是否显示默认搜索工具栏 */
     isShowToolBar: {
@@ -244,7 +283,7 @@ export default {
     /* 表格标题 */
     tableTitle: {
       type: String,
-      default: '表格标题'
+      default: ''
     },
     /* 搜索框提示语 */
     placeholder: {
@@ -258,6 +297,11 @@ export default {
     },
     /* 表格数据 */
     tableData: {
+      type: Array,
+      default: () => []
+    },
+    /* 表格顶部功能按钮数据 */
+    operations: {
       type: Array,
       default: () => []
     },
@@ -420,6 +464,14 @@ export default {
   },
   methods: {
     /**
+     * @Description 点击表格顶部功能按钮触发
+     * @author qianyinggenian
+     * @date 2023/10/9
+     */
+    handleClick (item) {
+      this.$emit(item.value);
+    },
+    /**
      * @Description 切换条数触发
      * @author qianyinggenian
      * @date 2023/10/8
@@ -521,9 +573,18 @@ export default {
     justify-content: space-between;
     margin-bottom: 10px;
 
-    .table-title {
-      font-size: var(--font-size-16);
-      color: var(--body-title-color);
+    .operations-box {
+      :deep(.el-button) {
+        span {
+          font-size: 12px;
+          display: flex;
+          align-items: center;
+        }
+
+        .svg-icon {
+          margin-right: 5px;
+        }
+      }
     }
 
     .toolbar {
@@ -531,6 +592,7 @@ export default {
       justify-content: flex-end;
 
       .el-input {
+        width: 250px;
         margin-right: 10px;
       }
 
@@ -541,8 +603,14 @@ export default {
     }
   }
 
-  .el-pagination {
-    //margin-top: 5px;
+  .default-toolBar-end {
+    justify-content: flex-end;
+  }
+
+  .table-title {
+    font-size: var(--font-size-18);
+    color: var(--body-title-color);
+    margin-bottom: 10px;
   }
 
   .pagination {
@@ -550,6 +618,7 @@ export default {
     margin-top: 5px;
     display: flex;
     justify-content: flex-end;
+    -webkit-justify-content: flex-end;
   }
 }
 

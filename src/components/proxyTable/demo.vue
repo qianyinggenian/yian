@@ -5,12 +5,24 @@
       :table-data="tableData"
       table-title="表格标题（注：表中数据均为MockJs随机生成的数据）"
       :columns="columns"
+      :operations="operations"
       :isCheckboxFixed="true"
       :is-index-fixed="true"
       :diy-get-list="diyGetList"
       :is-show-default-tool-bar="true"
       @edit="handleEdit"
+      @add="handleAdd"
   >
+    <div slot="search-box" class="search-box">
+      <el-select size="small" v-model="value" placeholder="请选择">
+        <el-option
+            v-for="item in operations"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+        </el-option>
+      </el-select>
+    </div>
     <template v-slot:operation="{row}">
       <!--操作列插槽-->
       <div class="btns">
@@ -39,6 +51,22 @@ export default {
   },
   data () {
     return {
+      value: '',
+      input: '',
+      operations: [
+        {
+          value: 'add',
+          label: '新增'
+        },
+        {
+          value: 'remove',
+          label: '删除'
+        },
+        {
+          value: 'test',
+          label: '测试'
+        }
+      ],
       columns: [
         {
           prop: 'name',
@@ -152,6 +180,19 @@ export default {
     });
   },
   methods: {
+    /**
+     * @Description 点击新增按钮触发
+     * @author qianyinggenian
+     * @date 2023/10/9
+     */
+    handleAdd () {
+      console.log('asdad');
+    },
+    /**
+     * @Description 点击编辑按钮触发
+     * @author qianyinggenian
+     * @date 2023/10/9
+     */
     handleEdit (row) {
       console.log('rowrow', row);
     },
@@ -167,6 +208,9 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.search-box {
+  display: flex;
+  margin-right: 10px;
+}
 </style>
