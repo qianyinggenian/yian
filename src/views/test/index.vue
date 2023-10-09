@@ -2,13 +2,49 @@
   <div>
     <p>测试</p>
     <p>值： {{ value }}</p>
-    <proxySelect
-        multiple
-        v-model="value"
-        :options="options"
-        clearable
-        @clear="handleClear">
-    </proxySelect>
+    <p>
+      多选-禁选
+      <proxySelect
+          multiple
+          disabled
+          v-model="value"
+          :options="options"
+          clearable
+          @clear="handleClear">
+      </proxySelect>
+    </p>
+    <p>
+      多选-可选
+      <proxySelect
+          ref="11"
+          multiple
+          v-model="value"
+          :options="options"
+          clearable
+          @clear="handleClear">
+      </proxySelect>
+    </p>
+    <p>
+      单选-可选
+      <proxySelect
+          ref="11"
+          v-model="value1"
+          :options="options"
+          clearable
+          @clear="handleClear">
+      </proxySelect>
+    </p>
+    <p>
+      单选-禁选
+      <proxySelect
+          ref="11"
+          :disabled="true"
+          v-model="value1"
+          :options="options"
+          clearable
+          @clear="handleClear">
+      </proxySelect>
+    </p>
   </div>
 </template>
 
@@ -22,7 +58,8 @@ export default {
   },
   data () {
     return {
-      value: '',
+      value1: '选项2',
+      value: ['选项2', '选项1'],
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -54,6 +91,12 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.el-select {
+  width: 600px;
+}
 
+p {
+  margin-top: 10px;
+}
 </style>

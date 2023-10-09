@@ -48,8 +48,9 @@ export default {
   watch: {
     value: {
       handler (newVal) {
-        // console.log('newVal', newVal);
-      }
+        this.selectValue = newVal;
+      },
+      immediate: true
     },
     selectValue: {
       handler (newVal) {

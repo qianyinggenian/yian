@@ -203,7 +203,23 @@
 }
 
 .el-select {
-  z-index: 3000 !important;
+  z-index: 10 !important;
+
+  .el-select__tags {
+    .el-tag.el-tag--info {
+      background-color: #1d507d;
+      border-color: #1d507d;
+      color: white;
+    }
+  }
+}
+
+.el-select[disabled="disabled"] {
+  .el-select__tags {
+    .el-tag--info {
+      color: #C0C4CC;
+    }
+  }
 }
 
 .el-select-dropdown {
