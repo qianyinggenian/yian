@@ -325,7 +325,6 @@ export default {
      * @date 2023/10/8
      */
     handleSizeChange (val) {
-      console.log('sizeVal', val);
       this.pageSizeNum = val;
       this.$emit('size-change', val);
     },
@@ -335,7 +334,6 @@ export default {
      * @date 2023/10/8
      */
     handleCurrentChange (val) {
-      console.log('pageVal', val);
       this.currentPageNum = val;
       this.$emit('current-change', val);
     },
