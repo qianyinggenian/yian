@@ -1,12 +1,8 @@
 <template>
   <layout :is-show-left="false">
     <div slot="right">
-      <!--      <proxyTable ref="proxyTable">-->
-      <!--        <template v-slot:operation="{row}">-->
-      <!--          {{ row }}-->
-      <!--        </template>-->
-      <!--      </proxyTable>-->
       <proxy-table/>
+      <proxyDialog></proxyDialog>
     </div>
   </layout>
 </template>
@@ -14,11 +10,13 @@
 <script>
 // import proxyTable from '@/components/proxyTable/index.vue';
 import proxyTable from '@/components/proxyTable/demo.vue';
+import proxyDialog from '@/components/proxyDialog';
 
 export default {
   name: 'index',
   components: {
-    proxyTable
+    proxyTable,
+    proxyDialog
   },
   data () {
     return {};

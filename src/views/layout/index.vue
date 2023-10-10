@@ -26,6 +26,7 @@ import sidebar from './sidebar/index.vue';
 import { mapState } from 'vuex';
 import navbar from './navbar/index.vue';
 import { menuData } from '@/common/data';
+import { userData } from '@/common/data/userData';
 import { addData, instanceDB } from '@/indexedDB';
 
 export default {
@@ -77,7 +78,10 @@ export default {
         for (const key of menuData) {
           addData(instanceDB, 'menuList', key);
         }
-      }, 1000);
+        for (const key of userData) {
+          addData(instanceDB, 'userList', key);
+        }
+      }, 1500);
     },
     showWaterMask (flag) {
       if (flag === '1') {

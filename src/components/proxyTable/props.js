@@ -185,6 +185,10 @@ export default {
   currentPage: {
     type: Number,
     default: 1
+  },
+  operationWidth: {
+    type: String,
+    default: '250px'
   }
 
 };

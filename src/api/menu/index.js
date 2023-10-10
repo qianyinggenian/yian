@@ -36,7 +36,7 @@ export default {
     });
   },
   /**
-   * @Description 保存
+   * @Description 获取导航树信息
    * @author qianyinggenian
    * @date 2023/9/22
    */
@@ -48,7 +48,7 @@ export default {
     });
   },
   /**
-   * @Description 保存
+   * @Description 删除
    * @author qianyinggenian
    * @date 2023/9/22
    */

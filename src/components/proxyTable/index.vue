@@ -159,7 +159,7 @@
           fixed="right"
           class-name="operation"
           prop="operation"
-          width="250px"
+          :width="operationWidth"
           label="操作">
         <template v-if="slotOperation" v-slot="scope">
           <slot name="operation" :row="scope.row"/>
@@ -230,7 +230,6 @@ export default {
       filterCheckList: [],
       searchValue: '',
       rowKey: 'rowKey',
-      operationWidth: '0px',
       btnColor: {
         add: '#1b6ef3',
         edit: '#2abfd9',
@@ -478,7 +477,6 @@ export default {
   }
 
   .pagination {
-    z-index: 3000;
     margin-top: 5px;
     display: flex;
     justify-content: flex-end;

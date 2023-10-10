@@ -46,6 +46,16 @@ export function openDB (dbName, version = '1') {
       objectStore.createIndex('comp', 'comp', { unique: false });
       objectStore.createIndex('parentId', 'parentId', { unique: false });
       objectStore.createIndex('parentIds', 'parentIds', { unique: false });
+      var userObjectStore = db.createObjectStore('userList', {
+        keyPath: 'id'
+      });
+      userObjectStore.createIndex('id', 'id', { unique: false });
+      userObjectStore.createIndex('name', 'name', { unique: false });
+      userObjectStore.createIndex('account', 'account', { unique: false });
+      userObjectStore.createIndex('password', 'password', { unique: false });
+      userObjectStore.createIndex('status', 'status', { unique: false });
+      userObjectStore.createIndex('creatDate', 'creatDate', { unique: false });
+      userObjectStore.createIndex('creator', 'creator', { unique: false });
     };
   });
 }

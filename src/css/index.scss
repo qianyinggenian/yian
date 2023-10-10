@@ -161,13 +161,14 @@
 
   .el-table__fixed-right {
     &::before {
-      background-color: #0a1a34;
+      background-color: #1d507d;
     }
   }
 
   .el-table__fixed {
+
     &::before {
-      background-color: #0a1a34;
+      background-color: #1d507d;
     }
   }
 
@@ -226,7 +227,11 @@
   }
 }
 
-.el-select-dropdown {
-  //position: absolute;
+.dialog-form {
+  padding: 10px;
+  overflow-x: hidden;
 
+  .el-select {
+    width: 100%;
+  }
 }
