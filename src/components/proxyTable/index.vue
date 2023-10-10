@@ -88,6 +88,7 @@
         style="width: 100%"
         @select="handleSelect"
         @select-all="handleSelectAllFn"
+        @row-click="handleRowClick"
     >
       <!-- 是否显示多选框-->
       <el-table-column
@@ -170,9 +171,9 @@
               <div class="btn"
                    :key="item.value"
                    v-if="(scope.row.rowBtns ? scope.row.rowBtns.includes(item.value): true)"
-                   :style="{color: item?.color?item.color:(btnColor[item.value]?btnColor[item.value]: '#1b6ef3')}"
+                   :style="{color: '#0af1f1'}"
               >
-                <div @click="handleClickBtn(item.value,scope.row)">{{ item.label }}
+                <div @click.stop="handleClickBtn(item.value,scope.row)">{{ item.label }}
                 </div>
               </div>
             </template>
@@ -262,13 +263,14 @@ export default {
     ...props
   },
   watch: {
-    table: {
+    tableData: {
       handler (newVal) {
         this.$nextTick(() => {
           this.$refs.table.doLayout();
         });
       },
-      immediate: true
+      immediate: true,
+      deep: true
     },
     columns: {
       handler (newVal) {
@@ -378,12 +380,24 @@ export default {
       this.$emit('select', selection);
     },
     /**
+     * @Description 当某一行被点击时会触发该事件
+     * @author qianyinggenian
+     * @date 2023/10/10
+     */
+    handleRowClick (row, column, event) {
+      const params = {
+        row: row,
+        column: column,
+        event: event
+      };
+      this.$emit('rowClick', params);
+    },
+    /**
      * @Description 点击操作列按钮触发
      * @author qianyinggenian
      * @date 2023/9/27
      */
     handleClickBtn (type, row) {
-      console.log('row', row);
       this.$emit(type, row);
     },
     /**
