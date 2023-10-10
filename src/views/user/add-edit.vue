@@ -180,7 +180,6 @@ export default {
                 ...this.ruleForm
               };
             }
-            console.log('params', params);
             const result = await api[this.type === 'add' ? 'userSave' : 'userUpdate'](params);
             const { code, msg } = result;
             if (code === 200) {
