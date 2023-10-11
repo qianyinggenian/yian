@@ -42,3 +42,23 @@ export function deepAssign () {
   }
   return target;
 }
+
+/**
+ * @Description 升序
+ * @author qianyinggenian
+ * @date 2023/10/11 011
+ */
+export function sortUpDate (a, b) {
+  return Date.parse(a.creatDate) - Date.parse(b.creatDate);
+}
+
+/**
+ * @Description 降序
+ * @author qianyinggenian
+ * @date 2023/10/11 011
+ */
+export function sortDownDate (a, b, sortValue = 'creatDate') {
+  console.log('a', a);
+  console.log('b', b);
+  return Date.parse(b[sortValue]) - Date.parse(a[sortValue]);
+}

@@ -70,14 +70,16 @@ export default {
   },
 
   mounted () {
-    this.initIndexedDB();
+    this.$nextTick(() => {
+      this.initIndexedDB();
+    });
   },
   methods: {
     /**
      * @Description 初始化数据库数据
      * @author qianyinggenian
      * @date 2023/10/10
-    */
+     */
     initIndexedDB () {
       setTimeout(() => {
         for (const key of menuData) {

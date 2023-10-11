@@ -56,5 +56,17 @@ export default {
       method: 'post',
       data
     });
+  },
+  /**
+   * @Description 删除
+   * @author qianyinggenian
+   * @date 2023/9/22
+   */
+  userBatchDelete: (data) => {
+    return request({
+      url: '/user/batch/delete',
+      method: 'post',
+      data
+    });
   }
 };

@@ -9,7 +9,7 @@ export const userData = [
     status: '启用',
     creatDate: '2023-10-01 09:30:30',
     creator: '超级管理员',
-    idAdmin: '1'
+    isAdmin: '1'
   },
   {
     name: '访客',
@@ -21,6 +21,6 @@ export const userData = [
     id: '6DD9CfbB-AA9c-4f73-8CF2-32E267fb8D58',
     creatDate: '2023-10-10 17:14:19',
     creator: '超级管理员',
-    idAdmin: '0'
+    isAdmin: '0'
   }
 ];

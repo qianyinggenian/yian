@@ -38,6 +38,10 @@ $--button-default-background-color: $primaryColor;
 $--button-default-border-color: $primaryColor;
 $--button-primary-border-color: $primaryColor;
 $--button-primary-background-color: $primaryColor;
+//$--checkbox-disabled-border-color: #C0C4CC;
+//$--checkbox-disabled-input-fill: #C0C4CC;
+$--checkbox-disabled-border-color: #e1e3ea;
+$--checkbox-disabled-input-fill: #C0C4CC;
 // pagination
 /* 改变 icon 字体路径变量，必需 */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';

@@ -5,7 +5,8 @@ import {
   instanceDB,
   cursorGetData,
   updateDB,
-  deleteDB
+  deleteDB,
+  batchDeleteDB
 } from '@/indexedDB';
 
 // const Random = Mock.Random;
@@ -70,6 +71,49 @@ Mock.mock('/mock/user/delete', 'post', (data) => {
   return deleteDB(instanceDB, 'userList', bodyParams.id).then((result) => {
     return result;
   });
+});
+/**
+ * @Description 批量删除
+ * @author qianyinggenian
+ * @date 2023/9/26
+ */
+Mock.mock('/mock/user/batch/delete', 'post', (data) => {
+  const bodyParams = JSON.parse(data.body);
+  console.log('bodyParams', bodyParams);
+  // let count = 0;
+  const { ids } = bodyParams;
+  return batchDeleteDB(instanceDB, 'userList', ids).then((result) => {
+    return result;
+  });
+  // console.log('ds', batchDeleteDB(instanceDB, 'userList', ids));
+  // return batchDeleteDB(instanceDB, 'userList', ids);
+  // for (const id of ids) {
+  //   // return batchDeleteDB(instanceDB, 'userList', bodyParams.ids).then((result) => {
+  //   //   return result;
+  //   // });
+  //   const res = batchDeleteDB(instanceDB, 'userList', id).then((result) => {
+  //     return result;
+  //   });
+  //   res.then(value => {
+  //     console.log('valuevalue', value);
+  //     if (value.code === 200) {
+  //       ++count;
+  //     }
+  //   });
+  //   console.log('resres', res);
+  // }
+  // console.log('count', count);
+  // if (count === ids.length) {
+  //   return Promise.resolve({
+  //     code: 200,
+  //     msg: '删除成功'
+  //   });
+  // } else {
+  //   return Promise.resolve({
+  //     code: 500,
+  //     msg: '删除失败'
+  //   });
+  // }
 });
 Mock.mock('/mock/user/list', 'post', () => {
   // let res;

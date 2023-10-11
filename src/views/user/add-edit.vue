@@ -214,6 +214,7 @@ export default {
       this.disabled = type === 'show';
       if (type === 'add') {
         this.$set(this.ruleForm, 'isAdmin', '0');
+        this.$set(this.ruleForm, 'status', '启用');
         return false;
       }
       const result = await api.userDetail({ id });
