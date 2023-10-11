@@ -3,6 +3,7 @@
       ref="dialog"
       :visible.sync="isShowDialog"
       @close="handleClose"
+      :is-show-footer="type !== 'show'"
   >
     <div class="dialog-form">
       <el-form
@@ -37,6 +38,7 @@
               <el-input
                   autocomplete="new-password"
                   type="password"
+                  show-password
                   :disabled="disabled" clearable placeholder="请输入"
                   v-model="ruleForm.password">
               </el-input>
@@ -45,8 +47,11 @@
           <el-col :span="11">
             <el-form-item label="确认密码" prop="confirmPassword">
               <el-input
+                  type="password"
+                  autocomplete="new-password"
                   :disabled="disabled" clearable
                   placeholder="请输入"
+                  show-password
                   v-model="ruleForm.confirmPassword">
               </el-input>
             </el-form-item>
@@ -73,6 +78,20 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row type="flex" justify="space-around" :gutter="50">
+          <el-col :span="11">
+            <el-form-item label="是否超管" prop="isAdmin">
+              <proxySelect
+                  :disabled="disabled"
+                  v-model="ruleForm.isAdmin"
+                  :options="yesOrNo"
+                  clearable>
+              </proxySelect>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+          </el-col>
+        </el-row>
       </el-form>
     </div>
     <div slot="footer">
@@ -82,12 +101,15 @@
 </template>
 
 <script>
+
 import dayjs from 'dayjs';
 import Mock from 'mockjs';
 import api from '@/api/user';
+import { mapGetters } from 'vuex';
+import JSEncrypt from 'jsencrypt/bin/jsencrypt';
+import { PUBLICKEY, PRIVATEKEY } from '@/RSA';
 import proxyDialog from '@/components/proxyDialog';
 import proxySelect from '@/components/proxySelect/index.vue';
-import { mapGetters } from 'vuex';
 
 const Random = Mock.Random;
 export default {
@@ -98,8 +120,12 @@ export default {
   },
   data () {
     return {
+      encryptionKey: PUBLICKEY,
+      decryptKey: PRIVATEKEY,
       type: 'add',
-      ruleForm: {},
+      ruleForm: {
+        isAdmin: ''
+      },
       rules: {
         name: [
           { required: true, message: '请输入', trigger: 'blur' }
@@ -115,6 +141,9 @@ export default {
         ],
         status: [
           { required: true, message: '请选择', trigger: 'change' }
+        ],
+        isAdmin: [
+          { required: true, message: '请选择', trigger: 'change' }
         ]
       },
       options: [
@@ -125,6 +154,16 @@ export default {
         {
           value: '禁用',
           label: '禁用'
+        }
+      ],
+      yesOrNo: [
+        {
+          value: '1',
+          label: '是'
+        },
+        {
+          value: '0',
+          label: '否'
         }
       ],
       disabled: false,
@@ -141,13 +180,53 @@ export default {
   mounted () {
   },
   methods: {
+
+    /**
+     * @Description 加密
+     * @author qianyinggenian
+     * @date 2022/4/28
+     */
+    encrypt (txt) {
+      const encryptor = new JSEncrypt();
+      encryptor.setPublicKey(this.encryptionKey); // 设置公钥
+      return encryptor.encrypt(txt); // 对需要加密的数据进行加密
+    },
+    /**
+     * @Description 解密
+     * @author qianyinggenian
+     * @date 2022/1/4
+     */
+    decrypt (txt) {
+      const decryptor = new JSEncrypt(); // 新建JSEncrypt对象
+      decryptor.setPrivateKey(this.decryptKey); // 设置私钥
+      return decryptor.decrypt(txt); // 对需要解密的数据景行解密
+    },
     /**
      * @Description 获取信息
      * @author qianyinggenian
      * @date 2023/10/10
      */
-    getInfo () {
+    async getInfo (params) {
+      const { type, id } = params;
+
       this.isShowDialog = true;
+      this.type = type;
+      this.disabled = type === 'show';
+      if (type === 'add') {
+        this.$set(this.ruleForm, 'isAdmin', '0');
+        return false;
+      }
+      const result = await api.userDetail({ id });
+      const { code, data, msg } = result;
+      if (code === 200) {
+        this.ruleForm = data;
+
+        const { confirmPassword, password } = this.ruleForm;
+        this.ruleForm.password = password ? this.decrypt(password) : password;
+        this.ruleForm.confirmPassword = confirmPassword ? this.decrypt(confirmPassword) : confirmPassword;
+      } else {
+        this.$message.error(msg);
+      }
     },
     /**
      * @Description 关闭弹窗
@@ -168,16 +247,21 @@ export default {
         this.$refs.ruleForm.validate(async (valid) => {
           if (valid) {
             let params = {};
+            const { confirmPassword, password } = this.ruleForm;
             if (this.type === 'add') {
               params = {
                 ...this.ruleForm,
                 id: Random.guid(),
                 creatDate: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-                creator: this.personalMsg.username
+                creator: this.personalMsg.username,
+                password: this.encrypt(password),
+                confirmPassword: this.encrypt(confirmPassword)
               };
             } else {
               params = {
-                ...this.ruleForm
+                ...this.ruleForm,
+                password: this.encrypt(password),
+                confirmPassword: this.encrypt(confirmPassword)
               };
             }
             const result = await api[this.type === 'add' ? 'userSave' : 'userUpdate'](params);

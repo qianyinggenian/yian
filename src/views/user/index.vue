@@ -9,6 +9,9 @@
           :table-btns="tableBtns"
           :table-data="tableData"
           @add="handleAdd"
+          @edit="handleEdit"
+          @show="handleShow"
+          @delete="handleDelete"
       >
       </proxy-table>
       <add-edit
@@ -38,22 +41,15 @@ export default {
       tableBtns: [
         {
           label: '查看',
-          value: 'show',
-          svg: 'show',
-          color: '#0af1f1'
+          value: 'show'
         },
         {
           label: '编辑',
-          value: 'edit',
-          svg: 'edit',
-          color: '#2abfd9',
-          fill: 'red'
+          value: 'edit'
         },
         {
           label: '删除',
-          value: 'remove',
-          svg: 'remove',
-          color: 'red'
+          value: 'delete'
         }
       ],
       operations: [
@@ -126,8 +122,38 @@ export default {
     handleAdd () {
       this.isShowAddEdit = true;
       this.$nextTick(() => {
-        this.$refs.addEdit.getInfo();
+        this.$refs.addEdit.getInfo({ type: 'add' });
       });
+    },
+    /**
+     * @Description 点击编辑按钮触发
+     * @author qianyinggenian
+     * @date 2023/10/11 011
+     */
+    handleEdit (row) {
+      this.handleDetail({ type: 'edit', id: row.id });
+    },
+    handleDetail (params) {
+      this.isShowAddEdit = true;
+      this.$nextTick(() => {
+        this.$refs.addEdit.getInfo(params);
+      });
+    },
+    /**
+     * @Description 点击查看触发
+     * @author qianyinggenian
+     * @date 2023/10/11 011
+     */
+    handleShow (row) {
+      this.handleDetail({ type: 'show', id: row.id });
+    },
+    /**
+     * @Description 点击列表删除触发
+     * @author qianyinggenian
+     * @date 2023/10/11 011
+     */
+    handleDelete (row) {
+      console.log('row', row);
     },
     /**
      * @Description 关闭弹窗

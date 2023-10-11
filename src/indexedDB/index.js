@@ -56,6 +56,7 @@ export function openDB (dbName, version = '1') {
       userObjectStore.createIndex('status', 'status', { unique: false });
       userObjectStore.createIndex('creatDate', 'creatDate', { unique: false });
       userObjectStore.createIndex('creator', 'creator', { unique: false });
+      userObjectStore.createIndex('isAdmin', 'isAdmin', { unique: false });
     };
   });
 }
