@@ -13,7 +13,6 @@ Mock.mock('/mock/login', 'post', (data) => {
   const { password, username } = body;
   let params = {};
   return getDataByIndex(instanceDB, 'userList', 'account', decrypt(username)).then((result) => {
-    console.log('result', result);
     if (result.code === 200) {
       if (decrypt(password) === decrypt(result.data.password)) {
         if (result.data.status === '启用') {
