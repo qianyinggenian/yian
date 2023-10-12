@@ -1,6 +1,6 @@
 <template>
   <div class="dialog" :style="divStyle" v-if="visible">
-    <div class="dialog-wrapper animate__animated animate__bounceInRight" :style="dialogStyle">
+    <div class="dialog-wrapper animate__animated animate__fadeInLeft" :style="dialogStyle">
       <div class="dialog-title" @mousedown.self="draggableFn">
         <div class="title" @mousedown="draggableFn" :title="title">{{ title }}</div>
         <div class="fullscreen">

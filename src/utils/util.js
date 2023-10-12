@@ -58,7 +58,5 @@ export function sortUpDate (a, b) {
  * @date 2023/10/11 011
  */
 export function sortDownDate (a, b, sortValue = 'creatDate') {
-  console.log('a', a);
-  console.log('b', b);
   return Date.parse(b[sortValue]) - Date.parse(a[sortValue]);
 }

@@ -63,7 +63,7 @@
               <proxySelect
                   :disabled="disabled"
                   v-model="ruleForm.status"
-                  :options="options"
+                  :options="accountStatusOptions"
                   clearable>
               </proxySelect>
             </el-form-item>
@@ -90,6 +90,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
+            <el-form-item label="类型" prop="type">
+              <proxySelect
+                  :disabled="disabled"
+                  v-model="ruleForm.type"
+                  :options="typeOptions"
+                  clearable>
+              </proxySelect>
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -110,6 +118,7 @@ import JSEncrypt from 'jsencrypt/bin/jsencrypt';
 import { PUBLICKEY, PRIVATEKEY } from '@/RSA';
 import proxyDialog from '@/components/proxyDialog';
 import proxySelect from '@/components/proxySelect/index.vue';
+import { yesOrNo, typeOptions, accountStatusOptions } from '@/common/data/dictionaryData';
 
 const Random = Mock.Random;
 export default {
@@ -144,28 +153,18 @@ export default {
         ],
         isAdmin: [
           { required: true, message: '请选择', trigger: 'change' }
+        ],
+        type: [
+          { required: true, message: '请选择', trigger: 'change' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
         ]
       },
-      options: [
-        {
-          value: '启用',
-          label: '启用'
-        },
-        {
-          value: '禁用',
-          label: '禁用'
-        }
-      ],
-      yesOrNo: [
-        {
-          value: '1',
-          label: '是'
-        },
-        {
-          value: '0',
-          label: '否'
-        }
-      ],
+      typeOptions: typeOptions,
+      accountStatusOptions: accountStatusOptions,
+      yesOrNo: yesOrNo,
       disabled: false,
       isShowDialog: false
     };
@@ -208,7 +207,7 @@ export default {
      */
     async getInfo (params) {
       const { type, id } = params;
-
+      console.log('Random.guid()', Random.guid());
       this.isShowDialog = true;
       this.type = type;
       this.disabled = type === 'show';

@@ -15,6 +15,7 @@ import axios from 'axios';
 import '@/indexedDB';
 import '@/mock/index.js';
 import '@/common/ztree/index';
+import animate from 'animate.css';
 import constants from '@/common/constants';
 
 dayjs.locale('zh-cn');
@@ -25,6 +26,7 @@ Vue.prototype.$_store = store;
 Vue.prototype.$Mock = mock;
 Vue.prototype.$constants = constants;
 Vue.use(ElementUI);
+Vue.use(animate);
 new Vue({
   router,
   store,

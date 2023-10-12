@@ -84,6 +84,10 @@ export default {
           label: '账号'
         },
         {
+          prop: 'type',
+          label: '类型'
+        },
+        {
           prop: 'email',
           label: '邮箱'
         },
@@ -203,7 +207,6 @@ export default {
       this.selections = selections;
     },
     diyHasCheckBox (row, index) {
-      console.log('row', row);
       return row.isAdmin !== '1';
     },
     /**

@@ -57,6 +57,12 @@ export function openDB (dbName, version = '1') {
       userObjectStore.createIndex('creatDate', 'creatDate', { unique: false });
       userObjectStore.createIndex('creator', 'creator', { unique: false });
       userObjectStore.createIndex('isAdmin', 'isAdmin', { unique: false });
+      var permissionObjectStore = db.createObjectStore('permissionList', {
+        keyPath: 'id'
+      });
+      permissionObjectStore.createIndex('id', 'id', { unique: false });
+      permissionObjectStore.createIndex('type', 'type', { unique: false });
+      permissionObjectStore.createIndex('permission', 'permission', { unique: false });
     };
   });
 }
