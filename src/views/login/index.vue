@@ -70,6 +70,8 @@ import { PUBLICKEY, encryptionKey, decryptKey } from '@/RSA';
 import { setRefreshToken, setToken, yiAnToken } from '@/common/Cookie';
 import 'particles.js';
 import particlesConfig from './Json/particles.json';
+import { userData } from '@/common/data/userData';
+import { addData, instanceDB } from '@/indexedDB';
 
 export default {
   name: 'indexView',
@@ -155,10 +157,20 @@ export default {
     handleChange () {
       console.log('checked', this.checked);
     },
+    initUserData () {
+      setTimeout(() => {
+        for (const key of userData) {
+          addData(instanceDB, 'userList', key);
+        }
+      }, 100);
+    },
     handleLogin () {
       try {
         this.$refs.ruleForm.validate(async (valid) => {
           if (valid) {
+            this.$nextTick(() => {
+              this.initUserData();
+            });
             const params = {
               username: this.encrypt(this.formData.username),
               password: this.encrypt(this.formData.password)
@@ -178,7 +190,8 @@ export default {
               setRefreshToken(data.token);
               this.$_store.commit('app/SET_USER_MSG', {
                 username: data.name,
-                userId: data.userId
+                userId: data.userId,
+                account: data.account
               });
               this.$nextTick(() => {
                 this.$router.push('/layout');

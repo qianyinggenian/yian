@@ -84,7 +84,6 @@ export default {
      * @date 2023/9/22
      */
     handleClick (treeNode) {
-      console.log('treeNode', treeNode);
       if (treeNode) {
         this.$nextTick(() => {
           const params = { treeNode, disabled: true, type: 'show' };

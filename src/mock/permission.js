@@ -2,7 +2,8 @@ import Mock from 'mockjs-async';
 import {
   getDataByKey,
   instanceDB,
-  updateDB
+  updateDB,
+  getMultipleDataByIndex
 } from '@/indexedDB';
 
 /**
@@ -38,5 +39,12 @@ Mock.mock('/mock/permission/detail', 'post', (data) => {
       msg: 'ok'
     };
     return Promise.resolve(params);
+  });
+});
+Mock.mock('/mock/permission', 'post', (data) => {
+  const bodyParams = JSON.parse(data.body);
+  const { indexName, indexValue } = bodyParams;
+  return getMultipleDataByIndex(instanceDB, 'menuList', indexName, indexValue).then((result) => {
+    return result;
   });
 });

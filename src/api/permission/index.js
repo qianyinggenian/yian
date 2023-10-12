@@ -33,5 +33,17 @@ export default {
       method: 'post',
       data
     });
+  },
+  /**
+   * @Description 保存
+   * @author qianyinggenian
+   * @date 2023/9/22
+   */
+  permissionInfo: (data) => {
+    return request({
+      url: '/permission',
+      method: 'post',
+      data
+    });
   }
 };

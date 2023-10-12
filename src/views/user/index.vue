@@ -106,9 +106,6 @@ export default {
       ]
     };
   },
-  props: {},
-  watch: {},
-  computed: {},
   mounted () {
     this.$nextTick(() => {
       this.getList();

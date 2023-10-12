@@ -6,6 +6,7 @@ import {
   cursorGetData,
   updateDB,
   deleteDB,
+  getDataByIndex,
   batchDeleteDB
 } from '@/indexedDB';
 
@@ -107,5 +108,28 @@ Mock.mock('/mock/user/list', 'post', () => {
       };
     }
     return Promise.resolve(params);
+  });
+});
+/**
+ * @Description 获取用户信息及权限信息
+ * @author qianyinggenian
+ * @date 2023/10/12
+ */
+Mock.mock('/mock/get/user/info', 'post', (data) => {
+  const bodyParams = JSON.parse(data.body);
+  // const { indexName, indexValue } = bodyParams;
+  return getDataByIndex(instanceDB, 'userList', 'account', bodyParams.account).then((result) => {
+    if (result.code === 200) {
+      return getDataByIndex(instanceDB, 'permissionList', 'type', result.data.type).then((value) => {
+        return {
+          code: 200,
+          data: {
+            userInfo: result.data,
+            permission: value.data
+          }
+        };
+      });
+    }
+    return result;
   });
 });

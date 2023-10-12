@@ -68,5 +68,13 @@ export default {
       method: 'post',
       data
     });
+  },
+
+  getUserInfo: (data) => {
+    return request({
+      url: '/get/user/info',
+      method: 'post',
+      data
+    });
   }
 };

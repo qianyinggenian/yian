@@ -5,7 +5,8 @@ export default {
     // 个人信息
     personalMsg: JSON.parse(sessionStorage.getItem('personalMsg')) || {
       username: '',
-      userId: ''
+      userId: '',
+      account: ''
     },
     isCollapse: false,
     // 是否显示水印， 1-是，0-否
