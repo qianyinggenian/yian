@@ -190,7 +190,6 @@ export function deleteDB (db, storeName, id) {
   });
 }
 
-
 // 通过主键删除数据（数据库对象，表名，主键值）
 export function batchDeleteDB (db, storeName, ids) {
   return new Promise((resolve, reject) => {
