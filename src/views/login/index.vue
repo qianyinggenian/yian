@@ -114,6 +114,10 @@ export default {
     this.$nextTick(() => {
       this.initParticlesJS();
     });
+
+    this.$nextTick(() => {
+      this.initUserData();
+    });
   },
   methods: {
     initParticlesJS () {
@@ -168,9 +172,6 @@ export default {
       try {
         this.$refs.ruleForm.validate(async (valid) => {
           if (valid) {
-            this.$nextTick(() => {
-              this.initUserData();
-            });
             const params = {
               username: this.encrypt(this.formData.username),
               password: this.encrypt(this.formData.password)
