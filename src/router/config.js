@@ -3,14 +3,6 @@ import redirectComp from '../views/redirect';
 
 export const config = [
   {
-    path: '/test',
-    name: 'test',
-    component: test,
-    meta: {
-      title: '测试'
-    }
-  },
-  {
     path: '/setting',
     name: 'setting',
     meta: {
@@ -50,6 +42,22 @@ export const config = [
     component: () => import('@/views/proxyTable/index.vue'),
     meta: {
       title: '表格'
+    }
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: test,
+    meta: {
+      title: '测试'
+    }
+  },
+  {
+    path: '/animation',
+    name: 'animation',
+    component: () => import('@/views/animation/index.vue'),
+    meta: {
+      title: '动画'
     }
   }
 ];
