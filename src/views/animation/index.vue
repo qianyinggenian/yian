@@ -1,11 +1,17 @@
 <template>
   <layout :is-show-left="false">
     <div slot="right" class="right">
-      <div class="test">
-        <el-image :src="randomUrl"></el-image>
+      <div class="top">
+        <div class="test">
+          <el-image :src="randomUrl"></el-image>
+        </div>
+        <div class="mix-blend-mode">
+          <span class="text">透明文字效果</span>
+        </div>
       </div>
-      <div class="mix-blend-mode">
-        <span class="text">透明文字效果</span>
+
+      <div class="adv">
+        <span>这是个左右滚动,鼠标覆盖暂停</span>
       </div>
     </div>
   </layout>
@@ -35,7 +41,7 @@ $url: url(../../assets/45.jpg);
   justify-content: center;
 }
 
-.right {
+.top {
   display: flex;
   flex-wrap: wrap;
   flex-flow: row !important;
@@ -96,6 +102,35 @@ $url: url(../../assets/45.jpg);
       transition: transform .5s;
     }
   }
+
 }
 
+.adv {
+  border: 1px solid red;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-top: 20px;
+  overflow-x: hidden;
+
+  span {
+    font-size: var(--font-size-20);
+    animation: toRight 10s linear infinite;
+    cursor: pointer;
+    display: flex;
+    width: 100%;
+    animation-play-state: running; // 动画运行
+    &:hover {
+      animation-play-state: paused; // 动画暂停
+    }
+  }
+}
+
+@keyframes toRight {
+  from {
+    margin-left: -5px;
+  }
+  to {
+    margin-left: 100%;
+  }
+}
 </style>
