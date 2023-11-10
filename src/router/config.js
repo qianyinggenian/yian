@@ -59,5 +59,13 @@ export const config = [
     meta: {
       title: '动画'
     }
+  },
+  {
+    path: '/Excel',
+    name: 'Excel',
+    component: () => import('@/views/excelJs/index.vue'),
+    meta: {
+      title: 'Excel'
+    }
   }
 ];
