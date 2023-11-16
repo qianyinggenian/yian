@@ -14,6 +14,7 @@
       :is-show-default-tool-bar="true"
       @edit="handleEdit"
       @add="handleAdd"
+      @export="handleExport"
   >
     <div slot="search-box" class="search-box">
       <el-select size="small" v-model="value" placeholder="请选择">
@@ -45,6 +46,8 @@
 <script>
 import proxyTable from './index.vue';
 // import { list } from './data';
+import ExcelJS from 'exceljs';
+import saveAs from 'file-saver';
 
 export default {
   name: 'demo',
@@ -67,6 +70,10 @@ export default {
         {
           value: 'test',
           label: '测试'
+        },
+        {
+          value: 'export',
+          label: '导出'
         }
       ],
       columns: [
@@ -191,6 +198,40 @@ export default {
      */
     handleAdd () {
       console.log('asdad');
+    },
+    /**
+     * @Description 点击导出触发
+     * @author wangkangzhang
+     * @date 2023/11/16
+     */
+    handleExport () {
+      console.log('导出导出');
+      const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+      const workbook = new ExcelJS.Workbook();
+      workbook.created = new Date();
+      workbook.modified = new Date();
+      // const sheet = workbook.addWorksheet('My Sheet');
+      // 创建一个第一行和列冻结的工作表
+
+      const worksheet = workbook.addWorksheet('My Sheet', { views: [{ state: 'frozen', xSplit: 1, ySplit: 1 }] });
+      // worksheet.columns = [
+      //   { header: 'Id', key: 'id', width: 10 },
+      //   { header: 'Name', key: 'name', width: 32 },
+      //   { header: 'D.O.B.', key: 'DOB', width: 10, outlineLevel: 1 }
+      // ];
+      worksheet.columns = this.columns.map(item => {
+        item.header = item.label;
+        item.key = item.prop;
+        item.width = 20;
+        return item;
+      });
+      this.tableData.forEach(item => {
+        worksheet.addRow(item);
+      });
+      workbook.xlsx.writeBuffer().then((buffer) => {
+        const blob = new Blob([buffer], { type: EXCEL_TYPE });
+        saveAs(blob, 'excel导出测试.xlsx');
+      });
     },
     /**
      * @Description 点击编辑按钮触发
