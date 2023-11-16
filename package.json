@@ -13,6 +13,7 @@
   "dependencies": {
     "animate.css": "^4.1.1",
     "axios": "^1.5.0",
+    "babel-polyfill": "^6.26.0",
     "core-js": "^3.33.2",
     "dayjs": "^1.11.9",
     "element-ui": "^2.15.14",

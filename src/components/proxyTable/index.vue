@@ -247,14 +247,18 @@ export default {
         edit: 'edit',
         show: 'show',
         remove: '删除',
-        delete: '删除'
+        delete: '删除',
+        import: 'import',
+        export: 'export'
       },
       btnSvg: {
         add: 'add',
         edit: 'edit',
         show: 'show',
         remove: 'remove',
-        delete: 'delete'
+        delete: 'delete',
+        import: 'import',
+        export: 'export'
       }
     };
   },

@@ -205,20 +205,14 @@ export default {
      * @date 2023/11/16
      */
     handleExport () {
-      console.log('导出导出');
       const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
       const workbook = new ExcelJS.Workbook();
-      workbook.created = new Date();
-      workbook.modified = new Date();
-      // const sheet = workbook.addWorksheet('My Sheet');
-      // 创建一个第一行和列冻结的工作表
-
+      workbook.creator = 'Me'; // 作者
+      workbook.lastModifiedBy = 'Me'; // 上一次修改者
+      workbook.created = new Date(); // 创建时间
+      workbook.modified = new Date(); // 上次修改时间
+      workbook.lastPrinted = new Date(); // 上一次打印时间
       const worksheet = workbook.addWorksheet('My Sheet', { views: [{ state: 'frozen', xSplit: 1, ySplit: 1 }] });
-      // worksheet.columns = [
-      //   { header: 'Id', key: 'id', width: 10 },
-      //   { header: 'Name', key: 'name', width: 32 },
-      //   { header: 'D.O.B.', key: 'DOB', width: 10, outlineLevel: 1 }
-      // ];
       worksheet.columns = this.columns.map(item => {
         item.header = item.label;
         item.key = item.prop;
