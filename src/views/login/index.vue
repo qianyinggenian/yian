@@ -70,8 +70,8 @@ import { PUBLICKEY, encryptionKey, decryptKey } from '@/RSA';
 import { setRefreshToken, setToken, yiAnToken } from '@/common/Cookie';
 import 'particles.js';
 import particlesConfig from './Json/particles.json';
-import { userData } from '@/common/data/userData';
-import { addData, instanceDB } from '@/indexedDB';
+// import { userData } from '@/common/data/userData';
+// import { addData, instanceDB } from '@/indexedDB';
 
 export default {
   name: 'indexView',
@@ -115,9 +115,9 @@ export default {
       this.initParticlesJS();
     });
 
-    this.$nextTick(() => {
-      this.initUserData();
-    });
+    // this.$nextTick(() => {
+    //   this.initUserData();
+    // });
   },
   methods: {
     initParticlesJS () {
@@ -161,13 +161,13 @@ export default {
     handleChange () {
       console.log('checked', this.checked);
     },
-    initUserData () {
-      setTimeout(() => {
-        for (const key of userData) {
-          addData(instanceDB, 'userList', key);
-        }
-      }, 100);
-    },
+    // initUserData () {
+    //   setTimeout(() => {
+    //     for (const key of userData) {
+    //       addData(instanceDB, 'userList', key);
+    //     }
+    //   }, 100);
+    // },
     handleLogin () {
       try {
         this.$refs.ruleForm.validate(async (valid) => {

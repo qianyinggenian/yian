@@ -61,11 +61,26 @@ export default {
             .load(buffer)
             .then(() => {
               const worksheet = workbook.getWorksheet(1);
-              const rowCount = worksheet.getColumn(1).values;
-              const columnCount = worksheet.getRow(1);
+              const rowCount = worksheet.getRow(1).values; // 获取行
+              // const columnCount = worksheet.getColumn(1).values; // 获取列
               //  validate table data
-              console.log(rowCount);
-              console.log(columnCount);
+              rowCount.shift();
+              console.log('rowCount', rowCount);
+              // console.log('columnCount', columnCount);
+              const excelList = [];
+
+              worksheet.getSheetValues().filter(temp => !!temp?.length).forEach(item => { // 移除空行
+                // 移除每行首个空元素
+                item.shift();
+                // 定义临时对象存储每一行内容
+                const tempObj = {};
+                item.forEach((item2, index2) => {
+                  tempObj[rowCount[index2]] = item2;
+                });
+                excelList.push(tempObj);
+              });
+              excelList.shift();
+              console.log('excelList', excelList);
               resolve('Excel file is valid.');
             }).catch(e => {
             // eslint-disable-next-line prefer-promise-reject-errors
@@ -78,20 +93,6 @@ export default {
       const workbook = new Excel.Workbook();
       const res = await workbook.xlsx.load(this.files[0]);
       console.log('res', res);
-    },
-    readFile () {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        if (!this.files[0]) {
-          // eslint-disable-next-line prefer-promise-reject-errors
-          reject('上传文件异常!');
-        } else {
-          reader.readAsArrayBuffer(this.files[0]);
-          reader.onload = (ev) => {
-            resolve(ev.target);
-          };
-        }
-      });
     }
   }
 };
