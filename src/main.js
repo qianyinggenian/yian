@@ -17,6 +17,8 @@ import '@/indexedDB';
 import '@/mock/index.js';
 import '@/common/ztree/index';
 import 'animate.css';
+// import * as echarts from 'echarts';
+import * as echarts from 'echarts/dist/echarts.js';
 import constants from '@/common/constants';
 
 dayjs.locale('zh-cn');
@@ -26,6 +28,7 @@ Vue.config.productionTip = false;
 Vue.prototype.$_store = store;
 Vue.prototype.$Mock = mock;
 Vue.prototype.$constants = constants;
+Vue.prototype.$echarts = echarts;
 Vue.use(ElementUI);
 // Vue.use(animate);
 new Vue({

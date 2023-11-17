@@ -67,5 +67,13 @@ export const config = [
     meta: {
       title: 'Excel'
     }
+  },
+  {
+    path: '/echarts',
+    name: 'echarts',
+    component: () => import('@/views/echarts/index.vue'),
+    meta: {
+      title: 'echarts'
+    }
   }
 ];
