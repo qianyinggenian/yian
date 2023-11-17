@@ -127,7 +127,7 @@ $url: url(../../assets/45.jpg);
 
 @keyframes toRight {
   from {
-    margin-left: -5px;
+    margin-left: 0px;
   }
   to {
     margin-left: 100%;
