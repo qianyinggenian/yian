@@ -17,8 +17,8 @@ import '@/indexedDB';
 import '@/mock/index.js';
 import '@/common/ztree/index';
 import 'animate.css';
-// import * as echarts from 'echarts';
-import * as echarts from 'echarts/dist/echarts.js';
+import * as echarts from 'echarts';
+import 'echarts-gl';
 import constants from '@/common/constants';
 
 dayjs.locale('zh-cn');

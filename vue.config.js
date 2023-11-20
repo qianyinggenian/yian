@@ -41,8 +41,8 @@ module.exports = {
       jquery: '$',
       $: 'jquery',
       jQuery: 'jquery',
-      'windows.jQuery': 'jquery',
-      echarts: 'echarts'
+      'windows.jQuery': 'jquery'
+      // echarts: 'echarts'
     },
     plugins: [
       // new webpack.optimize.CommonsChunkPlugin('common.js'),
