@@ -75,5 +75,13 @@ export const config = [
     meta: {
       title: 'echarts'
     }
+  },
+  {
+    path: '/formatConversion',
+    name: 'formatConversion',
+    component: () => import('@/views/formatConversion/index.vue'),
+    meta: {
+      title: '直播源格式转化'
+    }
   }
 ];
