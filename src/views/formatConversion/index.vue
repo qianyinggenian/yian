@@ -58,6 +58,7 @@ export default {
       initialValue: '',
       resultValue: '',
       typeValue: 'txt',
+      ul: '',
       templateM3u8: '/yian/static/template/demo.m3u8',
       templateTxt: '/yian/static/template/demo.txt',
       typeOptions: [
