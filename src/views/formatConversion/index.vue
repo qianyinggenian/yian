@@ -1,7 +1,18 @@
 <template>
 <div class="container">
+  <el-select v-model="typeValue" placeholder="请选择" @change="handleClear">
+    <el-option
+        v-for="item in typeOptions"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value">
+    </el-option>
+  </el-select>
   <div class="textarea-container">
-    TXT格式源:
+    <p>
+      <span v-if="typeValue === 'txt'">txt格式源:</span>
+      <span v-else>m3u8格式源:</span>
+    </p>
     <el-input
         type="textarea"
         placeholder="请输入内容"
@@ -9,14 +20,17 @@
     </el-input>
   </div>
   <div class="btns-box">
-    <el-button size="small" @click="handleFormat1">格式转换1</el-button>
-    <el-button size="small" @click="handleFormat">格式转换</el-button>
+    <el-button size="small" v-if="typeValue === 'txt'" @click="handleFormatToM3u8">格式转换</el-button>
+    <el-button size="small" v-else @click="handleFormatToTXT">格式转换</el-button>
     <el-button size="small" @click="handleClear">清空屏幕</el-button>
     <el-button size="small" @click="handleCopyResult">拷贝结果</el-button>
-    <el-button size="small" @click="handleDownload">保存m3u8</el-button>
+    <el-button size="small" @click="handleDownload">保存结果</el-button>
   </div>
   <div class="textarea-container">
-    M3U格式转换结果:
+    <p>
+      <span v-if="typeValue === 'txt'">m3u8格式转换结果:</span>
+      <span v-else>txt格式转换结果:</span>
+    </p>
     <el-input
         type="textarea"
         placeholder="请输入内容"
@@ -34,7 +48,18 @@ export default {
   data () {
     return {
       initialValue: '',
-      resultValue: ''
+      resultValue: '',
+      typeValue: 'txt',
+      typeOptions: [
+        {
+          value: 'txt',
+          label: 'txt转m3u8格式'
+        },
+        {
+          value: 'm3u8',
+          label: 'm3u8转txt格式'
+        }
+      ]
     };
   },
   props: {},
@@ -42,16 +67,42 @@ export default {
   computed: {},
   mounted () {},
   methods: {
-    handleFormat1 () {
+    handleFormatToTXT () {
       const lines = this.initialValue.split('\n');
-      console.log('lines', lines);
+      let currentGroup = null;
+      let oldCurrentGroup = null;
+      let originalChannelName = null;
+      let txtOutput = '';
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        if (trimmedLine !== '') {
+          if (trimmedLine.includes('group-title')) {
+            const startIndex = trimmedLine.lastIndexOf('group-title="');
+            const endIndex = trimmedLine.lastIndexOf('",');
+            currentGroup = trimmedLine.slice(startIndex, endIndex).replace(/group-title="/, '').trim();
+            originalChannelName = trimmedLine.slice(endIndex, trimmedLine.length).replace(/",/, '').trim();
+          } else if (!trimmedLine.includes('#EXTM3U')) {
+            let genre = ',#genre#';
+            let url = '';
+            if (oldCurrentGroup !== currentGroup) {
+              oldCurrentGroup = currentGroup;
+              genre = `${currentGroup},#genre#`;
+              url = `${genre}\n${originalChannelName},${trimmedLine}`;
+            } else {
+              url = `${originalChannelName},${trimmedLine}`;
+            }
+            txtOutput += `${url}\n`;
+          }
+        }
+      }
+      this.resultValue = txtOutput;
     },
     /**
      * @Description 点击格式转换按钮触发
      * @author qianyinggenian
      * @date 2024/10/05
     */
-    handleFormat () {
+    handleFormatToM3u8 () {
       if (!this.initialValue) {
         this.$message.error('请选填写TXT格式源');
         return false;
@@ -101,7 +152,7 @@ export default {
       });
     },
     /**
-     * @Description 点击保存m3u8按钮触发
+     * @Description 点击保存结果按钮触发
      * @author qianyinggenian
      * @date 2024/12/05
     */
@@ -111,7 +162,8 @@ export default {
         const downloadElement = document.createElement('a');
         const href = window.URL.createObjectURL(blob); // 创建下载的链接
         downloadElement.href = href;
-        downloadElement.download = 'playlist.m3u'; // 下载后文件名
+        const filetype = this.typeValue === 'txt' ? 'm3u' : 'txt';
+        downloadElement.download = `playlist.${filetype}`; // 下载后文件名
         document.body.appendChild(downloadElement);
         downloadElement.click(); // 点击下载
         document.body.removeChild(downloadElement); // 下载完成移除元素
@@ -133,6 +185,9 @@ export default {
   flex-direction: column;
   padding: 10px;
   box-sizing: border-box;
+  .el-select {
+    width: 250px;
+  }
   .btns-box {
     height: 50px;
     width: 100%;
