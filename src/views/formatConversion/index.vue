@@ -57,6 +57,7 @@ export default {
     return {
       initialValue: '',
       resultValue: '',
+      uu: '',
       typeValue: 'txt',
       templateM3u8: '/static/template/demo.m3u8',
       templateTxt: '/static/template/demo.txt',
