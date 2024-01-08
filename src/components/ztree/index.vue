@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ul id="treeDemo" class="ztree"></ul>
+    <ul id="treeDemo" class="schema-tree-plus"></ul>
   </div>
 </template>
 
@@ -174,7 +174,8 @@ export default {
      */
     checkNode (event, treeId, treeNode) {
       event.preventDefault();
-      this.$emit('check', treeNode);
+      const checkedNodesList = this.zTreeObj.getCheckedNodes();
+      this.$emit('check', treeNode, checkedNodesList);
     },
     /**
      * @Description 勾选节点前触发

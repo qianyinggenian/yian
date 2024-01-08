@@ -1,15 +1,7 @@
-import test2 from '@/views/test2/index.vue';
+import test from '@/views/test/index.vue';
 import redirectComp from '../views/redirect';
 
 export const config = [
-  {
-    path: '/test1',
-    name: 'test1',
-    component: test2,
-    meta: {
-      title: '测试1'
-    }
-  },
   {
     path: '/setting',
     name: 'setting',
@@ -43,5 +35,61 @@ export const config = [
         }
       }
     ]
+  },
+  {
+    path: '/table',
+    name: '表格',
+    component: () => import('@/views/proxyTable/index.vue'),
+    meta: {
+      title: '表格'
+    }
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: test,
+    meta: {
+      title: '测试'
+    }
+  },
+  {
+    path: '/animation',
+    name: 'animation',
+    component: () => import('@/views/animation/index.vue'),
+    meta: {
+      title: '动画'
+    }
+  },
+  {
+    path: '/Excel',
+    name: 'Excel',
+    component: () => import('@/views/excelJs/index.vue'),
+    meta: {
+      title: 'Excel'
+    }
+  },
+  {
+    path: '/echarts',
+    name: 'echarts',
+    component: () => import('@/views/echarts/index.vue'),
+    meta: {
+      title: 'echarts'
+    }
+  },
+  {
+    path: '/formatConversion',
+    name: 'formatConversion',
+    component: () => import('@/views/formatConversion/index.vue'),
+    meta: {
+      title: '直播源格式转化'
+    }
+  },
+  {
+    path: '/proxy-layout',
+    name: 'proxy-layout',
+    component: () => import('@/views/proxy-layout/index.vue'),
+    meta: {
+      title: 'proxy-layout'
+    }
   }
 ];

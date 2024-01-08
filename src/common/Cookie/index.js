@@ -2,8 +2,8 @@ import Cookies from 'js-cookie';
 
 export const yiAnToken = 'yiAnToken';
 export const refreshTokenKey = 'refreshTokenKey';
-export const tokenExpireTime = 31 * 60 * 1000; // 31分钟
-export const refreshTokenExpireTime = 30 * 60 * 1000; // 半小时
+export const tokenExpireTime = 24 * 60 * 60 * 1000; // 31分钟
+export const refreshTokenExpireTime = 23.5 * 60 * 60 * 1000; // 半小时
 
 /**
  * @Description 获取Cookie

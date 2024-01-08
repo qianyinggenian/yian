@@ -2,9 +2,6 @@
 @import "reset";
 @import "variables";
 
-* {
-  margin: 0;
-}
 
 @mixin flexStyle {
   display: flex;
@@ -15,6 +12,7 @@
 .layout-container {
   height: 100%;
   width: 100%;
+  min-width: var(--system-min-width);
 
   .el-container {
     width: 100%;
@@ -163,11 +161,87 @@
 
   .el-table__fixed-right {
     &::before {
-      background-color: #0a1a34;
+      background-color: #1d507d;
+    }
+  }
+
+  .el-table__fixed {
+
+    &::before {
+      background-color: #1d507d;
     }
   }
 
   .el-table__fixed-right-patch {
     background-color: #1d507d;
   }
+}
+
+.el-pagination {
+  .el-pager {
+    .number {
+      background: $primaryColor !important;
+    }
+
+    .number:not(.disabled).active {
+      color: #409eff !important;
+      font-size: var(--font-size-16);
+      border: 1px solid #409eff !important;
+    }
+
+    .more {
+      background: $primaryColor !important;
+    }
+  }
+
+  .btn-prev:disabled, .btn-next:disabled {
+    background-color: rgba(29, 100, 110, 1);
+  }
+
+  .btn-prev:not(:disabled), .btn-next:not(:disabled) {
+    background-color: $primaryColor;
+  }
+
+  .el-pagination__jump {
+    margin-left: 2px;
+  }
+}
+
+.el-select {
+  z-index: 10 !important;
+
+  .el-select__tags {
+    .el-tag.el-tag--info {
+      background-color: #1d507d;
+      border-color: #1d507d;
+      color: white;
+    }
+  }
+}
+
+.el-select[disabled="disabled"] {
+  .el-select__tags {
+    .el-tag--info {
+      color: #C0C4CC;
+    }
+  }
+}
+
+.dialog-form {
+  padding: 10px;
+  overflow-x: hidden;
+
+  .el-select {
+    width: 100%;
+  }
+}
+
+.el-icon-loading {
+  font-size: 50px;
+  z-index: 9;
+}
+
+.el-loading-text {
+  font-size: 30px !important;
+  margin: 10px 10px !important;
 }

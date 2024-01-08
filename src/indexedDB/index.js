@@ -46,6 +46,23 @@ export function openDB (dbName, version = '1') {
       objectStore.createIndex('comp', 'comp', { unique: false });
       objectStore.createIndex('parentId', 'parentId', { unique: false });
       objectStore.createIndex('parentIds', 'parentIds', { unique: false });
+      var userObjectStore = db.createObjectStore('userList', {
+        keyPath: 'id'
+      });
+      userObjectStore.createIndex('id', 'id', { unique: false });
+      userObjectStore.createIndex('name', 'name', { unique: false });
+      userObjectStore.createIndex('account', 'account', { unique: false });
+      userObjectStore.createIndex('password', 'password', { unique: false });
+      userObjectStore.createIndex('status', 'status', { unique: false });
+      userObjectStore.createIndex('creatDate', 'creatDate', { unique: false });
+      userObjectStore.createIndex('creator', 'creator', { unique: false });
+      userObjectStore.createIndex('isAdmin', 'isAdmin', { unique: false });
+      var permissionObjectStore = db.createObjectStore('permissionList', {
+        keyPath: 'id'
+      });
+      permissionObjectStore.createIndex('id', 'id', { unique: false });
+      permissionObjectStore.createIndex('type', 'type', { unique: false });
+      permissionObjectStore.createIndex('permission', 'permission', { unique: false });
     };
   });
 }
@@ -63,12 +80,10 @@ export function addData (db, storeName, data) {
       .objectStore(storeName) // 仓库对象
       .add(data);
     request.onsuccess = function (event) {
-      console.log('数据写入成功');
       resolve({ code: 200, msg: '操作成功' });
     };
 
     request.onerror = function (event) {
-      console.log('数据写入失败');
       resolve({ code: 500, msg: '操作失败' });
     };
   });
@@ -122,6 +137,96 @@ export function getDataByKey (db, storeName, key) {
   });
 }
 
+/**
+ * 通过索引读取数据
+ * @param {object} db 数据库实例
+ * @param {string} storeName 仓库名称
+ * @param {string} indexName 索引名称
+ * @param {string} indexValue 索引值
+ */
+export function getDataByIndex (db, storeName, indexName, indexValue) {
+  return new Promise((resolve, reject) => {
+    var store = db.transaction(storeName, 'readwrite').objectStore(storeName);
+    var request = store.index(indexName).get(indexValue);
+    request.onerror = function () {
+      // eslint-disable-next-line prefer-promise-reject-errors
+      reject({
+        code: 500,
+        data: {},
+        msg: '网络错误，请联系管理员'
+      });
+    };
+    request.onsuccess = function (e) {
+      var result = e.target.result;
+      resolve({
+        code: 200,
+        data: {
+          ...result
+        }
+      });
+    };
+  });
+}
+
+export function getMultipleDataByIndex (db, storeName, indexName, indexValue) {
+  return new Promise((resolve, reject) => {
+    let count = 0;
+    const list = [];
+    for (const key of indexValue) {
+      var store = db.transaction(storeName, 'readwrite').objectStore(storeName);
+      var request = store.index(indexName).get(key);
+      request.onerror = function () {
+        // eslint-disable-next-line prefer-promise-reject-errors
+        reject({
+          code: 500,
+          data: {},
+          msg: '网络错误，请联系管理员'
+        });
+      };
+      request.onsuccess = function (e) {
+        ++count;
+        var result = e.target.result;
+        if (result) {
+          list.push(result);
+        }
+        if (count === indexValue.length) {
+          resolve({
+            code: 200,
+            list
+          });
+        }
+      };
+    }
+  });
+}
+
+/**
+ * 通过索引和游标查询记录
+ * @param {object} db 数据库实例
+ * @param {string} storeName 仓库名称
+ * @param {string} indexName 索引名称
+ * @param {string} indexValue 索引值
+ */
+export function cursorGetDataByIndex (db, storeName, indexName, indexValue) {
+  const list = [];
+  var store = db.transaction(storeName, 'readwrite').objectStore(storeName); // 仓库对象
+  var request = store
+    .index(indexName) // 索引对象
+    .openCursor(IDBKeyRange.only(indexValue)); // 指针对象
+  request.onsuccess = function (e) {
+    var cursor = e.target.result;
+    if (cursor) {
+      // 必须要检查
+      list.push(cursor.value);
+      cursor.continue(); // 遍历了存储对象中的所有内容
+    } else {
+      console.log('游标索引查询结果：', list);
+    }
+  };
+  request.onerror = function (e) {
+  };
+}
+
 const promise = openDB('yian', '1');
 // const that = this;
 
@@ -146,12 +251,10 @@ export function updateDB (db, storeName, data) {
       .put(data);
 
     request.onsuccess = () => {
-      console.log('数据更新成功');
       resolve(200);
     };
 
     request.onerror = () => {
-      console.log('数据更新失败');
       // eslint-disable-next-line prefer-promise-reject-errors
       reject(500);
     };
@@ -176,5 +279,36 @@ export function deleteDB (db, storeName, id) {
       // eslint-disable-next-line prefer-promise-reject-errors
       reject({ code: 500, msg: '删除失败' });
     };
+  });
+}
+
+// 通过主键删除数据（数据库对象，表名，主键值）
+export function batchDeleteDB (db, storeName, ids) {
+  return new Promise((resolve, reject) => {
+    var count = 0;
+
+    for (const id of ids) {
+      var request = db
+        .transaction([storeName], 'readwrite')
+        .objectStore(storeName)
+        .delete(id);
+      request.onsuccess = function () {
+        ++count;
+        if (count === ids.length) {
+          resolve({
+            code: 200,
+            msg: '删除成功'
+          });
+        }
+      };
+
+      request.onerror = function () {
+        // eslint-disable-next-line prefer-promise-reject-errors
+        reject({
+          code: 500,
+          msg: '删除失败'
+        });
+      };
+    }
   });
 }

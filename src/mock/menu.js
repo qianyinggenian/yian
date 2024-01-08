@@ -62,7 +62,7 @@ Mock.mock('/mock/menu/detail', 'post', (data) => {
   });
 });
 /**
- * @Description 导航详情
+ * @Description 导航树信息
  * @author qianyinggenian
  * @date 2023/9/21
  */

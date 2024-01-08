@@ -26,6 +26,8 @@ import sidebar from './sidebar/index.vue';
 import { mapState } from 'vuex';
 import navbar from './navbar/index.vue';
 import { menuData } from '@/common/data';
+import { userData } from '@/common/data/userData';
+import { permissionData } from '@/common/data/permissionData';
 import { addData, instanceDB } from '@/indexedDB';
 
 export default {
@@ -69,15 +71,30 @@ export default {
   },
 
   mounted () {
-    this.initIndexedDB();
+    this.$nextTick(() => {
+      this.initIndexedDB();
+    });
   },
   methods: {
+    /**
+     * @Description 初始化数据库数据
+     * @author qianyinggenian
+     * @date 2023/10/10
+     */
     initIndexedDB () {
       setTimeout(() => {
         for (const key of menuData) {
           addData(instanceDB, 'menuList', key);
         }
-      }, 1000);
+        for (const key of userData) {
+          addData(instanceDB, 'userList', key);
+        }
+        for (const key of permissionData) {
+          addData(instanceDB, 'permissionList', key);
+        }
+
+        this.$_store.dispatch('router/getUserInfo', this.personalMsg.account);
+      }, 1500);
     },
     showWaterMask (flag) {
       if (flag === '1') {
@@ -119,6 +136,7 @@ export default {
       width: 100%;
       height: calc(100% - 34px);
       overflow-y: auto;
+      color: white;
     }
   }
 }

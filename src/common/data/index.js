@@ -78,6 +78,22 @@ export const menuTree = [
     checked: false,
     open: true,
     nocheck: false
+  },
+  {
+    id: '8a7480426fa34894016fa721b5c000g1',
+    parentId: 'root',
+    parentIds: 'root',
+    text: '表格',
+    code: 'table',
+    actionUrl: '',
+    type: 'DeptRoot',
+    showOperatePrivilege: true,
+    effectiveFlag: '1',
+    iconSkin: 'el-icon-s-home',
+    chkDisabled: false,
+    checked: false,
+    open: true,
+    nocheck: false
   }
 ];
 export const menuData = [
@@ -177,5 +193,17 @@ export const menuData = [
     sort: '2',
     parentId: '8a7480426fa34894016fa721b5c000f4',
     parentIds: 'root,8a7480426fa34894016fa721b5c000f1,8a7480426fa34894016fa721b5c000f4'
+  },
+  {
+    id: '8a7480426fa34894016fa721b5c000g1',
+    code: 'table',
+    type: 'menu',
+    name: '表格',
+    permission: 'sys_table',
+    path: '/table',
+    comp: '/view/proxyTable/index',
+    sort: '1',
+    parentId: 'root',
+    parentIds: 'root'
   }
 ];

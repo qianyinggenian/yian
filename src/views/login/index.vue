@@ -70,6 +70,8 @@ import { PUBLICKEY, encryptionKey, decryptKey } from '@/RSA';
 import { setRefreshToken, setToken, yiAnToken } from '@/common/Cookie';
 import 'particles.js';
 import particlesConfig from './Json/particles.json';
+// import { userData } from '@/common/data/userData';
+// import { addData, instanceDB } from '@/indexedDB';
 
 export default {
   name: 'indexView',
@@ -112,6 +114,10 @@ export default {
     this.$nextTick(() => {
       this.initParticlesJS();
     });
+
+    // this.$nextTick(() => {
+    //   this.initUserData();
+    // });
   },
   methods: {
     initParticlesJS () {
@@ -155,6 +161,13 @@ export default {
     handleChange () {
       console.log('checked', this.checked);
     },
+    // initUserData () {
+    //   setTimeout(() => {
+    //     for (const key of userData) {
+    //       addData(instanceDB, 'userList', key);
+    //     }
+    //   }, 100);
+    // },
     handleLogin () {
       try {
         this.$refs.ruleForm.validate(async (valid) => {
@@ -178,7 +191,8 @@ export default {
               setRefreshToken(data.token);
               this.$_store.commit('app/SET_USER_MSG', {
                 username: data.name,
-                userId: data.userId
+                userId: data.userId,
+                account: data.account
               });
               this.$nextTick(() => {
                 this.$router.push('/layout');
@@ -221,31 +235,8 @@ export default {
   position: absolute;
   box-sizing: border-box;
   justify-content: center;
+  backdrop-filter: blur(20px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-}
-
-/* 通过给背景添加模糊效果使其不会模糊容器内荣，即文字 */
-.login-content::before {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  content: '';
-  z-index: -3;
-  /* 将距离限制于容器内部，防止边缘虚化 */
-  margin: -30px;
-  position: absolute;
-  filter: blur(20px);
-  -o-filter: blur(20px);
-  -ms-filter: blur(20px);
-  -moz-filter: blur(20px);
-  -webkit-filter: blur(20px);
-  /* 把背景图像扩展至足够大，以使背景图像完全覆盖背景区域。 */
-  background-size: cover;
-  /* 固定的背景图像 */
-  background-attachment: fixed;
-  background-position: center top;
-  background-image: url('./img/bj.jpg');
 }
 
 .info {

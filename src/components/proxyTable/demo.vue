@@ -3,11 +3,29 @@
       ref="proxyTable"
       :table-btns="tableBtns"
       :table-data="tableData"
+      table-title="表格标题（注：表中数据均为MockJs随机生成的数据）"
       :columns="columns"
+      :operations="operations"
+      :pageSize="50"
+      :total="tableData.length"
+      :isCheckboxFixed="true"
+      :is-index-fixed="true"
       :diy-get-list="diyGetList"
       :is-show-default-tool-bar="true"
       @edit="handleEdit"
+      @add="handleAdd"
+      @export="handleExport"
   >
+    <div slot="search-box" class="search-box">
+      <el-select size="small" v-model="value" placeholder="请选择">
+        <el-option
+            v-for="item in operations"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+        </el-option>
+      </el-select>
+    </div>
     <template v-slot:operation="{row}">
       <!--操作列插槽-->
       <div class="btns">
@@ -27,7 +45,9 @@
 
 <script>
 import proxyTable from './index.vue';
-import { list } from './data';
+// import { list } from './data';
+import ExcelJS from 'exceljs';
+import saveAs from 'file-saver';
 
 export default {
   name: 'demo',
@@ -36,6 +56,26 @@ export default {
   },
   data () {
     return {
+      value: '',
+      input: '',
+      operations: [
+        {
+          value: 'add',
+          label: '新增'
+        },
+        {
+          value: 'remove',
+          label: '删除'
+        },
+        {
+          value: 'test',
+          label: '测试'
+        },
+        {
+          value: 'export',
+          label: '导出'
+        }
+      ],
       columns: [
         {
           prop: 'name',
@@ -103,7 +143,7 @@ export default {
           value: 'association'
         },
         {
-          label: '设置设置',
+          label: '设置',
           svg: 'setting',
           value: 'setting'
         }
@@ -114,41 +154,84 @@ export default {
   watch: {},
   computed: {},
   mounted () {
-    const Random = this.$Mock.Random;
+    // const Random = this.$Mock.Random;
     const data = this.$Mock.mock({
       // 属性 list 的值是一个数组，其中含有 1 到 10 个元素
-      'list|100': [{
+      'list|500': [{
         // 属性 id 是一个自增数，起始值为 1，每次增 1
-        'id|+1': 1,
+        // 'id|+1': 1,
+        id: '@guid',
+        // IDNumber: '@id()',
         name: '@cname',
         'age|40-50': 40,
-        region: Random.region(), // 随机生成一个（中国）大区。
-        province: Random.province(), // 随机生成一个（中国）省（或直辖市、自治区、特别行政区）。
-        city: Random.city(true), // 随机生成一个（中国）市。 布尔值。指示是否生成所属的省。
-        county: Random.county(true), // 随机生成一个（中国）县。布尔值。指示是否生成所属的省、市。
-        zip: Random.zip(), // 随机生成一个邮政编码（六位数字）。
-        text: Random.cparagraph(),
-        IDNumber: Random.id(),
-        creatDate: Random.date('yyyy-MM-dd HH:mm:ss')
+        area: '@region',
+        region: '@region', // 随机生成一个（中国）大区。
+        province: '@province', // 随机生成一个（中国）省（或直辖市、自治区、特别行政区）。
+        city: '@city', // 随机生成一个（中国）市。 布尔值。指示是否生成所属的省。
+        county: '@county(true)', // 随机生成一个（中国）县。布尔值。指示是否生成所属的省、市。
+        zip: '@zip', // 随机生成一个邮政编码（六位数字）。
+        text: '@cparagraph',
+        email: '@email',
+        creatDate: "@date('yyyy-MM-dd HH:mm:ss')"
       }]
     });
     console.log('data', data.list);
 
-    this.tableData = list.map(value => {
-      if (value.name === '姜超') {
-        value.rowBtns = ['show'];
-      } else if (value.name === '苏秀英') {
-        value.rowBtns = [];
-      } else if (value.name === '夏杰') {
+    this.tableData = data.list.map(value => {
+      if (value.province === '北京') {
+        value.rowBtns = ['show', 'edit'];
+      } else if (value.province === '上海') {
         value.rowBtns = ['show', 'edit', 'remove', 'setting'];
-      } else {
-        // value.rowBtns = this.tableBtns.map(item => item.value);
+      } else if (value.province === '安徽省') {
         value.rowBtns = ['show', 'edit', 'remove'];
+      } else {
+        value.rowBtns = ['show', 'edit', 'remove', 'setting'];
       }
       return value;
     });
   },
   methods: {
+    /**
+     * @Description 点击新增按钮触发
+     * @author qianyinggenian
+     * @date 2023/10/9
+     */
+    handleAdd () {
+      console.log('asdad');
+    },
+    /**
+     * @Description 点击导出触发
+     * @author wangkangzhang
+     * @date 2023/11/16
+     */
+    handleExport () {
+      const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = 'Me'; // 作者
+      workbook.lastModifiedBy = 'Me'; // 上一次修改者
+      workbook.created = new Date(); // 创建时间
+      workbook.modified = new Date(); // 上次修改时间
+      workbook.lastPrinted = new Date(); // 上一次打印时间
+      const worksheet = workbook.addWorksheet('My Sheet', { views: [{ state: 'frozen', xSplit: 1, ySplit: 1 }] });
+      worksheet.columns = this.columns.map(item => {
+        item.header = item.label;
+        item.key = item.prop;
+        item.width = 20;
+        return item;
+      });
+      this.tableData.forEach(item => {
+        worksheet.addRow(item);
+      });
+      workbook.xlsx.writeBuffer().then((buffer) => {
+        const blob = new Blob([buffer], { type: EXCEL_TYPE });
+        saveAs(blob, 'excel导出测试.xlsx');
+      });
+    },
+    /**
+     * @Description 点击编辑按钮触发
+     * @author qianyinggenian
+     * @date 2023/10/9
+     */
     handleEdit (row) {
       console.log('rowrow', row);
     },
@@ -164,6 +247,9 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.search-box {
+  display: flex;
+  margin-right: 10px;
+}
 </style>

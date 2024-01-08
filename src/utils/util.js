@@ -42,3 +42,37 @@ export function deepAssign () {
   }
   return target;
 }
+
+/**
+ * @Description 升序
+ * @author qianyinggenian
+ * @date 2023/10/11 011
+ */
+export function sortUpDate (a, b) {
+  return Date.parse(a.creatDate) - Date.parse(b.creatDate);
+}
+
+/**
+ * @Description 降序
+ * @author qianyinggenian
+ * @date 2023/10/11 011
+ */
+export function sortDownDate (a, b, sortValue = 'creatDate') {
+  return Date.parse(b[sortValue]) - Date.parse(a[sortValue]);
+}
+
+/**
+ * @Description 文件就下载
+ * @author wangkangzhang
+ * @date 2023/11/16
+ */
+export function download (blob, filename = '新建文件.xlsx') {
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.style.display = 'none';
+  a.click();
+  document.body.removeChild(a);
+}

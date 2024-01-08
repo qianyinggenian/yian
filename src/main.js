@@ -2,6 +2,7 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import 'babel-polyfill';
 import ElementUI from 'element-ui';
 import './components/index.js';
 import '@/common/icons/index';
@@ -15,6 +16,9 @@ import axios from 'axios';
 import '@/indexedDB';
 import '@/mock/index.js';
 import '@/common/ztree/index';
+import 'animate.css';
+import * as echarts from 'echarts';
+import 'echarts-gl';
 import constants from '@/common/constants';
 
 dayjs.locale('zh-cn');
@@ -24,7 +28,9 @@ Vue.config.productionTip = false;
 Vue.prototype.$_store = store;
 Vue.prototype.$Mock = mock;
 Vue.prototype.$constants = constants;
+Vue.prototype.$echarts = echarts;
 Vue.use(ElementUI);
+// Vue.use(animate);
 new Vue({
   router,
   store,

@@ -1,17 +1,36 @@
 <template>
   <div class="layout-responsive-auto--column proxy-table-container">
     <slot v-if="isShowSlotToolBar" name="toolBar"></slot>
-    <div v-if="isShowDefaultToolBar" class="default-toolBar">
-      <div class="table-title" v-if="tableTitle">
-        {{ tableTitle }}
+    <div v-if="isShowDefaultToolBar"
+         class="default-toolBar"
+         :class="{'default-toolBar-end':operations.length === 0}"
+    >
+      <div class="operations-box" v-if="operations && operations.length">
+        <el-button
+            size="small"
+            :type="item?.type?item.type:(typeObj[item.value]?typeObj[item.value]:'primary')"
+            v-for="item in operations"
+            :key="item.value"
+            @click="handleClick(item)"
+        >
+          <svg-icon
+              :size="12"
+              :icon-class="item?.svg?item.svg:(operationSvg[item.value]?operationSvg[item.value]: 'btn4')"
+              :fill="item?.fill?item.fill: ''"
+          >
+          </svg-icon>
+          {{ item.label }}
+        </el-button>
       </div>
       <div class="toolbar" v-if="isShowToolBar">
+        <slot class="search-box" name="search-box"></slot>
         <el-input
+            v-if="isShowSearchInput"
             clearable
             :title="searchValue"
             :placeholder="placeholder"
             size="small"
-            v-model="searchValue"></el-input>
+            v-model="searchValue"/>
         <el-button
             icon="el-icon-search"
             type="primary"
@@ -20,7 +39,7 @@
         >
           {{ searchBtnLabel }}
         </el-button>
-        <el-dropdown :hide-on-click="false" trigger="click">
+        <el-dropdown v-if="isShowFilter" :hide-on-click="false" trigger="click">
           <el-button class="filter-btn" size="small">筛选</el-button>
           <template #dropdown>
             <el-dropdown-menu class="filter-dropdown">
@@ -28,7 +47,6 @@
                 <el-checkbox-group
                     class="filter-group"
                     v-model="checkList"
-                    @change="handleCheckedChange"
                 >
                   <el-checkbox
                       v-for="item in columns"
@@ -39,14 +57,16 @@
                 </el-checkbox-group>
               </el-dropdown-item>
               <el-dropdown-item>
-                <el-button size="small">确定</el-button>
+                <el-button size="small" @click="handleConfirm">确定</el-button>
                 <el-button size="small" @click="handleReset">重置</el-button>
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>
-
         </el-dropdown>
       </div>
+    </div>
+    <div class="table-title" v-if="tableTitle">
+      {{ tableTitle }}
     </div>
     <el-table
         ref="table"
@@ -57,7 +77,6 @@
         :lazy="lazy"
         :load="load"
         :size="size"
-        :fit="fit"
         row-key="id"
         height="100%"
         :show-header="showHeader"
@@ -69,6 +88,7 @@
         style="width: 100%"
         @select="handleSelect"
         @select-all="handleSelectAllFn"
+        @row-click="handleRowClick"
     >
       <!-- 是否显示多选框-->
       <el-table-column
@@ -96,7 +116,7 @@
           align="center"
           width="80">
       </el-table-column>
-      <template v-for="item in columns">
+      <template v-for="item in columnsFn(columns,filterCheckList)">
         <!-- 是否有插槽-->
         <el-table-column
             :prop="item.prop || item.name"
@@ -111,7 +131,7 @@
             :min-width="item.minWidth"
             v-if="item.slot"
             :render-header="item.renderHeader || renderHeader"
-            :key="item.label"
+            :key="item.prop"
         >
           <!-- 列值插槽 -->
           <template v-if="item.slotColumn" v-slot="scope">
@@ -129,7 +149,7 @@
         </el-table-column>
         <tableColumn
             v-else
-            :key="item.id"
+            :key="item.prop"
             :col="item"
         >
         </tableColumn>
@@ -139,7 +159,7 @@
           fixed="right"
           class-name="operation"
           prop="operation"
-          width="250px"
+          :width="operationWidth"
           label="操作">
         <template v-if="slotOperation" v-slot="scope">
           <slot name="operation" :row="scope.row"/>
@@ -151,9 +171,9 @@
               <div class="btn"
                    :key="item.value"
                    v-if="(scope.row.rowBtns ? scope.row.rowBtns.includes(item.value): true)"
-                   :style="{color: item?.color?item.color:(btnColor[item.value]?btnColor[item.value]: '#1b6ef3')}"
+                   :style="{color: '#0af1f1'}"
               >
-                <div @click="handleClickBtn(item.value,scope.row)">{{ item.label }}
+                <div @click.stop="handleClickBtn(item.value,scope.row)">{{ item.label }}
                 </div>
               </div>
             </template>
@@ -176,11 +196,26 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="pagination" v-show="isShowPagination">
+      <el-pagination
+          background
+          popper-class="custom-pagination"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPageNum"
+          :pager-count="5"
+          :page-sizes="[20, 50, 100, 200]"
+          :page-size.sync="pageSizeNum"
+          layout="total, prev, pager, next, sizes, jumper"
+          :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
 import tableColumn from './table-column/index.vue';
+import props from './props';
 
 export default {
   name: 'index',
@@ -189,9 +224,12 @@ export default {
   },
   data () {
     return {
+      currentPageNum: 1,
+      pageSizeNum: 20,
       checkList: [],
+      filterCheckList: [],
       searchValue: '',
-      operationWidth: '0px',
+      rowKey: 'rowKey',
       btnColor: {
         add: '#1b6ef3',
         edit: '#2abfd9',
@@ -199,174 +237,109 @@ export default {
         remove: '#f9620e',
         delete: '#f9620e'
       },
+      typeObj: {
+        add: 'primary',
+        remove: 'danger',
+        delete: 'danger'
+      },
+      operationSvg: {
+        add: '新增',
+        edit: 'edit',
+        show: 'show',
+        remove: '删除',
+        delete: '删除',
+        import: 'import',
+        export: 'export'
+      },
       btnSvg: {
         add: 'add',
         edit: 'edit',
         show: 'show',
         remove: 'remove',
-        delete: 'delete'
+        delete: 'delete',
+        import: 'import',
+        export: 'export'
       }
     };
   },
   props: {
-    isShowSlotToolBar: {
-      type: Boolean,
-      default: false
-    },
-    isShowToolBar: {
-      type: Boolean,
-      default: true
-    },
-    isShowDefaultToolBar: {
-      type: Boolean,
-      default: true
-    },
-    tableTitle: {
-      type: String,
-      default: '表格标题'
-    },
-    placeholder: {
-      type: String,
-      default: '请输入'
-    },
-    searchBtnLabel: {
-      type: String,
-      default: '搜索'
-    },
-    tableData: {
-      type: Array,
-      default: () => []
-    },
-    columns: {
-      type: Array,
-      default: () => []
-    },
-    tableBtns: {
-      type: Array,
-      default: () => []
-    },
-    /* 是否显示边框 */
-    border: {
-      type: Boolean,
-      default: false
-    },
-    /* 是否斑马条纹 */
-    stripe: {
-      type: Boolean,
-      default: false
-    },
-
-    /* 是否懒加载子节点数据 */
-    lazy: {
-      type: Boolean,
-      default: true
-    },
-    /* 加载子节点数据的函数 */
-    load: {
-      type: Function
-    },
-    /* Table 的尺寸 */
-    size: {
-      type: String,
-      default: 'small'
-    },
-
-    /* 列的宽度是否自撑开 */
-    fit: {
-      type: Boolean,
-      default: true
-    },
-    /* 是否显示表头 */
-    showHeader: {
-      type: Boolean,
-      default: true
-    },
-    /* 是否要高亮当前行 */
-    highlightCurrentRow: {
-      type: Boolean,
-      default: true
-    },
-    /* 表尾合计 */
-    showSummary: {
-      type: Boolean,
-      default: false
-    },
-    /* 表尾统计文案 */
-    sumText: {
-      type: String,
-      default: '合计'
-    },
-    /* 自定义合计规则 */
-    getSummaries: {
-      type: Function
-    },
-    /* 自定义排序规则 */
-    sortMethod: {
-      type: Function
-    },
-
-    /* 表格行、列合并 */
-    spanMethod: {
-      type: Function
-    },
-    showCheckbox: {
-      type: Boolean,
-      default: true
-    },
-    showIndex: {
-      type: Boolean,
-      default: true
-    },
-    isCheckboxFixed: {
-      type: Boolean,
-      default: false
-    },
-    isIndexFixed: {
-      type: Boolean,
-      default: false
-    },
-    showOverflowTooltip: {
-      type: Boolean,
-      default: true
-    },
-    /* 自定义操作列 */
-    slotOperation: {
-      type: Boolean,
-      default: false
-    },
-    /* 文字按钮 */
-    isShowTextBtn: {
-      type: Boolean,
-      default: true
-    },
-    diyHasCheckBox: {
-      type: Function
-    },
-    diyIndexMethod: {
-      type: Function
-    },
-    diyGetList: {
-      type: Function
-    },
-
-    /* 表头样式自定义 */
-    renderHeader: {
-      type: Function
-    }
+    ...props
   },
   watch: {
-    table: {
+    tableData: {
       handler (newVal) {
         this.$nextTick(() => {
-          // this.$refs.table.doLayout();
+          this.$refs.table.doLayout();
         });
       },
+      immediate: true,
+      deep: true
+    },
+    columns: {
+      handler (newVal) {
+        if (newVal && newVal.length > 0) {
+          this.checkList = newVal.map(item => item.prop);
+          this.filterCheckList = this.checkList;
+        }
+      },
       immediate: true
+    },
+    currentPage: {
+      handler (newVal) {
+        if (newVal !== this.currentPageNum) {
+          this.currentPageNum = newVal;
+        }
+      },
+      immediate: true
+    },
+    pageSize: {
+      handler (newVal) {
+        if (newVal !== this.pageSizeNum) {
+          this.pageSizeNum = newVal;
+        }
+      },
+      immediate: true
+    }
+  },
+  computed: {
+    columnsFn () {
+      return (columns, filterCheckList) => {
+        const list = JSON.parse(JSON.stringify(columns));
+        return list.filter(item => {
+          return filterCheckList.some(val => item.prop === val);
+        });
+      };
     }
   },
   mounted () {
   },
   methods: {
+    /**
+     * @Description 点击表格顶部功能按钮触发
+     * @author qianyinggenian
+     * @date 2023/10/9
+     */
+    handleClick (item) {
+      this.$emit(item.value);
+    },
+    /**
+     * @Description 切换条数触发
+     * @author qianyinggenian
+     * @date 2023/10/8
+     */
+    handleSizeChange (val) {
+      this.pageSizeNum = val;
+      this.$emit('size-change', val);
+    },
+    /**
+     * @Description 切换页码触发
+     * @author qianyinggenian
+     * @date 2023/10/8
+     */
+    handleCurrentChange (val) {
+      this.currentPageNum = val;
+      this.$emit('current-change', val);
+    },
     /**
      * @Description 复选框
      * @author qianyinggenian
@@ -408,12 +381,24 @@ export default {
       this.$emit('select', selection);
     },
     /**
+     * @Description 当某一行被点击时会触发该事件
+     * @author qianyinggenian
+     * @date 2023/10/10
+     */
+    handleRowClick (row, column, event) {
+      const params = {
+        row: row,
+        column: column,
+        event: event
+      };
+      this.$emit('rowClick', params);
+    },
+    /**
      * @Description 点击操作列按钮触发
      * @author qianyinggenian
      * @date 2023/9/27
      */
     handleClickBtn (type, row) {
-      console.log('row', row);
       this.$emit(type, row);
     },
     /**
@@ -427,12 +412,12 @@ export default {
       }
     },
     /**
-     * @Description 筛选选择触发
+     * @Description 筛选确定触发
      * @author qianyinggenian
-     * @date 2023/10/7
+     * @date 2023/10/8
      */
-    handleCheckedChange (value) {
-      console.log('value', value);
+    handleConfirm () {
+      this.filterCheckList = this.checkList;
     },
     /**
      * @Description 筛选重置触发
@@ -440,7 +425,8 @@ export default {
      * @date 2023/10/7
      */
     handleReset () {
-      this.checkList = [];
+      this.checkList = this.columns.map(item => item.prop);
+      this.filterCheckList = this.checkList;
     }
   }
 };
@@ -448,16 +434,24 @@ export default {
 
 <style lang="scss" scoped>
 .proxy-table-container {
-
   .default-toolBar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
 
-    .table-title {
-      font-size: var(--font-size-16);
-      color: var(--body-title-color);
+    .operations-box {
+      :deep(.el-button) {
+        span {
+          font-size: 12px;
+          display: flex;
+          align-items: center;
+        }
+
+        .svg-icon {
+          margin-right: 5px;
+        }
+      }
     }
 
     .toolbar {
@@ -465,6 +459,7 @@ export default {
       justify-content: flex-end;
 
       .el-input {
+        width: 250px;
         margin-right: 10px;
       }
 
@@ -475,6 +470,22 @@ export default {
     }
   }
 
+  .default-toolBar-end {
+    justify-content: flex-end;
+  }
+
+  .table-title {
+    font-size: var(--font-size-18);
+    color: var(--body-title-color);
+    margin-bottom: 10px;
+  }
+
+  .pagination {
+    margin-top: 5px;
+    display: flex;
+    justify-content: flex-end;
+    -webkit-justify-content: flex-end;
+  }
 }
 
 :deep(.filter-group) {
@@ -508,7 +519,4 @@ export default {
   }
 }
 
-::v-deep .operation {
-  width: 150px;
-}
 </style>
