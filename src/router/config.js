@@ -83,5 +83,13 @@ export const config = [
     meta: {
       title: '直播源格式转化'
     }
+  },
+  {
+    path: '/proxy-layout',
+    name: 'proxy-layout',
+    component: () => import('@/views/proxy-layout/index.vue'),
+    meta: {
+      title: 'proxy-layout'
+    }
   }
 ];

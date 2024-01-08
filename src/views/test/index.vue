@@ -45,12 +45,15 @@
           @clear="handleClear">
       </proxySelect>
     </p>
+    <p>
+      <input id="file" accept="" type="file" @change="handleChange"/>
+    </p>
   </div>
 </template>
 
 <script>
 import proxySelect from '@/components/proxySelect/index.vue';
-
+import axios from 'axios';
 export default {
   name: 'index',
   components: {
@@ -58,6 +61,7 @@ export default {
   },
   data () {
     return {
+      fileValue: '',
       value1: '选项2',
       value: ['选项2', '选项1'],
       options: [{
@@ -86,6 +90,40 @@ export default {
   methods: {
     handleClear () {
       console.log(111111);
+    },
+    /**
+     * @Description 选择文件后触发
+     * @author qianyinggenian
+     * @date 2024/01/08
+    */
+    handleChange (event) {
+      const file = event.target.files[0];
+      this.fileValue = file;
+      console.log('fileValue', this.fileValue);
+      // 打印文件名及类型
+      console.log('文件名:', file.name);
+      console.log('文件类型:', file.type);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        console.log('文件路径:', reader.result);
+        this.getFileInfo(reader.result);
+      };
+      reader.readAsDataURL(file);
+    },
+    /**
+     * @Description 获取文件中的内容
+     * @author qianyinggenian
+     * @date 2024/01/08
+    */
+    getFileInfo (path) {
+      axios.get(path) // 这里的路径应根据实际情况修改
+        .then(response => {
+          this.fileContent = response.data;
+          console.log('fileContent', this.fileContent);
+        })
+        .catch(error => {
+          console.log('Error:', error);
+        });
     }
   }
 };
