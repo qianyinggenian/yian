@@ -10,8 +10,7 @@
   </el-select>
   <div class="textarea-container">
     <p>
-      <span v-if="typeValue === 'txt'">txt格式源:</span>
-      <span v-else>m3u8格式源:</span>
+      <span>{{ sourceObj[typeValue] }}</span>
     </p>
     <el-input
         type="textarea"
@@ -20,8 +19,10 @@
     />
   </div>
   <div class="btns-box">
-    <el-button size="small" v-if="typeValue === 'txt'" @click="handleFormatToM3u8">格式转换</el-button>
-    <el-button size="small" v-else @click="handleFormatToTXT">格式转换</el-button>
+    <el-button size="small" v-if="typeValue === 'txt'" @click="handleFormatTXTToM3u8">格式转换</el-button>
+    <el-button size="small" v-else-if="typeValue === 'm3u8'" @click="handleFormatM3u8ToTXT">格式转换</el-button>
+    <el-button size="small" v-else-if="typeValue === 'txt转json'" @click="handleFormatTxtToJson">格式转换</el-button>
+    <el-button size="small" v-else-if="typeValue === 'm3u8转json'" @click="handleFormatM3u8ToJson">格式转换</el-button>
     <el-button size="small" @click="handleClear">清空屏幕</el-button>
     <el-button size="small" @click="handleCopyResult">拷贝结果</el-button>
     <el-button size="small" @click="handleDownload">保存结果</el-button>
@@ -37,8 +38,7 @@
   </div>
   <div class="textarea-container">
     <p>
-      <span v-if="typeValue === 'txt'">m3u8格式转换结果:</span>
-      <span v-else>txt格式转换结果:</span>
+      <span>{{resultObj[typeValue]}}</span>
     </p>
     <el-input
         type="textarea"
@@ -61,6 +61,18 @@ export default {
       ul: '',
       templateM3u8: '/yian/static/template/demo.m3u8',
       templateTxt: '/yian/static/template/demo.txt',
+      sourceObj: {
+        txt: 'txt格式源',
+        m3u8: 'm3u8格式源',
+        txt转json: 'txt格式源',
+        m3u8转json: 'm3u8格式源'
+      },
+      resultObj: {
+        txt: 'm3u8格式转换结果',
+        m3u8: 'txt格式转换结果',
+        txt转json: 'json格式结果',
+        m3u8转json: 'json格式结果'
+      },
       typeOptions: [
         {
           value: 'txt',
@@ -69,13 +81,18 @@ export default {
         {
           value: 'm3u8',
           label: 'm3u8转txt格式'
+        },
+        {
+          value: 'txt转json',
+          label: 'txt转json格式'
+        },
+        {
+          value: 'm3u8转json',
+          label: 'm3u8转json格式'
         }
       ]
     };
   },
-  props: {},
-  watch: {},
-  computed: {},
   mounted () {},
   methods: {
     /**
@@ -83,13 +100,13 @@ export default {
      * @author qianyinggenian
      * @date 2024/10/05
      */
-    handleFormatToTXT () {
+    handleFormatM3u8ToTXT () {
       if (!this.initialValue) {
         this.$message.error('请先填写m3u8格式源');
         return false;
       }
       if (this.initialValue.includes('#genre#')) {
-        this.$message.error('TXT格式源错误');
+        this.$message.error('m3u8格式源错误');
         return false;
       }
       const lines = this.initialValue.split('\n');
@@ -126,7 +143,7 @@ export default {
      * @author qianyinggenian
      * @date 2024/10/05
     */
-    handleFormatToM3u8 () {
+    handleFormatTXTToM3u8 () {
       if (!this.initialValue) {
         this.$message.error('请先填写TXT格式源');
         return false;
@@ -156,6 +173,106 @@ export default {
       }
       this.resultValue = m3uOutput;
     },
+
+    /**
+     * @Description 格式转换 txt转json
+     * @author qianyinggenian
+     * @date 2024/10/08
+     */
+    handleFormatTxtToJson () {
+      if (!this.initialValue) {
+        this.$message.error('请先填写TXT格式源');
+        return false;
+      }
+      if (this.initialValue.includes('#EXTINF') || this.initialValue.includes('#EXTM3U')) {
+        this.$message.error('TXT格式源错误');
+        return false;
+      }
+      const lines = this.initialValue.split('\n');
+      const jsonList = [];
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        if (trimmedLine !== '') {
+          if (!trimmedLine.includes('#genre#')) {
+            const [originalChannelName, channelLink] = trimmedLine.split(',').map(item => item.trim());
+            const index = jsonList.findIndex(item => item.text === originalChannelName);
+            if (index === -1) {
+              const params = {
+                text: originalChannelName,
+                children: [
+                  {
+                    text: '源1',
+                    id: 1,
+                    url: channelLink
+                  }
+                ]
+              };
+              jsonList.push(params);
+            } else {
+              const len = jsonList[index].children.length;
+              const params = {
+                text: `源${len + 1}`,
+                id: len + 1,
+                url: channelLink
+              };
+              jsonList[index].children.push(params);
+            }
+          }
+        }
+      }
+      this.resultValue = JSON.stringify(jsonList, '', 2);
+    },
+    /**
+     * @Description 格式转化 m3u8转json
+     * @author qianyinggenian
+     * @date 2024/11/08
+    */
+    handleFormatM3u8ToJson () {
+      if (!this.initialValue) {
+        this.$message.error('请先填写m3u8格式源');
+        return false;
+      }
+      if (this.initialValue.includes('#genre#')) {
+        this.$message.error('m3u8格式源错误');
+        return false;
+      }
+      const lines = this.initialValue.split('\n');
+      let originalChannelName = null;
+      const jsonList = [];
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        if (trimmedLine !== '') {
+          if (trimmedLine.includes('group-title')) {
+            const endIndex = trimmedLine.lastIndexOf('",');
+            originalChannelName = trimmedLine.slice(endIndex, trimmedLine.length).replace(/",/, '').trim();
+          } else if (!trimmedLine.includes('#EXTM3U') && !trimmedLine.includes('#EXTINF')) {
+            const index = jsonList.findIndex(item => item.text === originalChannelName);
+            if (index === -1) {
+              const params = {
+                text: originalChannelName,
+                children: [
+                  {
+                    text: '源1',
+                    id: 1,
+                    url: trimmedLine
+                  }
+                ]
+              };
+              jsonList.push(params);
+            } else {
+              const len = jsonList[index].children.length;
+              const params = {
+                text: `源${len + 1}`,
+                id: len + 1,
+                url: trimmedLine
+              };
+              jsonList[index].children.push(params);
+            }
+          }
+        }
+      }
+      this.resultValue = JSON.stringify(jsonList, '', 2);
+    },
     /**
      * @Description 点击清空屏幕按钮触发
      * @author qianyinggenian
@@ -175,6 +292,10 @@ export default {
       // m3uOutput.select();
       // document.execCommand('copy');
       // alert('内容已复制到剪贴板！');
+      if (!this.resultValue) {
+        this.$message.error('请先转换再拷贝');
+        return false;
+      }
       navigator.clipboard.writeText(this.resultValue).then(() => {
         this.$message.success('复制成功');
       });
