@@ -1,27 +1,28 @@
 <template>
   <!--  对el-select的二次封装-->
-  <MySelect
+  <el-select
       :title="selectTitle"
       v-model="selectValue"
       v-bind="$attrs"
       v-on="$listeners">
+    <slot></slot>
+    <template v-slot:prefix>
+      <slot name="prefix"></slot>
+    </template>
+    <template v-slot:empty>
+      <slot name="empty"></slot>
+    </template>
     <el-option
         v-for="item in options"
         :key="item[keyValue]"
         :label="item[keyLabel]"
         :value="item[keyValue]">
     </el-option>
-  </MySelect>
+  </el-select>
 </template>
-
 <script>
-import MySelect from './my-select.vue';
-
 export default {
   name: 'index',
-  components: {
-    MySelect
-  },
   data () {
     return {
       selectTitle: '',
@@ -68,7 +69,8 @@ export default {
         } else {
           this.selectTitle = '';
         }
-      }
+      },
+      immediate: true
     }
   },
   methods: {
