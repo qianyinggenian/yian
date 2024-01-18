@@ -218,7 +218,10 @@ export default {
                 id: generateRandomNumbers(),
                 url: channelLink
               };
-              jsonList[index].children.push(params);
+              const ind = jsonList[index].children.findIndex(item => item.url === channelLink);
+              if (ind === -1) {
+                jsonList[index].children.push(params);
+              }
             }
           }
         }
@@ -271,7 +274,10 @@ export default {
                 id: generateRandomNumbers(),
                 url: trimmedLine
               };
-              jsonList[index].children.push(params);
+              const ind = jsonList[index].children.findIndex(item => item.url === trimmedLine);
+              if (ind === -1) {
+                jsonList[index].children.push(params);
+              }
             }
           }
         }
