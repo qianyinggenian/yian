@@ -1,6 +1,7 @@
 <template>
   <div>
     <p>测试</p>
+    <p>测试</p>
     <p>值： {{ value }}</p>
     <p>
       多选-禁选
