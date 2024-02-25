@@ -1,6 +1,7 @@
 <template>
   <div>
     <p>测试</p>
+    <p>测试</p>
     <p>值： {{ value }}</p>
     <p>
       多选-禁选
@@ -48,20 +49,33 @@
     <p>
       <input id="file" accept="" type="file" @change="handleChange"/>
     </p>
+    <p>
+      <proxyInput
+          prefix-icon="el-icon-search"
+          suffix-icon="el-icon-date"
+          clearable
+          :is-remove-spaces="true"
+          v-model="inputValue">
+          <span slot="prepend">前</span>
+          <span slot="append">后</span>
+      </proxyInput>
+    </p>
   </div>
 </template>
 
 <script>
 import proxySelect from '@/components/proxySelect/index.vue';
+import proxyInput from '@/components/proxyInput/index.vue';
 import axios from 'axios';
 export default {
   name: 'index',
   components: {
-    proxySelect
+    proxySelect,
+    proxyInput
   },
   data () {
     return {
-      fileValue: '',
+      inputValue: '测试测试',
       value1: '选项2',
       value: ['选项2', '选项1'],
       options: [{
@@ -98,8 +112,6 @@ export default {
     */
     handleChange (event) {
       const file = event.target.files[0];
-      this.fileValue = file;
-      console.log('fileValue', this.fileValue);
       // 打印文件名及类型
       console.log('文件名:', file.name);
       console.log('文件类型:', file.type);
@@ -130,7 +142,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.el-select {
+.el-select,.el-input {
   width: 600px;
 }
 

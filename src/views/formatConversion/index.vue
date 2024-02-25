@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import { generateRandomNumbers } from '@/utils/util';
 export default {
   name: 'index',
   components: {},
@@ -202,7 +203,8 @@ export default {
                 children: [
                   {
                     text: '源1',
-                    id: 1,
+                    // id: 1,
+                    id: generateRandomNumbers(),
                     url: channelLink
                   }
                 ]
@@ -212,10 +214,14 @@ export default {
               const len = jsonList[index].children.length;
               const params = {
                 text: `源${len + 1}`,
-                id: len + 1,
+                // id: len + 1,
+                id: generateRandomNumbers(),
                 url: channelLink
               };
-              jsonList[index].children.push(params);
+              const ind = jsonList[index].children.findIndex(item => item.url === channelLink);
+              if (ind === -1) {
+                jsonList[index].children.push(params);
+              }
             }
           }
         }
@@ -253,7 +259,8 @@ export default {
                 children: [
                   {
                     text: '源1',
-                    id: 1,
+                    // id: 1,
+                    id: generateRandomNumbers(),
                     url: trimmedLine
                   }
                 ]
@@ -263,10 +270,14 @@ export default {
               const len = jsonList[index].children.length;
               const params = {
                 text: `源${len + 1}`,
-                id: len + 1,
+                // id: len + 1,
+                id: generateRandomNumbers(),
                 url: trimmedLine
               };
-              jsonList[index].children.push(params);
+              const ind = jsonList[index].children.findIndex(item => item.url === trimmedLine);
+              if (ind === -1) {
+                jsonList[index].children.push(params);
+              }
             }
           }
         }

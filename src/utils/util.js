@@ -76,3 +76,18 @@ export function download (blob, filename = '新建文件.xlsx') {
   a.click();
   document.body.removeChild(a);
 }
+
+/**
+ * @Description 生成随机数
+ * @author qianyinggenian
+ * @date 2024/01/09
+ */
+export function generateRandomNumbers () {
+  let d = new Date().getTime();
+  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (d + Math.random() * 16) % 16 | 0;
+    d = Math.floor(d / 16);
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+  return uuid;
+}
