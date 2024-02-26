@@ -91,5 +91,13 @@ export const config = [
     meta: {
       title: 'proxy-layout'
     }
+  },
+  {
+    path: '/image-watermark',
+    name: 'image-watermark',
+    component: () => import('@/views/imageWatermark/index.vue'),
+    meta: {
+      title: '图片水印'
+    }
   }
 ];
