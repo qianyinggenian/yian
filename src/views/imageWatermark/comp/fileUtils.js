@@ -16,6 +16,18 @@ export async function imgToCanvas (url) {
   canvas.getContext('2d').drawImage(img, 0, 0);
   return canvas;
 }
+
+export async function delMask () {
+  const id = 'myImageId';
+  if (document.getElementById(id) !== null) {
+    const contentWrapper = document.getElementsByClassName('imageBox')[0];
+    if (contentWrapper && contentWrapper.contains(document.getElementById(id))) {
+      contentWrapper.removeChild(document.getElementById(id));
+    } else {
+      document.body.removeChild(document.getElementById(id));
+    }
+  }
+}
 /**
  * 画布添加水印
  */
@@ -63,6 +75,8 @@ export const drawWaterMark = ({ canvas, textArray, fontFamily = 'microsoft yahei
 /**
  * canvas转成img
  * @param {canvas对象} canvas
+ * @param {maxWidth} maxWidth
+ * @param {maxHeight} maxHeight
  */
 export function canvasToImg ({ canvas, maxWidth = '100%', maxHeight = '100%' }) {
   // 新建Image对象，可以理解为DOM
@@ -71,6 +85,8 @@ export function canvasToImg ({ canvas, maxWidth = '100%', maxHeight = '100%' }) 
   image.src = canvas.toDataURL('image/png');
   image.style.maxHeight = maxHeight;
   image.style.maxWidth = maxWidth;
+  // 设置图片ID
+  image.setAttribute('id', 'myImageId');
   return image;
 }
 /**
@@ -78,7 +94,7 @@ export function canvasToImg ({ canvas, maxWidth = '100%', maxHeight = '100%' }) 
  * @param {canvas对象} canvas
  * @param {文件名} filename
  */
-export function downloadCanves (canvas, filename = '下载') {
+export function downloadCanvas (canvas, filename = '下载') {
   const base64 = canvas.toDataURL('image/png');
   const blob = dataURItoBlob(base64);
   const a = document.createElement('a'); // 动态创建a标签，防止下载大文件时，用户没看到下载提示连续点击
