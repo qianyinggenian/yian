@@ -2,6 +2,10 @@
   <!-- 水印图片预览 -->
   <div class="waterMakerInfo">
     <div class="content">
+      <div class="statement">责任声明：本功能不存储数据，仅用于学习研究，请勿用于商业用途，如用于其他用途造成的法律后果，由使用人自行承担。使用本功能，即认为你同意本责任声明。</div>
+      <div class="thanks">特别感谢：<a href="https://blog.csdn.net/qq_37831545/article/details/128846647" target="_blank">一朵野花压海棠</a>
+        和 <a href="https://blog.csdn.net/cuixiping/article/details/45932793" target="_blank">cuixiping</a> 提供的分享
+      </div>
       <div class="tool-bar">
         <div class="file">
           <div class="item">
@@ -79,6 +83,68 @@ export default {
     return {
       // fileUrl: imgURL,
       fileUrl: '',
+      fontList: [
+        {
+          value: '宋体',
+          label: '宋体'
+        },
+        {
+          value: '楷体',
+          label: '楷体'
+        },
+        {
+          value: '仿宋',
+          label: '仿宋'
+        },
+        {
+          value: '黑体',
+          label: '黑体'
+        },
+        {
+          value: '等线',
+          label: '等线'
+        },
+        {
+          value: '微软雅黑',
+          label: '微软雅黑'
+        },
+        {
+          value: '思源黑体',
+          label: '思源黑体'
+        },
+        {
+          value: 'Times New Roman',
+          label: 'Times New Roman'
+        },
+        {
+          value: 'Helvetica Neue',
+          label: 'Helvetica Neue'
+        },
+        {
+          value: 'Helvetica',
+          label: 'Helvetica'
+        },
+        {
+          value: 'PingFang SC',
+          label: 'PingFang SC'
+        },
+        {
+          value: 'Hiragino Sans GB',
+          label: 'Hiragino Sans GB'
+        },
+        {
+          value: 'Microsoft YaHei',
+          label: 'Microsoft YaHei'
+        },
+        {
+          value: 'Arial',
+          label: 'Arial'
+        },
+        {
+          value: 'sans-serif',
+          label: 'sans-serif'
+        }
+      ],
       fontSizeList: [
         {
           value: 12,
@@ -225,7 +291,10 @@ export default {
     }
     .tool-bar {
       display: flex;
+      border: 1px solid #409EFF;
       flex-direction: column;
+      box-sizing: border-box;
+      padding: 5px;
       > div {
         display: flex;
         align-items: center;
@@ -256,6 +325,17 @@ export default {
             text-align: center;
           }
         }
+      }
+    }
+    .statement {
+      font-size: 20px;
+      color: red;
+    }
+    .thanks {
+      font-size: 18px;
+      margin-bottom: 10px;
+      a {
+        color: #409EFF;
       }
     }
   }
