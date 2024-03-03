@@ -31,7 +31,7 @@ export async function delMask () {
 /**
  * 画布添加水印
  */
-export const drawWaterMark = ({ canvas, textArray, fontFamily = 'microsoft yahei', fontSize, fontcolor = '#dadbdc', rotate = 30, textAlign = 'left', density = 2.0 }) => {
+export const drawWaterMark = ({ canvas, textArray, fontFamily = 'microsoft yahei', fontSize, fontcolor = '#dadbdc', rotate = 30, textAlign = 'left', density = 2.0, opacity = 50 }) => {
   const ctx = canvas.getContext('2d');
   const imgWidth = canvas.width;
   const imgHeight = canvas.height;
@@ -40,6 +40,7 @@ export const drawWaterMark = ({ canvas, textArray, fontFamily = 'microsoft yahei
   ctx.fillStyle = fontcolor;
   ctx.textAlign = textAlign;
   ctx.textBaseline = 'middle';
+  ctx.globalAlpha = opacity / 100;
   // //文字坐标
   const maxPx = Math.max(imgWidth, imgHeight);
   const stepPx = Math.floor(maxPx / density);
@@ -65,7 +66,7 @@ export const drawWaterMark = ({ canvas, textArray, fontFamily = 'microsoft yahei
       }
       textArray.forEach((el, index) => {
         const offsetY = fontSize * index + 2;
-        ctx.fillText(el, arrayX[i], arrayX[j] + offsetY);
+        ctx.fillText(el.text, arrayX[i], arrayX[j] + offsetY);
       });
       ctx.restore();
     }
