@@ -15,19 +15,47 @@
             </div>
           </div>
         </div>
-        <div class="font-style">
-          <div class="item">
-            <div class="label">水印文字：</div>
-            <div class="value text">
-              <el-input size="small" clearable v-model="watermarkObj.text" placeholder="请输入内容"></el-input>
-            </div>
+          <div class="font-style">
+              <div class="item">
+                  <div class="label" @click="handleClick">水印文字：</div>
+                  <div class="value text" v-for="(item, index) in watermarkObj.textArray" :key="index">
+                      <el-input
+                          size="small"
+                          @change="resetWatermark"
+                          clearable
+                          :title="item.text"
+                          v-model="item.text"
+                          :placeholder="`请输入水印${index+1}内容`">
+                      </el-input>
+                  </div>
+                  <div>
+                    <el-button size="small" type="primary" @click="handleAdd">
+                      <i class="el-icon-plus" style="font-size: 16px;color: red"></i>
+                      新增
+                    </el-button>
+                  </div>
+              </div>
           </div>
+        <div class="font-style">
           <div class="item">
             <div class="label">字体大小：</div>
             <div class="value">
               <el-select @change="resetWatermark" size="small" clearable filterable v-model="watermarkObj.fontSize" placeholder="请选择">
                 <el-option
                     v-for="item in fontSizeList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="item">
+            <div class="label">字体：</div>
+            <div class="value">
+              <el-select @change="resetWatermark" size="small" clearable filterable v-model="watermarkObj.fontFamily" placeholder="请选择">
+                <el-option
+                    v-for="item in fontFamilyList"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -58,6 +86,13 @@
             <div class="value1">{{watermarkObj.opacity}}%</div>
           </div>
           <div class="item">
+            <div class="label">稠密度：</div>
+            <div class="value">
+              <el-slider @change="resetWatermark" :step="0.1" :min="0.1" :max="6" v-model="watermarkObj.density"></el-slider>
+            </div>
+            <div class="value1">{{watermarkObj.density}}</div>
+          </div>
+          <div class="item" v-if="false">
             <div class="label">位置：</div>
             <div class="value">
               <el-radio-group v-model="watermarkObj.position">
@@ -70,7 +105,9 @@
         </div>
       </div>
       <div class="imageBox" id="imageBox"></div>
-      <el-button type="primary" @click="downFile" style="margin-top: 10px; width: 100px">下 载</el-button>
+      <div class="download-btn">
+        <el-button type="primary" @click="downFile" style="margin-top: 10px; width: 100px">下 载</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -83,7 +120,7 @@ export default {
     return {
       // fileUrl: imgURL,
       fileUrl: '',
-      fontList: [
+      fontFamilyList: [
         {
           value: '宋体',
           label: '宋体'
@@ -145,81 +182,36 @@ export default {
           label: 'sans-serif'
         }
       ],
-      fontSizeList: [
-        {
-          value: 12,
-          label: '12px'
-        },
-        {
-          value: 14,
-          label: '14px'
-        },
-        {
-          value: 16,
-          label: '16px'
-        },
-        {
-          value: 18,
-          label: '18px'
-        },
-        {
-          value: 20,
-          label: '20px'
-        },
-        {
-          value: 24,
-          label: '24px'
-        },
-        {
-          value: 28,
-          label: '28px'
-        },
-        {
-          value: 32,
-          label: '32px'
-        },
-        {
-          value: 36,
-          label: '36px'
-        },
-        {
-          value: 42,
-          label: '42px'
-        },
-        {
-          value: 48,
-          label: '48px'
-        },
-        {
-          value: 64,
-          label: '64px'
-        },
-        {
-          value: 72,
-          label: '72px'
-        },
-        {
-          value: 128,
-          label: '128px'
-        }
-      ],
+      fontSizeList: [],
       watermarkObj: {
-        fontcolor: '#3fa3cb',
-        fontSize: 28,
+        fontcolor: '#000000',
+        fontSize: 64,
         opacity: 50,
         position: 1,
-        fontFamily: 'fangsong',
+        // fontFamily: 'fangsong',
+        fontFamily: '仿宋',
         canvas: null, // canvas  [必传]
         rotate: 30, // 旋转角度   数字类型
         density: 3.0, // 稠密度
         textAlign: 'center', // 水印文字居中方式:left center right  默认 left
-        textArray: ['水印图片'] // /水印文字 数组类型  最大三行  [必传]
+        textArray: [
+          {
+            text: '水印内容'
+          }
+        ] // /水印文字 数组类型  最大三行  [必传]
       },
       watermarkParams: {}
     };
   },
   mounted () {
     // this.drawWaterMarkFn();// 添加水印
+    for (let i = 12; i <= 128; i++) {
+      const params = {
+        value: i,
+        label: `${i}px`
+      };
+      this.fontSizeList.push(params);
+    }
   },
   methods: {
     handleChangeFile (event) {
@@ -238,6 +230,17 @@ export default {
     resetWatermark () {
       if (this.fileUrl) {
         this.drawWaterMarkFn();
+      }
+    },
+    handleClick () {
+      console.log(this.watermarkObj.textArray);
+    },
+    handleAdd () {
+      const { textArray } = this.watermarkObj;
+      if (textArray && textArray.length < 3) {
+        this.watermarkObj.textArray.push({ text: '' });
+      } else {
+        this.$message.error('水印内容最多三行');
       }
     },
     // 图片添加水印
@@ -260,13 +263,17 @@ export default {
     },
     // 下载添加水印的图片
     async downFile () {
-      // 1.图片路径转成canvas
-      const tempCanvas = await imgToCanvas(this.fileUrl);
-      this.watermarkObj.canvas = tempCanvas;
-      // 2.canvas添加水印
-      await drawWaterMark(this.watermarkObj);
-      // 3.下载加水印后的图片
-      downloadCanvas(tempCanvas, '水印图片下载');
+      if (this.fileUrl) {
+        // 1.图片路径转成canvas
+        const tempCanvas = await imgToCanvas(this.fileUrl);
+        this.watermarkObj.canvas = tempCanvas;
+        // 2.canvas添加水印
+        await drawWaterMark(this.watermarkObj);
+        // 3.下载加水印后的图片
+        downloadCanvas(tempCanvas, '水印图片下载');
+      } else {
+        this.$message.error('请上传图片后再下载');
+      }
     }
   }
 };
@@ -278,12 +285,13 @@ export default {
   box-sizing: border-box;
   .content {
     ::v-deep .imageBox {
-      margin: 10px;
+      margin: 10px 0;
       max-height: 650px;
       min-height: 500px;
       border: 1px solid red;
       padding: 10px;
       box-sizing: border-box;
+      text-align: center;
       .img {
         width: 100%;
         height: 100%;
@@ -303,6 +311,7 @@ export default {
       .item {
         display: flex;
         flex: 1;
+        /*width: 400px;*/
         align-items: center;
         margin-right: 10px;
         .label {
@@ -310,7 +319,10 @@ export default {
         }
       }
       .text {
-        width: 400px;
+        margin-right: 20px;
+      }
+      ::v-deep .el-input {
+        width: 300px;
       }
       .layout {
         .item {
@@ -338,20 +350,10 @@ export default {
         color: #409EFF;
       }
     }
-  }
-
-  ::v-deep {
-    .el-dialog__footer {
-      text-align: right !important;
-      position: absolute;
-      width: 200px;
-      top: unset;
-      right: 20px;
-      bottom: 0px;
-      padding: 10px !important;
-      padding-left: 20px !important;
-      background-color: transparent !important;
-      z-index: 99;
+    .download-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
