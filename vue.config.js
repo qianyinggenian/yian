@@ -26,6 +26,24 @@ module.exports = {
         headers: {
           Referer: 'https://fastly.picsum.photos'
         }
+      },
+      // 第二个代理
+      '/api2': {
+        target: 'https://www.baidu.com/s', // 代理的目标地址
+        changeOrigin: true,
+        pathRewrite: { '^/api2': '' }
+      },
+      // 第二个代理
+      '/api3': {
+        target: 'https://www.biqusk.com/s.php', // 代理的目标地址
+        changeOrigin: true,
+        pathRewrite: { '^/api3': '' }
+      },
+      // 第二个代理
+      biqusk: {
+        target: 'https://www.biqusk.com', // 代理的目标地址
+        changeOrigin: true,
+        pathRewrite: { '^biqusk': '' }
       }
     }
   },

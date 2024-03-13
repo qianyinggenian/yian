@@ -99,5 +99,13 @@ export const config = [
     meta: {
       title: '图片水印'
     }
+  },
+  {
+    path: '/novel',
+    name: 'novel',
+    component: () => import('@/views/novel/index.vue'),
+    meta: {
+      title: '小说'
+    }
   }
 ];
