@@ -65,7 +65,7 @@ export default {
     },
     /**
      * @Description 展开或折叠触发
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/9/20
      */
     handleClickCollapse (flag) {

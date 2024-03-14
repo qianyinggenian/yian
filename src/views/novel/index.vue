@@ -1,19 +1,6 @@
 <template>
   <div class="container">
     <div class="search-box">
-<!--      <div class="item">-->
-<!--        <div class="label">网站:</div>-->
-<!--        <div class="value">-->
-<!--          <el-select size="small" v-model="websiteValue" placeholder="请选择">-->
-<!--            <el-option-->
-<!--                v-for="item in websiteList"-->
-<!--                :key="item.value"-->
-<!--                :label="item.label"-->
-<!--                :value="item.value">-->
-<!--            </el-option>-->
-<!--          </el-select>-->
-<!--        </div>-->
-<!--      </div>-->
       <div class="item">
         <div class="label">搜索：</div>
         <div class="value">
@@ -34,23 +21,23 @@
           </el-input>
         </div>
       </div>
+      <div class="item">
+        <el-button size="small" type="primary">下载txt</el-button>
+      </div>
     </div>
-<!--    <div class="content">-->
-<!--      <div class="left">-->
-<!--        <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick"></el-tree>-->
-<!--      </div>-->
-<!--      <div class="right"></div>-->
-<!--    </div>-->
     <div  class="content">
       <layout>
         <div slot="left" class="left">
           <el-tree
               :data="treeData"
               :props="defaultProps"
+              node-key="id"
+              :default-expanded-keys="defaultExpandedKeys"
               @node-click="handleNodeClick">
           </el-tree>
         </div>
-        <div slot="right">
+        <div slot="right" class="right">
+          <div class="right-content" v-html="htmlContent"></div>
         </div>
       </layout>
     </div>
@@ -59,11 +46,13 @@
 <script>
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+
 export default {
   name: 'index',
   components: { },
   data () {
     return {
+      defaultExpandedKeys: [],
       rootData: [
         {
           type: 'root',
@@ -78,6 +67,7 @@ export default {
           type: 'root',
           label: '伏天氏 - 净无痕',
           name: '伏天氏 - 净无痕',
+          id: '伏天氏 - 净无痕-1',
           isDirectory: true,
           children: [],
           path: 'https://www.biqusk.com/7_7948/'
@@ -880,14 +870,19 @@ export default {
         label: 'label',
         isLeaf: 'leaf'
       },
+      textContent: '',
+      htmlContent: '',
       searchValue: '',
       websiteValue: '必去书库',
+      websiteUrl: 'https://www.biqusk.com/',
       websiteList: [
         {
+          url: 'https://www.biqusk.com/',
           value: '必去书库',
           label: '必去书库'
         },
         {
+          url: 'http://www.xbiquzw.com',
           value: '笔趣阁',
           label: '笔趣阁'
         }
@@ -898,7 +893,10 @@ export default {
   watch: {},
   computed: {},
   created () {},
-  mounted () {},
+  mounted () {
+    const $ = cheerio.load('<html><head><title>Hello, world!</title></head></html>');
+    console.log('sdf', $('h1').text());
+  },
   methods: {
     async searchInfo () {
       axios.defaults.withCredentials = true;
@@ -915,7 +913,8 @@ export default {
       //     console.log('Error:', error);
       //   });
       // axios.get(`/api3?q=${this.searchValue}`).then(response => {
-      axios.get(`biqusk/s.php??q=${this.searchValue}`).then(response => {
+      // axios.get(`/biqusk?q=${this.searchValue}`).then(response => {
+      axios.get(`/biqusk/s.php??q=${this.searchValue}`).then(response => {
         console.log('response.data', response.data);
         const result = [];
         const res = response.data;
@@ -932,6 +931,7 @@ export default {
               type: 'root',
               label: `${title} - ${author}`,
               children: [],
+              id: `${title} - ${author}-1`,
               isDirectory: true,
               path
             });
@@ -944,32 +944,56 @@ export default {
       });
       // console.log($);
     },
-    async getChapter (pathStr) {
-      axios.get(pathStr).then(response => {
+    async getChapter (treeNode, pathStr) {
+      // const regExp = new RegExp(pathStr, 'gi');
+      // const url = pathStr.replace(regExp, '/biqusk');
+      const url = pathStr.replace(/https:\/\/www.biqusk.com/g, '/biqusk');
+      axios.get(url).then(response => {
         const result = [];
         const res = response.data;
         const $ = cheerio.load(res);
         console.log('response.data', response.data);
         $('#list dd').each(function (i, elem) {
-          const name = $(elem).find('a').text();
+          const label = $(elem).find('a').text();
           const path = $(elem).find('a').attr().href;
           result.push({
-            type: '.biqusk',
-            name,
+            type: 'biqusk',
+            label,
             isDirectory: false,
             // path: pathStr + path
             path: path
           });
         });
+        treeNode.children = result;
+        if (result && result.length > 0) {
+          this.defaultExpandedKeys.push(treeNode.id);
+        }
         console.log('result', result);
       }).catch(error => {
         console.log('Error:', error);
       });
     },
+    async getContent (pathStr) {
+      let url = this.websiteUrl + pathStr;
+      url = url.replace(/https:\/\/www.biqusk.com/g, '/biqusk'); // g标志表示全局替换
+      axios.get(url).then(response => {
+        const res = response.data;
+        const $ = cheerio.load(res);
+        const html = $('#content').html();
+        this.htmlContent = html || '';
+        this.textContent = $('#content').text();
+        console.log('textContent', this.textContent);
+      });
+    },
     handleNodeClick (treeNode) {
       console.log('treeNode', treeNode);
-      if (treeNode.isDirectory && treeNode.children.length === 0) {
-        this.getChapter(treeNode.path);
+      this.defaultExpandedKeys = [];
+      if (treeNode.isDirectory) {
+        if (treeNode.children.length === 0) {
+          this.getChapter(treeNode, treeNode.path);
+        }
+      } else {
+        this.getContent(treeNode.path);
       }
     },
     loadNode (node, resolve) {
@@ -1003,6 +1027,7 @@ export default {
     box-sizing: border-box;
     .item {
       display: flex;
+      margin-left: 10px;
       align-items: center;
       .label {
         margin-right: 10px;
@@ -1013,7 +1038,6 @@ export default {
     display: flex;
     height: calc(100% - 52px);
     .left {
-      flex: 1;
       height: 100%;
       .el-tree {
         height: 100%;
@@ -1027,8 +1051,12 @@ export default {
       }
     }
     .right {
-      flex: 4;
       height: 100%;
+      .right-content {
+        height: 100%;
+        width: 100%;
+        overflow-y: auto;
+      }
     }
   }
 }

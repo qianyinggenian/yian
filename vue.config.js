@@ -40,10 +40,10 @@ module.exports = {
         pathRewrite: { '^/api3': '' }
       },
       // 第二个代理
-      biqusk: {
+      '/biqusk': {
         target: 'https://www.biqusk.com', // 代理的目标地址
         changeOrigin: true,
-        pathRewrite: { '^biqusk': '' }
+        pathRewrite: { '^/biqusk': '' }
       }
     }
   },

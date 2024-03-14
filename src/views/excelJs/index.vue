@@ -21,7 +21,7 @@ export default {
   methods: {
     /**
      * @Description 选择文件后触发
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/14/10
      */
     handleChange (e) {

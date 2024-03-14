@@ -148,7 +148,7 @@ export default {
     },
     /**
      * @Description 点击节点触发
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/9/19
      */
     clickNode (event, treeId, treeNode, clickFlag) {
@@ -157,7 +157,7 @@ export default {
     },
     /**
      * @Description 点击节点前触发
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/9/19
      */
     beforeClick (treeId, treeNode, clickFlag) {
@@ -169,7 +169,7 @@ export default {
     },
     /**
      * @Description 勾选节点触发
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/9/19
      */
     checkNode (event, treeId, treeNode) {
@@ -179,7 +179,7 @@ export default {
     },
     /**
      * @Description 勾选节点前触发
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/9/19
      */
     beforeCheck (treeId, treeNode) {
