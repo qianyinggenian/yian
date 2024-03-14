@@ -39,11 +39,17 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: { '^/api3': '' }
       },
-      // 第二个代理
+      // 必去书库
       '/biqusk': {
         target: 'https://www.biqusk.com', // 代理的目标地址
         changeOrigin: true,
         pathRewrite: { '^/biqusk': '' }
+      },
+      // 笔趣阁
+      '/biquge': {
+        target: 'http://www.xbiquzw.com', // 代理的目标地址
+        changeOrigin: true,
+        pathRewrite: { '^/biquge': '' }
       }
     }
   },

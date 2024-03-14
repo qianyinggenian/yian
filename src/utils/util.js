@@ -81,13 +81,13 @@ export function download (blob, filename = '新建文件.xlsx') {
  * @author qianyinggenian
  * @date 2024/3/14
  */
-export function downloadFile (resultValue, filetype) {
+export function downloadFile (resultValue, filename = '新建文本文档', filetype = 'txt') {
   if (resultValue) {
     const blob = new Blob([resultValue], { type: 'text/plain' });
     const downloadElement = document.createElement('a');
     const href = window.URL.createObjectURL(blob); // 创建下载的链接
     downloadElement.href = href;
-    downloadElement.download = `playlist.${filetype}`; // 下载后文件名
+    downloadElement.download = `${filename}.${filetype}`; // 下载后文件名
     document.body.appendChild(downloadElement);
     downloadElement.click(); // 点击下载
     document.body.removeChild(downloadElement); // 下载完成移除元素
