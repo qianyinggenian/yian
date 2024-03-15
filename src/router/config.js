@@ -100,6 +100,33 @@ export const config = [
       title: '图片水印'
     }
   },
+
+  {
+    path: '/watermark',
+    name: 'watermark',
+    meta: {
+      title: '图片水印'
+    },
+    component: redirectComp,
+    children: [
+      {
+        path: '/image-watermark',
+        name: '/image-watermark',
+        component: () => import('@/views/imageWatermark/index.vue'),
+        meta: {
+          title: '图片水印1'
+        }
+      },
+      {
+        path: '/watermark',
+        name: 'watermark',
+        component: () => import('@/views/imageWatermark/index2.vue'),
+        meta: {
+          title: '图片水印2'
+        }
+      }
+    ]
+  },
   {
     path: '/novel',
     name: 'novel',

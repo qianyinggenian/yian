@@ -60,7 +60,9 @@
         </el-col>
       </el-row>
     </el-form>
-    <img v-if="previewData" :src="previewData" alt="预览图片" style="max-width: 100%;">
+    <div class="imageBox" v-if="previewData">
+      <img :src="previewData" alt="预览图片" style="max-width: 100%;">
+    </div>
   </div>
 </template>
 
@@ -236,6 +238,19 @@ export default {
   height: 100%;
   padding: 10px;
   box-sizing: border-box;
+  .el-form {
+    border: 1px solid #409EFF;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  .imageBox {
+    height: calc(100% - 190px);
+    margin-top: 5px;
+    border: 1px solid red;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
 }
 ::v-deep .el-input-number__increase {
   background: #153552 !important;
