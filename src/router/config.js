@@ -93,11 +93,11 @@ export const config = [
     }
   },
   {
-    path: '/image-watermark',
-    name: 'image-watermark',
-    component: () => import('@/views/imageWatermark/index.vue'),
+    path: '/pdfWatermark',
+    name: 'pdfWatermark',
+    component: () => import('@/views/pdfWatermark/index.vue'),
     meta: {
-      title: '图片水印'
+      title: 'pdf水印'
     }
   },
 
