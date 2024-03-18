@@ -92,20 +92,12 @@ export const config = [
       title: 'proxy-layout'
     }
   },
-  {
-    path: '/pdfWatermark',
-    name: 'pdfWatermark',
-    component: () => import('@/views/pdfWatermark/index.vue'),
-    meta: {
-      title: 'pdf水印'
-    }
-  },
 
   {
     path: '/watermark',
     name: 'watermark',
     meta: {
-      title: '图片水印'
+      title: '水印'
     },
     component: redirectComp,
     children: [
@@ -123,6 +115,14 @@ export const config = [
         component: () => import('@/views/imageWatermark/index2.vue'),
         meta: {
           title: '图片水印2'
+        }
+      },
+      {
+        path: '/pdfWatermark',
+        name: 'pdfWatermark',
+        component: () => import('@/views/pdfWatermark/index.vue'),
+        meta: {
+          title: 'pdf水印'
         }
       }
     ]

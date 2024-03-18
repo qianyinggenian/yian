@@ -1,255 +1,183 @@
 <template>
-  <div class="watermarkImage">
-    <el-form :model="form" ref="form" size="small" label-width="80px">
-      <el-row type="flex" justify="space-between">
-        <el-col :span="24">
-          <el-form-item>
-            <input type="file" @change="onFileChange" accept="image/*">
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row  type="flex" justify="space-between">
-        <el-col :span="24">
-          <el-form-item label="水印内容" prop="watermarkText">
-            <el-input v-model="form.watermarkText"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row type="flex" justify="space-between" :gutter="20">
-        <el-col :span="4">
-          <el-form-item label="倾斜角度" prop="tiltAngle">
-            <el-input-number v-model="form.tiltAngle" :min="-90" :max="90"></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="字体大小" prop="fontSize">
-            <el-input-number v-model="form.fontSize" :min="10" :max="100"></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="透明度" prop="watermarkOpacity">
-            <el-input-number v-model="form.watermarkOpacity" :step="0.1" :min="0" :max="1"></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="字体" prop="fontFamily">
-            <el-select size="small" filterable v-model="form.fontFamily" placeholder="请选择">
-              <el-option
-                  v-for="item in fontFamilyList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="字体颜色" prop="fontColor">
-            <el-color-picker v-model="form.fontColor"></el-color-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item>
-            <el-button
-                type="primary"
-                class="download-btn"
-                @click="downloadImage(previewData)">
-              下载
-            </el-button>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-    <img v-if="previewData" :src="previewData" alt="预览图片" style="max-width: 100%;">
+  <div>
+    <p>测试</p>
+    <p>测试</p>
+    <p>值： {{ value }}</p>
+    <p>
+      多选-禁选
+      <proxySelect
+          multiple
+          disabled
+          v-model="value"
+          :options="options"
+          clearable
+          @clear="handleClear">
+      </proxySelect>
+    </p>
+    <p>
+      多选-可选
+      <proxySelect
+          ref="11"
+          multiple
+          v-model="value"
+          :options="options"
+          clearable
+          @clear="handleClear">
+      </proxySelect>
+    </p>
+    <p>
+      单选-可选
+      <proxySelect
+          ref="11"
+          v-model="value1"
+          :options="options"
+          clearable
+          @clear="handleClear">
+      </proxySelect>
+    </p>
+    <p>
+      单选-禁选
+      <proxySelect
+          ref="11"
+          :disabled="true"
+          v-model="value1"
+          :options="options"
+          clearable
+          @clear="handleClear">
+      </proxySelect>
+    </p>
+    <p>
+      <input id="file" accept="" type="file" @change="handleChange"/>
+    </p>
+    <p>
+      <proxyInput
+          prefix-icon="el-icon-search"
+          suffix-icon="el-icon-date"
+          clearable
+          :is-remove-spaces="true"
+          v-model="inputValue">
+          <span slot="prepend">前</span>
+          <span slot="append">后</span>
+      </proxyInput>
+    </p>
   </div>
 </template>
 
 <script>
+import proxySelect from '@/components/proxySelect/index.vue';
+import proxyInput from '@/components/proxyInput/index.vue';
+import axios from 'axios';
+// import imgURL from '../imageWatermark/img/bj.jpg';
 export default {
+  name: 'index',
+  components: {
+    proxySelect,
+    proxyInput
+  },
   data () {
     return {
-      selectedFile: null,
-      previewData: null,
-      fontFamilyList: [
-        {
-          value: 'Arial',
-          label: 'Arial'
-        },
-        {
-          value: '宋体',
-          label: '宋体'
-        },
-        {
-          value: '楷体',
-          label: '楷体'
-        },
-        {
-          value: '仿宋',
-          label: '仿宋'
-        },
-        {
-          value: '黑体',
-          label: '黑体'
-        },
-        {
-          value: '等线',
-          label: '等线'
-        },
-        {
-          value: '微软雅黑',
-          label: '微软雅黑'
-        },
-        {
-          value: '思源黑体',
-          label: '思源黑体'
-        },
-        {
-          value: 'Times New Roman',
-          label: 'Times New Roman'
-        },
-        {
-          value: 'Helvetica Neue',
-          label: 'Helvetica Neue'
-        },
-        {
-          value: 'Helvetica',
-          label: 'Helvetica'
-        },
-        {
-          value: 'PingFang SC',
-          label: 'PingFang SC'
-        },
-        {
-          value: 'Hiragino Sans GB',
-          label: 'Hiragino Sans GB'
-        },
-        {
-          value: 'Microsoft YaHei',
-          label: 'Microsoft YaHei'
-        },
-        {
-          value: 'sans-serif',
-          label: 'sans-serif'
-        }
-      ],
-      form: {
-        watermarkText: 'Watermark',
-        tiltAngle: -30,
-        fontFamily: 'Arial',
-        watermarkOpacity: 0.7,
-        fontSize: 20,
-        fontColor: '#ffffff'
-      }
+      inputValue: '测试测试',
+      value1: '选项2',
+      value: ['选项2', '选项1'],
+      options: [{
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶双皮奶双皮奶双皮奶双皮奶双皮奶双皮奶双皮奶双皮奶双皮奶双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }, {
+        value: '选项4',
+        label: '龙须面'
+      }, {
+        value: '选项5',
+        label: '北京烤鸭'
+      }]
     };
   },
-  watch: {
-    form: {
-      handler (newVal, oldVal) {
-        if (this.selectedFile) {
-          this.addWatermarkAndDownload();
-        }
-      },
-      deep: true // 深度监听form对象的变化
-    }
+  props: {},
+  watch: {},
+  computed: {},
+  mounted () {
+    // this.addWatermarkAndDownload(imgURL, 'Watermark Text', 'my_watermarked_image.png');
   },
   methods: {
-    onFileChange (event) {
-      this.selectedFile = event.target.files[0];
-      this.addWatermarkAndDownload();
-    },
-    addWatermarkAndDownload () {
-      if (!this.selectedFile) {
-        this.$message.error('请先选择一张图片！');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-          this.addWatermark(img, event.target.result);
-        };
-        img.src = event.target.result;
-      };
-      reader.readAsDataURL(this.selectedFile);
-    },
-    addWatermark (image, sourceDataUrl) {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      console.log('image.width', image.width);
-      console.log('image.height', image.height);
-      canvas.width = image.width;
-      canvas.height = image.height;
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // 清除canvas上的所有内容
-      // 接着绘制图片和添加水印...
-      ctx.drawImage(image, 0, 0, image.width, image.height);
+    addWatermarkAndDownload (imageUrl, watermarkText, outputFilename) {
+      // 加载原始图片
+      const image = new Image();
+      image.crossOrigin = 'Anonymous'; // 跨域处理
+      image.onload = function () {
+        // 创建画布
+        const canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const ctx = canvas.getContext('2d');
 
-      const {
-        watermarkText,
-        tiltAngle,
-        fontSize,
-        fontColor,
-        watermarkOpacity,
-        fontFamily
-      } = this.form;
-      const textSpacing = 100; // 水印之间的间距
-      const num = Math.max(image.width, image.height);
-      // const numWatermarks = Math.ceil(image.width / textSpacing);
-      const numWatermarks = Math.ceil(num / textSpacing);
+        // 绘制水印
+        ctx.font = '50px Arial';
+        // ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'; // 半透明白色水印
+        ctx.fillStyle = '#000000'; // 半透明白色水印
+        ctx.fillText(watermarkText, 50, 50); // 在(50, 50)位置添加水印
 
-      for (let i = 0; i < numWatermarks; i++) {
-        for (let j = 0; j < numWatermarks; j++) {
-          const x = j * textSpacing;
-          const y = i * textSpacing;
+        // 绘制原始图片
+        ctx.drawImage(image, 0, 0, image.width, image.height);
 
-          ctx.save();
-          ctx.translate(x, y);
-          ctx.rotate((tiltAngle * Math.PI) / 180);
-          ctx.font = `${fontSize}px ${fontFamily}`;
-          ctx.fillStyle = fontColor;
-          ctx.globalAlpha = watermarkOpacity;
-          ctx.fillText(watermarkText, 0, fontSize);
-          ctx.restore();
-        }
-      }
-      ctx.globalAlpha = 1;
-      this.previewData = canvas.toDataURL('image/png');
-    },
-    downloadImage (dataUrl) {
-      if (dataUrl) {
+        // 生成图片数据并下载
+        const dataUrl = canvas.toDataURL('image/png');
         const link = document.createElement('a');
         link.href = dataUrl;
-        link.download = 'watermarked_image.png';
-        link.style.display = 'none';
-        document.body.appendChild(link);
+        link.download = outputFilename || 'watermarked.png';
         link.click();
-        document.body.removeChild(link);
-      } else {
-        this.$message.error('请先选择一张图片！');
-      }
+      };
+      image.src = imageUrl;
+    },
+    handleClear () {
+      console.log(111111);
+    },
+    /**
+     * @Description 选择文件后触发
+     * @author qianyinggenian
+     * @date 2024/01/08
+    */
+    handleChange (event) {
+      const file = event.target.files[0];
+      // 打印文件名及类型
+      console.log('文件名:', file.name);
+      console.log('文件类型:', file.type);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        console.log('文件路径:', reader.result);
+        this.getFileInfo(reader.result);
+      };
+      reader.readAsDataURL(file);
+    },
+    /**
+     * @Description 获取文件中的内容
+     * @author qianyinggenian
+     * @date 2024/01/08
+    */
+    getFileInfo (path) {
+      axios.get(path) // 这里的路径应根据实际情况修改
+        .then(response => {
+          this.fileContent = response.data;
+          console.log('fileContent', this.fileContent);
+        })
+        .catch(error => {
+          console.log('Error:', error);
+        });
     }
   }
 };
 </script>
+
 <style lang="scss" scoped>
-.watermarkImage {
-  width: 100%;
-  height: 100%;
-  padding: 10px;
-  box-sizing: border-box;
-}
-::v-deep .el-input-number__increase {
-  background: #153552 !important;
-  border-left: 1px solid #409eff !important;
-}
-::v-deep .el-input-number__decrease {
-  background: #153552 !important;
-  border-right: 1px solid #409eff !important;
+.el-select,.el-input {
+  width: 600px;
 }
 
-::v-deep .el-color-picker__trigger {
-  border: 1px solid #409eff !important;
-}
-.download-btn {
-  width: 100px;
+p {
+  margin-top: 10px;
 }
 </style>

@@ -1,12 +1,66 @@
 <template>
-  <div id="pdf-viewer">
-    <div>
-      <input type="file" accept=".pdf"  @change="onFileChange">
-
-      <el-button @click="convertToPdfAndDownload">下载</el-button>
-          <el-button @click="downloadPDF">下载1</el-button>
-    </div>
-    <div v-if="totalPages > 0">
+  <div class="pdf-viewer" >
+    <el-form :model="form" ref="form" size="small" label-width="80px">
+      <el-row type="flex" justify="space-between">
+        <el-col :span="24">
+          <el-form-item>
+            <input type="file" accept=".pdf"  @change="onFileChange">
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row  type="flex" justify="space-between">
+        <el-col :span="24">
+          <el-form-item label="水印内容" prop="watermarkText">
+            <el-input v-model="form.watermarkText"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row type="flex" justify="space-between" :gutter="20">
+        <el-col :span="4">
+          <el-form-item label="倾斜角度" prop="tiltAngle">
+            <el-input-number v-model="form.tiltAngle" :min="-90" :max="90"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="字体大小" prop="fontSize">
+            <el-input-number v-model="form.fontSize" :min="10" :max="100"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="透明度" prop="watermarkOpacity">
+            <el-input-number v-model="form.watermarkOpacity" :step="0.1" :min="0" :max="1"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="字体" prop="fontFamily">
+            <el-select size="small" filterable v-model="form.fontFamily" placeholder="请选择">
+              <el-option
+                  v-for="item in fontFamilyList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="字体颜色" prop="fontColor">
+            <el-color-picker v-model="form.fontColor"></el-color-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-button
+                type="primary"
+                class="download-btn"
+                @click="convertToPdfAndDownload">
+              下载
+            </el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
+    <div class="pdf-Box" v-if="totalPages > 0">
       <canvas  v-for="(_, index) in totalPages" :key="index" ref="pages"></canvas>
     </div>
   </div>
@@ -24,7 +78,77 @@ export default {
       pdfDocument: null,
       totalPages: 0,
       tiltAngle: -30,
-      fileName: ''
+      fileName: '',
+      fontFamilyList: [
+        {
+          value: 'Arial',
+          label: 'Arial'
+        },
+        {
+          value: '宋体',
+          label: '宋体'
+        },
+        {
+          value: '楷体',
+          label: '楷体'
+        },
+        {
+          value: '仿宋',
+          label: '仿宋'
+        },
+        {
+          value: '黑体',
+          label: '黑体'
+        },
+        {
+          value: '等线',
+          label: '等线'
+        },
+        {
+          value: '微软雅黑',
+          label: '微软雅黑'
+        },
+        {
+          value: '思源黑体',
+          label: '思源黑体'
+        },
+        {
+          value: 'Times New Roman',
+          label: 'Times New Roman'
+        },
+        {
+          value: 'Helvetica Neue',
+          label: 'Helvetica Neue'
+        },
+        {
+          value: 'Helvetica',
+          label: 'Helvetica'
+        },
+        {
+          value: 'PingFang SC',
+          label: 'PingFang SC'
+        },
+        {
+          value: 'Hiragino Sans GB',
+          label: 'Hiragino Sans GB'
+        },
+        {
+          value: 'Microsoft YaHei',
+          label: 'Microsoft YaHei'
+        },
+        {
+          value: 'sans-serif',
+          label: 'sans-serif'
+        }
+      ],
+      form: {
+        watermarkText: 'Watermark',
+        tiltAngle: -30,
+        fontFamily: 'Arial',
+        watermarkOpacity: 0.7,
+        fontSize: 20,
+        fontColor: '#ffffff'
+      }
     };
   },
   async mounted () {
@@ -236,15 +360,44 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-#pdf-viewer {
-  height: 100%;
+.pdf-viewer {
   width: 100%;
+  height: 100%;
+  padding: 10px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   canvas {
-    //height: 100%;
-    width: 100%;
-    margin-bottom: 10px;
+    width: calc(100% - 10px);
+    margin: 0 5px 10px 5px;
   }
+  .el-form {
+    border: 1px solid #409EFF;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  .pdf-Box {
+    height: calc(100% - 190px);
+    margin-top: 5px;
+    border: 1px solid red;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+}
+::v-deep .el-input-number__increase {
+  background: #153552 !important;
+  border-left: 1px solid #409eff !important;
+}
+::v-deep .el-input-number__decrease {
+  background: #153552 !important;
+  border-right: 1px solid #409eff !important;
+}
+
+::v-deep .el-color-picker__trigger {
+  border: 1px solid #409eff !important;
+}
+.download-btn {
+  width: 100px;
 }
 </style>
