@@ -8,27 +8,10 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row  type="flex" justify="space-between">
-        <el-col :span="24">
-          <el-form-item label="水印内容" prop="watermarkText">
-            <el-input v-model="form.watermarkText"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row type="flex" justify="space-between" :gutter="20">
-        <el-col :span="4">
-          <el-form-item label="倾斜角度" prop="tiltAngle">
-            <el-input-number v-model="form.tiltAngle" :min="-90" :max="90"></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="字体大小" prop="fontSize">
-            <el-input-number v-model="form.fontSize" :min="10" :max="100"></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="透明度" prop="watermarkOpacity">
-            <el-input-number v-model="form.watermarkOpacity" :step="0.1" :min="0" :max="1"></el-input-number>
+      <el-row  type="flex" justify="space-between" :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="水印内容" prop="watermarkText" :title="form.watermarkText">
+            <el-input v-model="form.watermarkText" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="4">
@@ -41,6 +24,28 @@
                   :value="item.value">
               </el-option>
             </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="字体大小" prop="fontSize">
+            <el-input-number v-model="form.fontSize" :min="10" :max="100"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="透明度" prop="watermarkOpacity">
+            <el-input-number v-model="form.watermarkOpacity" :step="0.1" :min="0" :max="1"></el-input-number>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row type="flex" justify="space-between" :gutter="20">
+        <el-col :span="4">
+          <el-form-item label="倾斜角度" prop="tiltAngle">
+            <el-input-number v-model="form.tiltAngle" :min="-90" :max="90"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="间隔距离" prop="textSpacing">
+            <el-input-number v-model="form.textSpacing" :step="1" :min="100" :max="200"></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="4">
@@ -58,6 +63,8 @@
             </el-button>
           </el-form-item>
         </el-col>
+        <el-col :span="4"></el-col>
+        <el-col :span="4"></el-col>
       </el-row>
     </el-form>
     <div class="pdf-Box" v-if="totalPages > 0">
@@ -76,8 +83,8 @@ export default {
     return {
       selectedFile: null,
       pdfDocument: null,
+      arrayBuffer: null,
       totalPages: 0,
-      tiltAngle: -30,
       fileName: '',
       fontFamilyList: [
         {
@@ -145,11 +152,22 @@ export default {
         watermarkText: 'Watermark',
         tiltAngle: -30,
         fontFamily: 'Arial',
-        watermarkOpacity: 0.7,
+        watermarkOpacity: 0.5,
         fontSize: 20,
-        fontColor: '#ffffff'
+        textSpacing: 150,
+        fontColor: '#D02424'
       }
     };
+  },
+  watch: {
+    form: {
+      handler (newVal, oldVal) {
+        if (this.selectedFile) {
+          this.resetWatermark(this.selectedFile);
+        }
+      },
+      deep: true // 深度监听form对象的变化
+    }
   },
   async mounted () {
     // await this.loadPDF();
@@ -168,8 +186,17 @@ export default {
       }
       this.fileName = file.name || '水印文档.pdf';
       this.selectedFile = file;
+      if (this.selectedFile) {
+        await this.resetWatermark(file);
+      }
+    },
+    /**
+     * @Description 重置水印
+     * @author qianyinggenian
+     * @date 2024/3/19
+     */
+    async resetWatermark (file) {
       const arrayBuffer = await this.readFileAsArrayBuffer(file);
-
       if (this.selectedFile) {
         await this.loadPDF(arrayBuffer);
       }
@@ -221,6 +248,7 @@ export default {
           canvas.width = viewport.width;
           canvas.height = viewport.height;
           const context = canvas.getContext('2d');
+          context.clearRect(0, 0, canvas.width, canvas.height); // 清除canvas上的所有内容
           const renderContext = {
             canvasContext: context,
             viewport
@@ -237,7 +265,16 @@ export default {
      * @date 2024/3/18
      */
     drawWatermark (context, pageNumber, canvas) {
-      const textSpacing = 150; // 水印之间的间距
+      const {
+        watermarkText,
+        tiltAngle,
+        fontSize,
+        fontColor,
+        watermarkOpacity,
+        fontFamily,
+        textSpacing
+      } = this.form;
+      // const textSpacing = 150; // 水印之间的间距
       const num = Math.max(canvas.width, canvas.height);
       const numWatermarks = Math.ceil(num / textSpacing);
 
@@ -247,11 +284,11 @@ export default {
           const y = i * textSpacing;
           context.save();
           context.translate(x, y);
-          context.rotate((this.tiltAngle * Math.PI) / 180);
-          context.font = 'bold 32px Arial';
-          context.fillStyle = 'rgba(213,210,210,0.8)';
-          context.globalAlpha = '0.8';
-          context.fillText('pdf水印', 0, 20);
+          context.rotate((tiltAngle * Math.PI) / 180);
+          context.font = `bold ${fontSize}px ${fontFamily}`;
+          context.fillStyle = fontColor;
+          context.globalAlpha = watermarkOpacity;
+          context.fillText(`${watermarkText}`, 0, fontSize);
           context.restore();
         }
       }
@@ -299,7 +336,7 @@ export default {
 
         // 生成并下载PDF文件
         // doc.save(`${this.fileName}.pdf`);
-        doc.save(this.fileName);
+        doc.save(`水印-${this.fileName}`);
       } else {
         this.$message.error('请选择PDF文件！');
       }
@@ -343,7 +380,7 @@ export default {
 
         // 生成并下载PDF文件
         // pdf.save(`${this.fileName}.pdf`);
-        pdf.save(this.fileName);
+        pdf.save(`水印-${this.fileName}`);
       } else {
         this.$message.error('请选择PDF文件！');
       }

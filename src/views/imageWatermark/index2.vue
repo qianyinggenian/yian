@@ -8,27 +8,10 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row  type="flex" justify="space-between">
-        <el-col :span="24">
-          <el-form-item label="水印内容" prop="watermarkText">
-            <el-input v-model="form.watermarkText"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row type="flex" justify="space-between" :gutter="20">
-        <el-col :span="4">
-          <el-form-item label="倾斜角度" prop="tiltAngle">
-            <el-input-number v-model="form.tiltAngle" :min="-90" :max="90"></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="字体大小" prop="fontSize">
-            <el-input-number v-model="form.fontSize" :min="10" :max="100"></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="透明度" prop="watermarkOpacity">
-            <el-input-number v-model="form.watermarkOpacity" :step="0.1" :min="0" :max="1"></el-input-number>
+      <el-row  type="flex" justify="space-between" :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="水印内容" prop="watermarkText" :title="form.watermarkText">
+            <el-input v-model="form.watermarkText" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="4">
@@ -41,6 +24,28 @@
                   :value="item.value">
               </el-option>
             </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="字体大小" prop="fontSize">
+            <el-input-number v-model="form.fontSize" :min="10" :max="100"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="透明度" prop="watermarkOpacity">
+            <el-input-number v-model="form.watermarkOpacity" :step="0.1" :min="0" :max="1"></el-input-number>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row type="flex" justify="space-between" :gutter="20">
+        <el-col :span="4">
+          <el-form-item label="倾斜角度" prop="tiltAngle">
+            <el-input-number v-model="form.tiltAngle" :min="-90" :max="90"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="间隔距离" prop="textSpacing">
+            <el-input-number v-model="form.textSpacing" :step="1" :min="100" :max="200"></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="4">
@@ -58,6 +63,8 @@
             </el-button>
           </el-form-item>
         </el-col>
+        <el-col :span="4"></el-col>
+        <el-col :span="4"></el-col>
       </el-row>
     </el-form>
     <div class="imageBox" v-if="previewData">
@@ -140,6 +147,7 @@ export default {
         fontFamily: 'Arial',
         watermarkOpacity: 0.7,
         fontSize: 20,
+        textSpacing: 100,
         fontColor: '#ffffff'
       }
     };
@@ -157,6 +165,8 @@ export default {
   methods: {
     onFileChange (event) {
       this.selectedFile = event.target.files[0];
+      this.fileName = this.selectedFile.name || '水印图片.png';
+      console.log('fileName', this.fileName);
       this.addWatermarkAndDownload();
     },
     addWatermarkAndDownload () {
@@ -177,8 +187,6 @@ export default {
     addWatermark (image, sourceDataUrl) {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      console.log('image.width', image.width);
-      console.log('image.height', image.height);
       canvas.width = image.width;
       canvas.height = image.height;
       ctx.clearRect(0, 0, canvas.width, canvas.height); // 清除canvas上的所有内容
@@ -191,9 +199,10 @@ export default {
         fontSize,
         fontColor,
         watermarkOpacity,
-        fontFamily
+        fontFamily,
+        textSpacing
       } = this.form;
-      const textSpacing = 100; // 水印之间的间距
+      // const textSpacing = 100; // 水印之间的间距
       const num = Math.max(image.width, image.height);
       // const numWatermarks = Math.ceil(image.width / textSpacing);
       const numWatermarks = Math.ceil(num / textSpacing);
@@ -220,7 +229,7 @@ export default {
       if (dataUrl) {
         const link = document.createElement('a');
         link.href = dataUrl;
-        link.download = 'watermarked_image.png';
+        link.download = `水印-${this.fileName}`;
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
