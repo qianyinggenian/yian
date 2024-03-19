@@ -2,30 +2,41 @@
   <div class="pdf-viewer" >
     <div class="file-box">
       <div class="file-select-box">
-        <input style="display: none" type="file" ref="uploadBtn" accept=".pdf" multiple  @change="onFileChange">
-        <el-button size="small" @click="handleUpload">选择文件</el-button>
-        <span class="file-accept-tips">仅可上传pdf文件</span>
-        <el-button
-            size="small"
-            class="download-btn"
-            :loading="loading"
-            @click="convertToPdfAndDownload">
-          下载
-        </el-button>
+        <div class="item">
+          <input style="display: none" type="file" ref="uploadBtn" accept=".pdf" multiple  @change="onFileChange">
+          <el-button size="small" @click="handleUpload">选择文件</el-button>
+          <span class="file-accept-tips">仅可上传pdf文件</span>
+          <span v-if="totalPages > 0"> 总共：{{totalPages}}页</span>
+        </div>
+        <div class="item">
+          <el-button
+              size="small"
+              class="download-btn"
+              :loading="loading"
+              @click="convertToPdfAndDownload">
+            下载
+          </el-button>
+        </div>
+
       </div>
       <div class="file-list">
-        <div class="item" v-for="(item,index) in selectedFile" :key="index">
+        <div class="item" v-for="(file,index) in files" :key="index">
+<!--        <div class="item" v-for="(item,index) in 25" :key="index">-->
           <div class="icon">
             <svg-icon icon-class="pdf2" :size="40"></svg-icon>
           </div>
-          <div class="content" :title="item.name">
-            <span>{{item.name}}</span>
+          <div class="content" :title="file.name">
+            <span>{{file.name}}</span>
+          </div>
+          <div class="delete-file" @click="deleteFile(file,index)">
+            <svg-icon icon-class="delete" fill="#dc2e1b" :size="20"></svg-icon>
           </div>
         </div>
       </div>
     </div>
     <div class="pdf-Box" v-if="totalPages > 0">
       <canvas :id="index"  v-for="(_, index) in totalPages" :key="index" ref="pages"></canvas>
+      <el-backtop target=".pdf-Box"></el-backtop>
     </div>
   </div>
 </template>
@@ -43,9 +54,9 @@ export default {
       pdfDocument: null,
       arrayBuffer: null,
       totalPages: 0,
-      files: [],
       pdfFiles: [],
       fileName: '',
+      files: [],
       fontFamilyList: [
         {
           value: 'Arial',
@@ -131,7 +142,25 @@ export default {
      * @date 2024/3/19
      */
     handleUpload () {
+      this.$refs.uploadBtn.value = '';
       this.$refs.uploadBtn.click();
+    },
+    /**
+     * @Description 删除文件
+     * @author qianyinggenian
+     * @date 2024/3/19
+     */
+    deleteFile (file, index) {
+      this.files.splice(index, 1);
+      this.totalPages = 0;
+      console.log('this.files', this.files);
+      for (const file of this.files) {
+        if (file.type.includes('application/pdf')) {
+          this.resetWatermark(file);
+        } else {
+          this.$message.error('请选择PDF文件！');
+        }
+      }
     },
     /**
      * @Description 选择文件后触发
@@ -139,12 +168,13 @@ export default {
      * @date 2024/3/18
      */
     async onFileChange (event) {
-      // const file = event.target.files[0];
       const files = event.target.files;
+      // this.files = files;
       this.selectedFile = files;
-      for (const item of files) {
-        if (item.type.includes('application/pdf')) {
-          await this.resetWatermark(item);
+      this.files = Array.from(files);
+      for (const file of files) {
+        if (file.type.includes('application/pdf')) {
+          await this.resetWatermark(file);
         } else {
           this.$message.error('请选择PDF文件！');
         }
@@ -157,7 +187,7 @@ export default {
      */
     async resetWatermark (file) {
       const arrayBuffer = await this.readFileAsArrayBuffer(file);
-      if (this.selectedFile) {
+      if (this.files) {
         await this.loadPDF(arrayBuffer);
       }
     },
@@ -263,7 +293,7 @@ export default {
      * @date 2024/3/18
      */
     async downloadPDF () {
-      if (this.selectedFile) {
+      if (this.files) {
         const doc = new JsPDF('p', 'mm', 'a4'); // 设置为纵向、毫米单位、A4纸张
 
         const canvases = this.$refs.pages; // 示例中包含两个canvas
@@ -311,7 +341,8 @@ export default {
      * @date 2024/3/18
      */
     async convertToPdfAndDownload () {
-      if (this.selectedFile) {
+      if (this.files) {
+        this.$message.success('开始下载');
         this.loading = true;
         const pdf = new JsPDF('p', 'mm', 'a4'); // 初始化PDF文档
 
@@ -345,7 +376,7 @@ export default {
 
         // 生成并下载PDF文件
         // pdf.save(`${this.fileName}.pdf`);
-        this.$message.success('开始下载');
+        this.$message.success('完成');
         this.loading = false;
         pdf.save('pdf合并文件.pdf');
       } else {
@@ -377,8 +408,14 @@ export default {
     border: 1px solid var(--border-color);
     box-sizing: border-box;
     .file-select-box {
+      display: flex;
+      align-items: center;
+      .item {
+        flex: 1 0 auto;
+      }
       .file-accept-tips {
         margin-left: 10px;
+        margin-right: 50px;
       }
     }
     .file-list {
@@ -395,6 +432,8 @@ export default {
         margin-bottom: 10px;
         box-sizing: border-box;
         padding: 5px;
+        cursor: pointer;
+        position: relative;
         border: 1px solid var(--border-color);
         .icon {
           height: 40px;
@@ -417,6 +456,19 @@ export default {
             word-break: break-word; /* 对于英文单词，防止溢出容器 */
           }
         }
+        .delete-file {
+          display: none;
+          position: absolute;
+          right: 7px;
+          top: 1px;
+          width: 15px;
+          height: 15px;
+        }
+        &:hover {
+          .delete-file {
+            display: block;
+          }
+        }
       }
     }
   }
@@ -436,7 +488,6 @@ export default {
   }
 }
 ::v-deep .el-icon-loading {
-
   font-size: 14px !important;
 }
 </style>

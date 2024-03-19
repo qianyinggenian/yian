@@ -58,6 +58,7 @@
             <el-button
                 type="primary"
                 class="download-btn"
+                :loading="loading"
                 @click="convertToPdfAndDownload">
               下载
             </el-button>
@@ -69,6 +70,7 @@
     </el-form>
     <div class="pdf-Box" v-if="totalPages > 0">
       <canvas  v-for="(_, index) in totalPages" :key="index" ref="pages"></canvas>
+      <el-backtop target=".pdf-Box"></el-backtop>
     </div>
   </div>
 </template>
@@ -81,6 +83,7 @@ import 'pdfjs-dist/build/pdf.worker.min';
 export default {
   data () {
     return {
+      loading: false,
       selectedFile: null,
       pdfDocument: null,
       arrayBuffer: null,
@@ -348,6 +351,8 @@ export default {
      */
     async convertToPdfAndDownload () {
       if (this.selectedFile) {
+        this.$message.success('开始下载');
+        this.loading = true;
         const pdf = new JsPDF('p', 'mm', 'a4'); // 初始化PDF文档
 
         // 遍历所有的canvas元素
@@ -380,6 +385,8 @@ export default {
 
         // 生成并下载PDF文件
         // pdf.save(`${this.fileName}.pdf`);
+        this.$message.success('完成');
+        this.loading = false;
         pdf.save(`水印-${this.fileName}`);
       } else {
         this.$message.error('请选择PDF文件！');
@@ -436,5 +443,8 @@ export default {
 }
 .download-btn {
   width: 80px;
+}
+::v-deep .el-icon-loading {
+  font-size: 14px !important;
 }
 </style>
