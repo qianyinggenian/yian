@@ -97,7 +97,7 @@ export const config = [
     path: '/watermark',
     name: 'watermark',
     meta: {
-      title: '水印'
+      title: '图片水印'
     },
     component: redirectComp,
     children: [
@@ -116,13 +116,32 @@ export const config = [
         meta: {
           title: '图片水印2'
         }
-      },
+      }
+    ]
+  },
+
+  {
+    path: '/pdf',
+    name: 'pdf',
+    meta: {
+      title: 'PDF'
+    },
+    component: redirectComp,
+    children: [
       {
         path: '/pdfWatermark',
         name: 'pdfWatermark',
         component: () => import('@/views/pdfWatermark/index.vue'),
         meta: {
           title: 'pdf水印'
+        }
+      },
+      {
+        path: '/PDFMerge',
+        name: 'PDFMerge',
+        component: () => import('@/views/PDFMerge/index.vue'),
+        meta: {
+          title: 'pdf合并'
         }
       }
     ]
