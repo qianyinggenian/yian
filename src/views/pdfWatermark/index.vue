@@ -435,6 +435,6 @@ export default {
   border: 1px solid #409eff !important;
 }
 .download-btn {
-  width: 100px;
+  width: 80px;
 }
 </style>

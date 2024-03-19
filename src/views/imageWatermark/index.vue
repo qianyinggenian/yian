@@ -106,7 +106,7 @@
       </div>
       <div class="imageBox" id="imageBox"></div>
       <div class="download-btn">
-        <el-button type="primary" @click="downFile" style="margin-top: 10px; width: 100px">下 载</el-button>
+        <el-button type="primary" @click="downFile" style="margin-top: 10px; width: 80px">下 载</el-button>
       </div>
     </div>
   </div>

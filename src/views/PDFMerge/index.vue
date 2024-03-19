@@ -4,11 +4,24 @@
       <div class="file-select-box">
         <input style="display: none" type="file" ref="uploadBtn" accept=".pdf" multiple  @change="onFileChange">
         <el-button size="small" @click="handleUpload">选择文件</el-button>
-        <span class="file-accept-tips">pdf文件</span>
-        <el-button size="small" @click="convertToPdfAndDownload">下载</el-button>
+        <span class="file-accept-tips">仅可上传pdf文件</span>
+        <el-button
+            size="small"
+            class="download-btn"
+            :loading="loading"
+            @click="convertToPdfAndDownload">
+          下载
+        </el-button>
       </div>
       <div class="file-list">
-        <div class="item" v-for="(item,index) in selectedFile" :key="index">{{item.name}}</div>
+        <div class="item" v-for="(item,index) in selectedFile" :key="index">
+          <div class="icon">
+            <svg-icon icon-class="pdf2" :size="40"></svg-icon>
+          </div>
+          <div class="content" :title="item.name">
+            <span>{{item.name}}</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="pdf-Box" v-if="totalPages > 0">
@@ -25,6 +38,7 @@ export default {
   components: {},
   data () {
     return {
+      loading: false,
       selectedFile: null,
       pdfDocument: null,
       arrayBuffer: null,
@@ -109,12 +123,8 @@ export default {
   watch: {},
   computed: {},
   created () {},
-  mounted () {
-    // const startPageNum = this.totalPages === 0 ? 1 : this.totalPages;
-    // console.log('startPageNum', startPageNum);
-  },
+  mounted () {},
   methods: {
-    // download,
     /**
      * @Description
      * @author qianyinggenian
@@ -129,15 +139,15 @@ export default {
      * @date 2024/3/18
      */
     async onFileChange (event) {
-      const file = event.target.files[0];
+      // const file = event.target.files[0];
       const files = event.target.files;
       this.selectedFile = files;
-      console.log('file', file);
-      console.log('files', files);
-      // const arrayBuffer = await this.readFileAsArrayBuffer(file);
-      // console.log('arrayBuffer', arrayBuffer);
       for (const item of files) {
-        await this.resetWatermark(item);
+        if (item.type.includes('application/pdf')) {
+          await this.resetWatermark(item);
+        } else {
+          this.$message.error('请选择PDF文件！');
+        }
       }
     },
     /**
@@ -172,15 +182,10 @@ export default {
     },
     async loadPDF (data) {
       const loadingTask = pdfjsLib.getDocument({ data });
-      // this.pdfDocument = await loadingTask.promise;
-      // this.totalPages += this.pdfDocument.numPages;
       const pdfDocument = await loadingTask.promise;
       const numPages = pdfDocument.numPages;
-      console.log('totalPagestotalPages', this.totalPages);
       const startPageNum = this.totalPages === 0 ? 0 : this.totalPages;
       this.totalPages += numPages;
-      console.log('totalPages', this.totalPages);
-      // if (this.pdfDocument && this.totalPages > 0) {
       if (pdfDocument && this.totalPages > 0) {
         this.$nextTick(() => {
           this.renderAllPages(pdfDocument, startPageNum, numPages);
@@ -193,13 +198,8 @@ export default {
      * @date 2024/3/18
      */
     async renderAllPages (pdfDocument, startPageNum, numPages) {
-      console.log('startPageNum', startPageNum);
-      console.log('numPages', numPages);
-      // for (let pageNum = startPageNum; pageNum <= this.totalPages; pageNum++) {
       for (let pageNum = startPageNum; pageNum < this.totalPages; pageNum++) {
-        console.log('pageNum', pageNum);
         this.$nextTick(async () => {
-          // const canvas = this.$refs.pages[pageNum - 1];
           const canvas = this.$refs.pages[pageNum];
           if (!canvas) {
             console.error(`Canvas element for page ${pageNum} not found.`);
@@ -207,9 +207,6 @@ export default {
           }
           // const page = await this.pdfDocument.getPage(pageNum);
           const pdfPageNum = startPageNum === 0 ? pageNum + 1 : pageNum + 1 - startPageNum;
-          // console.log('pdfPageNum', pdfPageNum);
-          // const page = await pdfDocument.getPage(pageNum + 1);
-          // const page = await pdfDocument.getPage(pageNum + 1);
           const page = await pdfDocument.getPage(pdfPageNum);
           const viewport = page.getViewport({ scale: 2 });
           canvas.width = viewport.width;
@@ -222,7 +219,7 @@ export default {
           };
 
           await page.render(renderContext).promise;
-          this.drawWatermark(context, pageNum, canvas);
+          // this.drawWatermark(context, pageNum, canvas);
         });
       }
     },
@@ -315,6 +312,7 @@ export default {
      */
     async convertToPdfAndDownload () {
       if (this.selectedFile) {
+        this.loading = true;
         const pdf = new JsPDF('p', 'mm', 'a4'); // 初始化PDF文档
 
         // 遍历所有的canvas元素
@@ -347,6 +345,8 @@ export default {
 
         // 生成并下载PDF文件
         // pdf.save(`${this.fileName}.pdf`);
+        this.$message.success('开始下载');
+        this.loading = false;
         pdf.save('pdf合并文件.pdf');
       } else {
         this.$message.error('请选择PDF文件！');
@@ -367,18 +367,76 @@ export default {
 .pdf-viewer {
   width: 100%;
   height: 100%;
+  padding: 10px;
+  display: flex;
+
+  flex-direction: column;
+  box-sizing: border-box;
   .file-box {
     padding: 10px;
+    border: 1px solid var(--border-color);
     box-sizing: border-box;
     .file-select-box {
       .file-accept-tips {
         margin-left: 10px;
       }
     }
+    .file-list {
+      display: flex;
+      flex-flow: row;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      gap: 10px;
+      .item {
+        width: 250px;
+        height: 50px;
+        display: flex;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+        padding: 5px;
+        border: 1px solid var(--border-color);
+        .icon {
+          height: 40px;
+          width: 40px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-shrink: 0;
+        }
+        .content {
+          height: 40px;
+          width: 190px;
+          display: flex;
+          margin-left: 5px;
+          align-items: center;
+          span {
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+            word-break: break-word; /* 对于英文单词，防止溢出容器 */
+          }
+        }
+      }
+    }
   }
-  canvas {
-    width: calc(100% - 10px);
-    margin: 0 5px 10px 5px;
+  .pdf-Box {
+    margin-top: 5px;
+    border: 1px solid red;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    canvas {
+      width: calc(100% - 10px);
+      margin: 0 5px 10px 5px;
+    }
   }
+  .download-btn {
+    width: 80px;
+  }
+}
+::v-deep .el-icon-loading {
+
+  font-size: 14px !important;
 }
 </style>
