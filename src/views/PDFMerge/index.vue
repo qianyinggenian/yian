@@ -187,7 +187,7 @@ export default {
      */
     async resetWatermark (file) {
       const arrayBuffer = await this.readFileAsArrayBuffer(file);
-      if (this.files) {
+      if (this.files && this.files.length > 0) {
         await this.loadPDF(arrayBuffer);
       }
     },
@@ -293,7 +293,7 @@ export default {
      * @date 2024/3/18
      */
     async downloadPDF () {
-      if (this.files) {
+      if (this.files && this.files.length > 0) {
         const doc = new JsPDF('p', 'mm', 'a4'); // 设置为纵向、毫米单位、A4纸张
 
         const canvases = this.$refs.pages; // 示例中包含两个canvas
@@ -341,7 +341,7 @@ export default {
      * @date 2024/3/18
      */
     async convertToPdfAndDownload () {
-      if (this.files) {
+      if (this.files && this.files.length > 0) {
         this.$message.success('开始下载');
         this.loading = true;
         const pdf = new JsPDF('p', 'mm', 'a4'); // 初始化PDF文档
