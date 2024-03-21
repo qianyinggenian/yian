@@ -9,12 +9,12 @@
         </el-col>
       </el-row>
       <el-row  type="flex" justify="space-between" :gutter="20">
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="水印内容" prop="watermarkText" :title="form.watermarkText">
             <el-input v-model="form.watermarkText" clearable></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="6">
           <el-form-item label="字体" prop="fontFamily">
             <el-select size="small" filterable v-model="form.fontFamily" placeholder="请选择">
               <el-option
@@ -26,34 +26,34 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="6">
           <el-form-item label="字体大小" prop="fontSize">
             <el-input-number v-model="form.fontSize" :min="10" :max="100"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="6">
           <el-form-item label="透明度" prop="watermarkOpacity">
             <el-input-number v-model="form.watermarkOpacity" :step="0.1" :min="0" :max="1"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row type="flex" justify="space-between" :gutter="20">
-        <el-col :span="4">
+        <el-col :span="6">
           <el-form-item label="倾斜角度" prop="tiltAngle">
             <el-input-number v-model="form.tiltAngle" :min="-90" :max="90"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="6">
           <el-form-item label="间隔距离" prop="textSpacing">
             <el-input-number v-model="form.textSpacing" :step="1" :min="100" :max="200"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="6">
           <el-form-item label="字体颜色" prop="fontColor">
             <el-color-picker v-model="form.fontColor"></el-color-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="6">
           <el-form-item>
             <el-button
                 type="primary"
@@ -63,8 +63,6 @@
             </el-button>
           </el-form-item>
         </el-col>
-        <el-col :span="4"></el-col>
-        <el-col :span="4"></el-col>
       </el-row>
     </el-form>
     <div class="imageBox" v-if="previewData">
