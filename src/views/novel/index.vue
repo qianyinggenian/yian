@@ -230,8 +230,8 @@ export default {
         } else {
           this.textContent += `${label}\n\n${$('#content').text()}\n\n`;
         }
-        this.textContent += `${label}\n\n${$('#content').text()}\n\n`;
-        console.log('textContent', this.textContent);
+        // this.textContent += `${label}\n\n${$('#content').text()}\n\n`;
+        // console.log('textContent', this.textContent);
       });
     },
     handleNodeClick (treeNode) {
