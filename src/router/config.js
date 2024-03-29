@@ -1,4 +1,5 @@
 import test from '@/views/test/index.vue';
+import test2 from '@/views/test2/index.vue';
 import redirectComp from '../views/redirect';
 
 export const config = [
@@ -50,6 +51,14 @@ export const config = [
     component: test,
     meta: {
       title: '测试'
+    }
+  },
+  {
+    path: '/test2',
+    name: 'test2',
+    component: test2,
+    meta: {
+      title: '测试2'
     }
   },
   {
