@@ -145,7 +145,7 @@ export const config = [
         }
       }
     ]
-  }
+  },
   // {
   //   path: '/novel',
   //   name: 'novel',
@@ -154,4 +154,12 @@ export const config = [
   //     title: '小说'
   //   }
   // }
+  {
+    path: '/dragView',
+    name: 'dragView',
+    component: () => import('@/views/dragView/index.vue'),
+    meta: {
+      title: '拖拽'
+    }
+  }
 ];
