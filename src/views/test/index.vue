@@ -67,6 +67,7 @@
 import proxySelect from '@/components/proxySelect/index.vue';
 import proxyInput from '@/components/proxyInput/index.vue';
 import axios from 'axios';
+// import imgURL from '../imageWatermark/img/bj.jpg';
 export default {
   name: 'index',
   components: {
@@ -100,8 +101,38 @@ export default {
   watch: {},
   computed: {},
   mounted () {
+    // this.addWatermarkAndDownload(imgURL, 'Watermark Text', 'my_watermarked_image.png');
   },
   methods: {
+    addWatermarkAndDownload (imageUrl, watermarkText, outputFilename) {
+      // 加载原始图片
+      const image = new Image();
+      image.crossOrigin = 'Anonymous'; // 跨域处理
+      image.onload = function () {
+        // 创建画布
+        const canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const ctx = canvas.getContext('2d');
+
+        // 绘制水印
+        ctx.font = '50px Arial';
+        // ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'; // 半透明白色水印
+        ctx.fillStyle = '#000000'; // 半透明白色水印
+        ctx.fillText(watermarkText, 50, 50); // 在(50, 50)位置添加水印
+
+        // 绘制原始图片
+        ctx.drawImage(image, 0, 0, image.width, image.height);
+
+        // 生成图片数据并下载
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = outputFilename || 'watermarked.png';
+        link.click();
+      };
+      image.src = imageUrl;
+    },
     handleClear () {
       console.log(111111);
     },

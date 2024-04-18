@@ -91,5 +91,67 @@ export const config = [
     meta: {
       title: 'proxy-layout'
     }
+  },
+
+  {
+    path: '/watermark',
+    name: 'watermark',
+    meta: {
+      title: '图片水印'
+    },
+    component: redirectComp,
+    children: [
+      {
+        path: '/image-watermark',
+        name: '/image-watermark',
+        component: () => import('@/views/imageWatermark/index.vue'),
+        meta: {
+          title: '图片水印1'
+        }
+      },
+      {
+        path: '/watermark',
+        name: 'watermark',
+        component: () => import('@/views/imageWatermark/index2.vue'),
+        meta: {
+          title: '图片水印2'
+        }
+      }
+    ]
+  },
+
+  {
+    path: '/pdf',
+    name: 'pdf',
+    meta: {
+      title: 'PDF'
+    },
+    component: redirectComp,
+    children: [
+      {
+        path: '/pdfWatermark',
+        name: 'pdfWatermark',
+        component: () => import('@/views/pdfWatermark/index.vue'),
+        meta: {
+          title: 'pdf水印'
+        }
+      },
+      {
+        path: '/PDFMerge',
+        name: 'PDFMerge',
+        component: () => import('@/views/PDFMerge/index.vue'),
+        meta: {
+          title: 'pdf合并'
+        }
+      }
+    ]
   }
+  // {
+  //   path: '/novel',
+  //   name: 'novel',
+  //   component: () => import('@/views/novel/index.vue'),
+  //   meta: {
+  //     title: '小说'
+  //   }
+  // }
 ];

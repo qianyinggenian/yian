@@ -138,7 +138,7 @@ export default {
     },
     /**
      * @Description 添加
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/9/15
      */
     addTags (newVal) {
@@ -161,7 +161,7 @@ export default {
     },
     /**
      * @Description 关闭右键菜单
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/9/15
      */
     closeMenu () {
@@ -169,7 +169,7 @@ export default {
     },
     /**
      * @Description 显示右键菜单
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/9/15
      */
     openMenu (e, item) {
@@ -180,7 +180,7 @@ export default {
     },
     /**
      * @Description 点击触发
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/9/15
      */
     handleClickMenu (item, ref) {

@@ -63,8 +63,8 @@ export function sortDownDate (a, b, sortValue = 'creatDate') {
 
 /**
  * @Description 文件就下载
- * @author wangkangzhang
- * @date 2023/11/16
+ * @author qianyinggenian
+ * @date 2024/3/14
  */
 export function download (blob, filename = '新建文件.xlsx') {
   const url = window.URL.createObjectURL(blob);
@@ -76,7 +76,26 @@ export function download (blob, filename = '新建文件.xlsx') {
   a.click();
   document.body.removeChild(a);
 }
-
+/**
+ * @Description 下载txt
+ * @author qianyinggenian
+ * @date 2024/3/14
+ */
+export function downloadFile (resultValue, filename = '新建文本文档', filetype = 'txt') {
+  if (resultValue) {
+    const blob = new Blob([resultValue], { type: 'text/plain' });
+    const downloadElement = document.createElement('a');
+    const href = window.URL.createObjectURL(blob); // 创建下载的链接
+    downloadElement.href = href;
+    downloadElement.download = `${filename}.${filetype}`; // 下载后文件名
+    document.body.appendChild(downloadElement);
+    downloadElement.click(); // 点击下载
+    document.body.removeChild(downloadElement); // 下载完成移除元素
+    window.URL.revokeObjectURL(href); // 释放掉blob对象
+  } else {
+    this.$message.error('内容为空，不可保存');
+  }
+}
 /**
  * @Description 生成随机数
  * @author qianyinggenian
