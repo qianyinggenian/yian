@@ -1,7 +1,6 @@
 
 <template>
 <div class="test2">
-  1123
   <div class="item" v-for="item in 20" :key="item"></div>
 </div>
 </template>
