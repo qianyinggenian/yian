@@ -1,8 +1,8 @@
 <template>
-  <div class="dialog">
-    <div class="dialog-wrapper animate__animated animate__fadeInLeft "
+  <div class="drag" :style="divStyle">
+    <div class="drag-wrapper animate__animated animate__fadeInLeft "
          :class="clicked ? 'moveCursorStyle' : ''"
-         :style="dialogStyle"  @mousedown.self="draggableFn"
+         :style="dragStyle"  @mousedown.self="draggableFn"
          @click="handleClick"
     >
     </div>
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import props from './props';
+// import props from './props';
 import { inRange } from './util';
 
 export default {
@@ -22,28 +22,37 @@ export default {
         left: window.innerWidth - 70 - 10,
         top: -(window.innerHeight * 0.5) + 90 // 初始距离顶部50，计算方法：-0.5x+y+(x-80)*0.5=50, 求y值
       },
-      window: {
+      windowObj: {
         height: 0,
         width: 0
       },
       clicked: false,
       minWidth: 70,
       minHeight: 70,
-      dialogEl: {}
+      dragEl: {}
     };
   },
   props: {
-    ...props
+    // ...props
   },
   computed: {
-    dialogPosition () {
+    divStyle () {
+      return {
+        height: `${this.windowObj.height}px`,
+        width: `${this.windowObj.width}px`
+      };
+    },
+    dragPosition () {
       const {
         position
       } = this;
-      const maxLeft = window.innerWidth - 70 - 10; // 减去div宽度70，减去滚动条10
-      const maxTop = window.innerHeight - 70 - 10; // 减去div高度70，减去滚动条10
-      const left = position.left + 0.5 * maxLeft;
-      const top = position.top + 0.5 * maxTop;
+      const {
+        windowObj
+      } = this;
+      const maxLeft = windowObj.width - 70 - 10; // 减去div宽度70，减去滚动条10
+      const maxTop = windowObj.height - 70 - 10; // 减去div高度70，减去滚动条10
+      const left = position.left;
+      const top = position.top;
       return {
         left: parseInt(inRange(0, maxLeft, left)),
         top: parseInt(inRange(0, maxTop, top))
@@ -54,21 +63,21 @@ export default {
      * @author qianyinggenian
      * @date 2021/12/30
      */
-    dialogStyle () {
+    dragStyle () {
       return {
-        top: `${this.dialogPosition.top}px`,
-        left: `${this.dialogPosition.left}px`
+        top: `${this.dragPosition.top}px`,
+        left: `${this.dragPosition.left}px`
       };
     }
   },
   mounted () {
-    this.window.width = window.innerWidth;
-    this.window.height = window.innerHeight;
+    this.windowObj.width = window.innerWidth;
+    this.windowObj.height = window.innerHeight;
     // 监听浏览器窗口变化
     window.onresize = () => {
       return (() => {
-        this.window.width = window.innerWidth;
-        this.window.height = window.innerHeight;
+        this.windowObj.width = window.innerWidth;
+        this.windowObj.height = window.innerHeight;
       })();
     };
   },
@@ -106,7 +115,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.dialog {
+.drag {
   position: fixed;
   z-index: 1999;
   top: 0;
@@ -117,7 +126,7 @@ export default {
   overflow: hidden;
 }
 
-.dialog-wrapper {
+.drag-wrapper {
   pointer-events: auto;
   height: 70px;
   width: 70px;
