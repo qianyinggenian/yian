@@ -1,36 +1,75 @@
 
 <template>
-<div class="test2">
-  <div class="item" v-for="item in 20" :key="item"></div>
-</div>
+  <div>
+
+    <div class="test2">
+      <div class="left">
+        <el-button @click="add">新增</el-button>
+        <el-button @click="subtract">删除</el-button>
+        <div class="item" v-for="item in count" :key="item"></div>
+      </div>
+      <div class="right">
+
+        <div class="item2" v-for="item in 50" :key="item"></div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 export default {
   components: {},
   data () {
-    return {};
+    return {
+      count: 2
+    };
   },
-  computed: {},
-  watch: {},
-  created () {
-    console.log(1111);
-  },
-  mounted () {
-    console.log(222);
-  },
-  methods: {}
+  methods: {
+    add () {
+      this.count += 1;
+    },
+    subtract () {
+      if (this.count > 0) {
+        this.count -= 1;
+      }
+    }
+  }
 };
 </script>
 <style scoped lang="scss">
 .item {
   width: 100%;
-  height: 300px;
+  height: 100px;
   margin-bottom: 10px;
   background: #4ade80;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+.item2 {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  background: #4fcbf0;
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 /* 隐藏默认的滚动条 */
 .test2 {
-  overflow-y: scroll;
+  position: relative;
+  .left {
+    width: calc(100% - 200px - 16px);
+    margin-right: 16px;
+  }
+  .right {
+    overflow-y: auto;
+    width: 200px;
+    //background: #4fcbf0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+  }
 }
 
 /* 定制滚动条整体外观 */
