@@ -16,12 +16,24 @@
   </div>
 </template>
 <script>
+import { getSum } from '@/utils/util';
 export default {
   components: {},
   data () {
     return {
       count: 2
     };
+  },
+  mounted () {
+    const list = [false, undefined, 'dasd', '-10', null, 0, 1, 5];
+    const sum = getSum(list);
+    console.log('sum', sum);
+    const items = [{ value: true, num: 5 }, { value: 10, num: 16 }, { value: 'dfsde', num: 30 }, { value: 0.1, num: 30 }];
+    const sum3 = getSum(items, 'value');
+    console.log('sum3', sum3);
+    // const sum4 = this.getSum(items, 'num');
+    // console.log('sum4', sum4);
+    // this.getSum();
   },
   methods: {
     add () {
