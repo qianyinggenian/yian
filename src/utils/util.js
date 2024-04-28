@@ -143,7 +143,7 @@ export function getStr (str, separatorChar, isIncludes = false, isLastIndex = fa
  * @author qianyinggenian
  * @date 2024/4/26
  */
-export function getSum (list, field) {
+export function getArraySum (list, field) {
   if (list?.length > 0) {
     if (field) {
       return list.reduce((acc, item) => {
@@ -163,6 +163,109 @@ export function getSum (list, field) {
       return acc + Number(value);
     } else {
       return acc;
+    }
+  }
+}
+/**
+ * @Description 数据格式化
+ * @author qianyinggenian
+ * @date 2024/4/28
+ */
+export function useMoneyFormatter (val, length = 2) {
+  if (val === null || val === undefined) {
+    return val;
+  }
+  const [a, b = ''] = String(val).split('.');
+
+  return `${a.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}.${`${b}0000`.slice(
+      0,
+      length
+  )}`;
+}
+export function largeIntegerSum (a, b) {
+  a = a.toString();
+  b = b.toString();
+  if (getValue(a) && getValue(b)) {
+    const obj = decimalZero(String(a), String(b));
+    let firstValue = obj.str1;
+    let lastValue = obj.str2;
+    const len = Math.max(firstValue.length, lastValue.length);
+    firstValue = firstValue.padStart(len, '0');
+    lastValue = lastValue.padStart(len, '0');
+    let carry = 0;
+    let result = '';
+    for (let i = len - 1; i >= 0; i--) {
+      // if (a[i] !== '.' && b[i] !== '.') {
+      //   const sum = +a[i] + +b[i] + carry;
+      if (firstValue[i] !== '.' && lastValue[i] !== '.') {
+        const sum = +firstValue[i] + +lastValue[i] + carry;
+        const r = sum % 10;
+        // const carry = Math.floor(sum / 10);
+        carry = Math.floor(sum / 10);
+        result = r + result;
+      } else {
+        result = '.' + result;
+      }
+    }
+    return result;
+  }
+  function getValue (value) {
+    const fieldType = typeof value;
+    if (['number', 'string'].includes(fieldType)) {
+      if (Number(value)) {
+        return String(Number(value));
+      } else {
+        return '0';
+      }
+    }
+  }
+  function decimalZero (str1, str2) {
+    const flag1 = str1.includes('.');
+    const flag2 = str2.includes('.');
+    if (flag1 && flag2) {
+      const len1 = str1.split('.')[1].length;
+      const len2 = str2.split('.')[1].length;
+      const len = Math.max(len1, len2);
+      if (len1 > len2) {
+        str2 = str2.padEnd((len - len2) + str2.length, '0');
+      }
+      if (len2 > len1) {
+        str1 = str1.padEnd((len - len1) + str1.length, '0');
+      }
+      return {
+        str1,
+        str2
+      };
+    } else if (flag1 && !flag2) {
+      // 1有，2没有
+      return targetValue(str2, str1, 'str2');
+    } else if (!flag1 && flag2) {
+      // 1没有，2有
+      return targetValue(str1, str2, 'str1');
+    } else {
+      return {
+        str1,
+        str2
+      };
+    }
+    function targetValue (currentValue, comparisonValue, filed) {
+      const len1 = comparisonValue.split('.')[1].length;
+      const len2 = `${currentValue}.`.length;
+      const len = len1 + len2;
+      currentValue = `${currentValue}.`.padEnd(len, '0');
+      let params = {};
+      if (filed === 'str1') {
+        params = {
+          str1: currentValue,
+          str2: comparisonValue
+        };
+      } else {
+        params = {
+          str1: comparisonValue,
+          str2: currentValue
+        };
+      }
+      return params;
     }
   }
 }

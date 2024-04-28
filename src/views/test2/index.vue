@@ -16,7 +16,7 @@
   </div>
 </template>
 <script>
-import { getSum } from '@/utils/util';
+import { largeIntegerSum } from '@/utils/util';
 export default {
   components: {},
   data () {
@@ -25,15 +25,16 @@ export default {
     };
   },
   mounted () {
-    const list = [false, undefined, 'dasd', '-10', null, 0, 1, 5];
-    const sum = getSum(list);
-    console.log('sum', sum);
-    const items = [{ value: true, num: 5 }, { value: 10, num: 16 }, { value: 'dfsde', num: 30 }, { value: 0.1, num: 30 }];
-    const sum3 = getSum(items, 'value');
+    const a = '1215699569135464486489646986396469696.156496849';
+    const b = '145446569.36';
+    const a1 = 1215699569135464486489646986396469696.156496849.toString();
+    const b1 = 145446569.36.toString();
+    console.log('a', a);
+    console.log('a1', a1);
+    console.log('a1 typeof', typeof a1);
+    console.log('b1', b1);
+    const sum3 = largeIntegerSum(a, b);
     console.log('sum3', sum3);
-    // const sum4 = this.getSum(items, 'num');
-    // console.log('sum4', sum4);
-    // this.getSum();
   },
   methods: {
     add () {
