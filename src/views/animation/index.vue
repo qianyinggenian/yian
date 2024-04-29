@@ -116,8 +116,8 @@ $url: url(../../assets/45.jpg);
     font-size: var(--font-size-20);
     animation: toRight 10s linear infinite;
     cursor: pointer;
-    display: flex;
-    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
     animation-play-state: running; // 动画运行
     &:hover {
       animation-play-state: paused; // 动画暂停
@@ -127,7 +127,7 @@ $url: url(../../assets/45.jpg);
 
 @keyframes toRight {
   from {
-    margin-left: 0px;
+    margin-left: 0;
   }
   to {
     margin-left: 100%;
