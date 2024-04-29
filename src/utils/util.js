@@ -1,3 +1,4 @@
+import Decimal from 'decimal.js';
 export function uniqueArray (arr, key) {
   const obj = {};
   arr = arr.reduce(function (item, next) {
@@ -185,7 +186,7 @@ export function useMoneyFormatter (val, length = 2) {
 export function largeIntegerSum (a, b) {
   a = a.toString();
   b = b.toString();
-  if (getValue(a) && getValue(b)) {
+  if (isNumericWithoutLeadingZeros(a) && isNumericWithoutLeadingZeros(b)) {
     const obj = decimalZero(String(a), String(b));
     let firstValue = obj.str1;
     let lastValue = obj.str2;
@@ -209,15 +210,11 @@ export function largeIntegerSum (a, b) {
     }
     return result;
   }
-  function getValue (value) {
-    const fieldType = typeof value;
-    if (['number', 'string'].includes(fieldType)) {
-      if (Number(value)) {
-        return String(Number(value));
-      } else {
-        return '0';
-      }
-    }
+
+  function isNumericWithoutLeadingZeros (str) {
+    // 此正则表达式匹配整数和浮点数，不允许数字前有前导零（除了整数部分为0的情况）
+    const numericPattern = /^-?(0|[1-9]\d*)((\.\d+)?([eE][+-]?\d+)?)?$/;
+    return numericPattern.test(str);
   }
   function decimalZero (str1, str2) {
     const flag1 = str1.includes('.');
@@ -268,4 +265,16 @@ export function largeIntegerSum (a, b) {
       return params;
     }
   }
+}
+/**
+ * @Description
+ * @author qianyinggenian
+ * @date 2024/4/29
+ * @x 第一个参数值
+ * @y 第二个参数值
+ * @len 保留小数位数
+ * @type add-加法/sub-减法/div-除法/mul-乘法
+ */
+export function getTargetValue (x, y, len, type = 'add') {
+  return new Decimal(x)[type](new Decimal(y)).toNumber().toFixed(len);
 }

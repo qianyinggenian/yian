@@ -17,6 +17,7 @@
     "cheerio": "^1.0.0-rc.12",
     "core-js": "^3.33.2",
     "dayjs": "^1.11.9",
+    "decimal.js": "^10.4.3",
     "echarts": "^5.4.3",
     "echarts-gl": "2.0.8",
     "element-ui": "^2.15.14",

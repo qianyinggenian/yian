@@ -16,7 +16,6 @@
   </div>
 </template>
 <script>
-import { largeIntegerSum } from '@/utils/util';
 export default {
   components: {},
   data () {
@@ -24,18 +23,7 @@ export default {
       count: 2
     };
   },
-  mounted () {
-    const a = '1215699569135464486489646986396469696.156496849';
-    const b = '145446569.36';
-    const a1 = 1215699569135464486489646986396469696.156496849.toString();
-    const b1 = 145446569.36.toString();
-    console.log('a', a);
-    console.log('a1', a1);
-    console.log('a1 typeof', typeof a1);
-    console.log('b1', b1);
-    const sum3 = largeIntegerSum(a, b);
-    console.log('sum3', sum3);
-  },
+  mounted () {},
   methods: {
     add () {
       this.count += 1;
