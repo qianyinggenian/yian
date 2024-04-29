@@ -278,3 +278,32 @@ export function largeIntegerSum (a, b) {
 export function getTargetValue (x, y, len, type = 'add') {
   return new Decimal(x)[type](new Decimal(y)).toNumber().toFixed(len);
 }
+/**
+ * @Description 跨标签页通信
+ * @author qianyinggenian
+ * @date 2024/4/29
+ */
+const channel = new BroadcastChannel('my-channel');
+/**
+ * @Description 发送信息
+ * @author qianyinggenian
+ * @date 2024/4/29
+ */
+export function sendMsg (type, msg) {
+  channel.postMessage({ type, msg });
+}
+/**
+ * @Description 监听通信
+ * @author qianyinggenian
+ * @date 2024/4/29
+ */
+
+export function listenMsg (callback) {
+  const handler = (evt) => {
+    callback && callback(evt.data);
+  };
+  channel.addEventListener('message', handler);
+  return () => {
+    channel.removeEventListener('message', handler);
+  };
+}

@@ -16,6 +16,7 @@
   </div>
 </template>
 <script>
+import { listenMsg } from '@/utils/util';
 export default {
   components: {},
   data () {
@@ -23,7 +24,17 @@ export default {
       count: 2
     };
   },
-  mounted () {},
+  mounted () {
+    this.removeListen = listenMsg((info) => {
+      console.log('info', info);
+      if (info.msg) {
+        this.count = info.msg;
+      }
+    });
+  },
+  destroyed () {
+    this.removeListen();
+  },
   methods: {
     add () {
       this.count += 1;

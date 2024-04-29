@@ -60,6 +60,11 @@
           <span slot="append">后</span>
       </proxyInput>
     </p>
+
+    <a href="http://localhost:8888/yian/img/45.e2456a6f.jpg"  download="w3logo">文件下载</a>
+    <a :href="logoUrl"  download="下载链接">下载链接</a>
+    <br>
+    <a data-thunder :href="getThunderLink(href)">下载链接下载链接</a>
   </div>
 </template>
 
@@ -76,6 +81,8 @@ export default {
   },
   data () {
     return {
+      href: 'http://localhost:8888/yian/img/45.jpg',
+      logoUrl: require('@/assets/45.jpg'),
       inputValue: '测试测试',
       value1: '选项2',
       value: ['选项2', '选项1'],
@@ -101,9 +108,20 @@ export default {
   watch: {},
   computed: {},
   mounted () {
+    // this.$nextTick(() => {
+    //   const links = document.querySelector('a[data-thunder]');
+    //   console.log('links', links);
+    //   for (const link of links) {
+    //     const base64 = btoa(`AA${link.href}ZZ`);
+    //     link.href = `thunder://${base64}`;
+    //   }
+    // });
     // this.addWatermarkAndDownload(imgURL, 'Watermark Text', 'my_watermarked_image.png');
   },
   methods: {
+    getThunderLink (href) {
+      return `thunder://${btoa(`AA${href}ZZ`)}`;
+    },
     addWatermarkAndDownload (imageUrl, watermarkText, outputFilename) {
       // 加载原始图片
       const image = new Image();
