@@ -170,5 +170,13 @@ export const config = [
     meta: {
       title: '拖拽'
     }
+  },
+  {
+    path: '/parallaxScrolling',
+    name: 'parallaxScrolling',
+    component: () => import('@/views/parallaxScrolling/index.vue'),
+    meta: {
+      title: '视差滚动'
+    }
   }
 ];
