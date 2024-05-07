@@ -155,14 +155,14 @@ export const config = [
       }
     ]
   },
-  // {
-  //   path: '/novel',
-  //   name: 'novel',
-  //   component: () => import('@/views/novel/index.vue'),
-  //   meta: {
-  //     title: '小说'
-  //   }
-  // }
+  {
+    path: '/novel',
+    name: 'novel',
+    component: () => import('@/views/novel/index.vue'),
+    meta: {
+      title: '小说'
+    }
+  },
   {
     path: '/dragView',
     name: 'dragView',

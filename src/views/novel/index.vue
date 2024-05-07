@@ -37,6 +37,11 @@
           </el-tree>
         </div>
         <div slot="right" class="right">
+          <div class="top-box">
+            <div class="title">{{title}}</div>
+<!--            <el-button size="small">下一页</el-button>-->
+<!--            <el-button size="small">上一页</el-button>-->
+          </div>
           <div class="right-content" v-html="htmlContent"></div>
         </div>
       </layout>
@@ -52,6 +57,7 @@ export default {
   components: { },
   data () {
     return {
+      title: '',
       loading: false,
       defaultExpandedKeys: [],
       rootData: [
@@ -235,12 +241,15 @@ export default {
       });
     },
     handleNodeClick (treeNode) {
+      console.log('treeNode', treeNode);
       this.defaultExpandedKeys = [];
+      this.title = '';
       if (treeNode.isDirectory) {
         this.filename = treeNode.label;
         this.textContent = '';
         this.getChapter(treeNode, treeNode.path);
       } else {
+        this.title = treeNode.label;
         this.getContent(treeNode.path, true);
       }
     },
@@ -300,8 +309,19 @@ export default {
     }
     .right {
       height: 100%;
+      .top-box {
+        height: 32px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+        .title {
+          font-size: 20px;
+          font-weight: bold;
+          margin-right: 100px;
+        }
+      }
       .right-content {
-        height: 100%;
+        height: calc(100% - 32px - 5px);
         width: 100%;
         overflow-y: auto;
       }
