@@ -73,17 +73,17 @@ export default {
   }
 };
 </script>
-<style  lang="scss">
+<style lang="scss">
 .scroll-container {
   position: relative;
   overflow: hidden;
   .item {
     width: 100%;
   }
-}
-img {
-  width: 100%;
-  height: 825px;
+  img {
+    width: 100%;
+    height: 825px;
+  }
 }
 .prev {
   margin-top: -825px;
