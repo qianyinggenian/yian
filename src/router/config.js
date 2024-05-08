@@ -178,5 +178,13 @@ export const config = [
     meta: {
       title: '视差滚动'
     }
+  },
+  {
+    path: '/carousel',
+    name: 'carousel',
+    component: () => import('@/views/carousel/index.vue'),
+    meta: {
+      title: 'carousel走马灯'
+    }
   }
 ];
