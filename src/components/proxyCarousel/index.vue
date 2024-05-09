@@ -9,7 +9,7 @@
           :name="transitionName"
           :key="index">
         <div class="item" v-show="index === curIndex">
-          <img :src="item" alt="">
+          <slot name="slotName" :row="item" :index="index"/>
         </div>
       </transition>
     </template>
@@ -22,7 +22,8 @@
     <div class="indicator-box"
          :class="indicatorPosition">
       <div class="indicator-item"
-           :class="activeClass(curIndex, index)"
+           :style="{...indicatorStyle,
+           background: activeIndicatorColor(curIndex, index, indicatorStyle.background)}"
            v-for="index in carouselList.length"
            :key="index"
            @click.self="handleChangeIndex(index)"
@@ -76,6 +77,11 @@ export default {
       type: String,
       default: 'horizontal'
     },
+    //
+    activeColor: {
+      type: String,
+      default: '#CB4042'
+    },
     dotPosition: {
       type: String,
       default: 'bottom'
@@ -103,16 +109,16 @@ export default {
       }
       return `indicator-${direction} indicator-${direction}-${dotPosition}`;
     },
-    activeClass () {
-      return (curIndex, index) => {
-        return curIndex === index - 1 ? 'active-indicator' : '';
+    activeIndicatorColor () {
+      return (curIndex, index, color) => {
+        return curIndex === index - 1 ? this.activeColor : color || 'rgba(255, 255, 255, 0.7)';
       };
     },
     indicatorStyle () {
       return {
-        width: '60px',
-        height: '5px',
-        borderRadius: '1px',
+        width: '10px',
+        height: '10px',
+        borderRadius: '50%',
         background: 'rgba(255, 255, 255, 0.7)',
         ...(this.indicatorStyleObj || {})
       };
@@ -214,16 +220,9 @@ export default {
     .indicator-item {
       margin-right: 10px;
       cursor: pointer;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.7);
       &:last-child {
         margin-right: 0;
       }
-    }
-    .active-indicator {
-      background: rgba(255,255,255,1);
     }
   }
   .indicator-horizontal-top {
@@ -241,16 +240,9 @@ export default {
     .indicator-item {
       margin-bottom: 10px;
       cursor: pointer;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.7);
       &:last-child {
         margin-bottom: 0;
       }
-    }
-    .active-indicator {
-      background: rgba(255,255,255,1);
     }
   }
   .indicator-vertical-right {

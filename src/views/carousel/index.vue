@@ -4,9 +4,15 @@
       :carouselList="carouselList"
       :autoplay="true"
       arrow="always"
-      direction="horizontal"
-      dot-position="bottom"
+      active-color="#CB4042"
   >
+    <template v-slot:slotName="{row}">
+      <div class="div-box">
+        <div class="left">
+          <img :src="row" alt="">
+        </div>
+      </div>
+    </template>
   </proxyCarousel>
 </template>
 <script>
@@ -37,7 +43,14 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-::v-deep .active-indicator {
-  background: #CB4042 !important;
+.div-box {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  > div {
+    height: 100%;
+    flex: 1;
+    flex-shrink: 0;
+  }
 }
 </style>
