@@ -4,7 +4,7 @@
       <div class="item">
         <div class="label">搜索：</div>
         <div class="value">
-          <el-input size="small" placeholder="请输入内容" v-model="searchValue" class="input-with-select">
+          <el-input size="small" placeholder="请输入内容" v-model="searchValue" class="input-with-select"  @keyup.enter.native="searchInfo">
             <template v-slot:prepend>
               <el-select size="small" v-model="websiteValue"  placeholder="请选择网站" @change="handleChange">
                 <el-option
@@ -32,6 +32,7 @@
               :data="treeData"
               :props="defaultProps"
               node-key="id"
+              highlight-current
               :default-expanded-keys="defaultExpandedKeys"
               @node-click="handleNodeClick">
           </el-tree>
@@ -39,10 +40,11 @@
         <div slot="right" class="right">
           <div class="top-box">
             <div class="title">{{title}}</div>
-<!--            <el-button size="small">下一页</el-button>-->
+<!--            <el-button size="small" @click="fn">下一页</el-button>-->
 <!--            <el-button size="small">上一页</el-button>-->
           </div>
-          <div class="right-content" v-html="htmlContent"></div>
+          <div class="right-content" ref="refContent" v-html="htmlContent"></div>
+          <el-backtop ref="backTop" target=".right-content"></el-backtop>
         </div>
       </layout>
     </div>
@@ -59,6 +61,7 @@ export default {
     return {
       title: '',
       loading: false,
+      currentNodeKey: '',
       defaultExpandedKeys: [],
       rootData: [
         {
@@ -102,10 +105,13 @@ export default {
   computed: {},
   created () {},
   mounted () {
-    const $ = cheerio.load('<html><head><title>Hello, world!</title></head></html>');
-    console.log('sdf', $('h1').text());
   },
   methods: {
+    backTop () {
+      this.$nextTick(() => {
+        this.$refs.backTop.handleClick();
+      });
+    },
     handleDownloadFile () {
       if (this.textContent) {
         downloadFile(this.textContent, this.filename);
@@ -233,6 +239,9 @@ export default {
         if (flag) {
           const html = $('#content').html();
           this.htmlContent = html || '';
+          this.$nextTick(() => {
+            this.backTop();
+          });
         } else {
           this.textContent += `${label}\n\n${$('#content').text()}\n\n`;
         }
@@ -303,6 +312,9 @@ export default {
           background-color: #409eff !important;
         }
         ::v-deep .el-tree-node:focus > .el-tree-node__content {
+          background-color: red !important;
+        }
+        ::v-deep .el-tree-node.is-current > .el-tree-node__content {
           background-color: red !important;
         }
       }
