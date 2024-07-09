@@ -160,7 +160,7 @@ export const config = [
     name: 'novel',
     component: () => import('@/views/novel/index.vue'),
     meta: {
-      title: '小说'
+      title: '阅读'
     }
   },
   {

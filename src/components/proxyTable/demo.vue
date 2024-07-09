@@ -213,7 +213,8 @@ export default {
       workbook.modified = new Date(); // 上次修改时间
       workbook.lastPrinted = new Date(); // 上一次打印时间
       const worksheet = workbook.addWorksheet('My Sheet', { views: [{ state: 'frozen', xSplit: 1, ySplit: 1 }] });
-      worksheet.columns = this.columns.map(item => {
+      const columns = JSON.parse(JSON.stringify(this.columns));
+      worksheet.columns = columns.map(item => {
         item.header = item.label;
         item.key = item.prop;
         item.width = 20;
