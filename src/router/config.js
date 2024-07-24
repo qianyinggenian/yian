@@ -194,5 +194,13 @@ export const config = [
     meta: {
       title: '视频水印'
     }
+  },
+  {
+    path: '/base64',
+    name: 'base64',
+    component: () => import('@/views/base64/index.vue'),
+    meta: {
+      title: 'base64'
+    }
   }
 ];
