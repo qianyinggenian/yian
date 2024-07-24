@@ -186,5 +186,13 @@ export const config = [
     meta: {
       title: 'carousel走马灯'
     }
+  },
+  {
+    path: '/videoWatermark',
+    name: 'videoWatermark',
+    component: () => import('@/views/videoWatermark/index.vue'),
+    meta: {
+      title: '视频水印'
+    }
   }
 ];
