@@ -4,10 +4,14 @@
     <!-- 左边按钮 -->
     <div
         @click="handleLeftClick"
-        class="scroll-icon "
+        class="scroll-icon left-icon"
     >
-      <img src="@/assets/img/arrows_left.png" alt="" class='left-icon hovercli' v-if="showLeftIcon">
-      <img src="@/assets/img/ash_arrows_left.png" alt="" class='left-icon' v-if="!showLeftIcon">
+      <div v-if="showLeftIcon">
+        <i  class="el-icon-d-arrow-left"></i>
+      </div>
+<!--      <span class='left-icon' v-if="!showLeftIcon">左标1</span>-->
+<!--      <img src="@/assets/img/arrows_left.png" alt="" class='left-icon hovercli' v-if="showLeftIcon">-->
+<!--      <img src="@/assets/img/ash_arrows_left.png" alt="" class='left-icon' v-if="!showLeftIcon">-->
     </div> <!-- 中间滚动区域 -->
     <div ref="swiperScrollContent" class="swiper-scroll-content">
       <slot></slot>
@@ -15,10 +19,20 @@
     <!-- 右边按钮 -->
     <div
         @click="handleRightClick"
-        class="scroll-icon"
+        class="scroll-icon right-icon"
     >
-      <img src="@/assets/img/arrows_right.png" alt="" class='right-icon hovercli' v-if="showRightIcon">
-      <img src="@/assets/img/ash_arrows_right.png" alt="" class='right-icon ' v-if="!showRightIcon">
+
+      <div v-if="showRightIcon">
+        <i  class="el-icon-d-arrow-right"></i>
+      </div>
+<!--      <div v-if="!showRightIcon">-->
+<!--         <i  class="el-icon-d-arrow-right"></i>-->
+<!--      </div>-->
+<!--      <span class=""  v-if="showRightIcon">右标</span>-->
+<!--      <span  v-if="!showRightIcon">右标1</span>-->
+
+<!--      <img src="@/assets/img/arrows_right.png" alt="" class='right-icon hovercli' v-if="showRightIcon">-->
+<!--      <img src="@/assets/img/ash_arrows_right.png" alt="" class='right-icon ' v-if="!showRightIcon">-->
     </div>
   </div>
 </template>
@@ -130,46 +144,54 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .left-right-swiper-scroll-box {
-  width: 90%;
+  width: 100%;
   overflow: hidden;
   transition: all 0.3s;
+  display: flex;
+  //padding: 0 60px;
+  box-sizing: border-box;
+
+  .scroll-icon {
+    //width: 100%;
+    height: 22px;
+    z-index: 9;
+    display: inline-block;
+  }
 
   .right-icon {
-    i {
-      width: 30px;
+    width: 20px;
+    position: absolute;
+    right: 0;
+    div {
+      width: 20px;
+      height: 22px;
+      background-color: #bae7ff;
+      color: black;
+      border: 1px solid;
     }
   }
 
-  .scroll-icon {
-    top: 0;
-    width: 100%;
-    height: 30px;
-    z-index: 9;
-
-    i {
-      top: 5px;
-      width: 30px;
-      height: 20px;
-    }
-
-    .right-icon {
-      position: absolute;
-      right: 2%;
-    }
-
-    .left-icon {
-      position: absolute;
-      right: 5%;
+  .left-icon {
+    width: 20px;
+    left: 0;
+    position: absolute;
+    div {
+      width: 20px;
+      height: 22px;
+      background-color: #bae7ff;
+      color: black;
+      border: 1px solid;
     }
   }
 
   .swiper-scroll-content {
     position: relative;
-    display: inline-block;
     white-space: nowrap;
+    //overflow: hidden;
     transition: all 0.3s;
+    display: flex;
   }
 }
 </style>

@@ -66,17 +66,24 @@
     <a :href="logoUrl"  download="下载链接">下载链接</a>
     <br>
     <a data-thunder :href="getThunderLink(href)">下载链接下载链接</a>
+    <navTabs>
+      <div style="width: 80px;margin-right: 0px;border: 1px solid red;text-align: center" v-for="item in 30" :key="item">
+        标签{{item}}
+      </div>
+    </navTabs>
   </div>
 </template>
 
 <script>
 import proxySelect from '@/components/proxySelect/index.vue';
 import proxyInput from '@/components/proxyInput/index.vue';
+import navTabs from '../layout/navbar/index1.vue';
 import axios from 'axios';
 // import imgURL from '../imageWatermark/img/bj.jpg';
 export default {
   name: 'index',
   components: {
+    navTabs,
     proxySelect,
     proxyInput
   },
