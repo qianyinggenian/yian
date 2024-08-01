@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { generateRandomNumbers } from '@/utils/util';
+import { generateRandomNumbers, copyText } from '@/utils/util';
 export default {
   name: 'index',
   components: {},
@@ -307,9 +307,10 @@ export default {
         this.$message.error('请先转换再拷贝');
         return false;
       }
-      navigator.clipboard.writeText(this.resultValue).then(() => {
-        this.$message.success('复制成功');
-      });
+      // navigator.clipboard.writeText(this.resultValue).then(() => {
+      //   this.$message.success('复制成功');
+      // });
+      copyText(this.resultValue);
     },
     /**
      * @Description 点击保存结果按钮触发
