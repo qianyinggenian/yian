@@ -4,8 +4,8 @@
       :visible.sync="isShow"
     :title="title"
     :z-index="2000"
-    height="70%"
-    width="70%"
+    height="90%"
+    width="90%"
     @close="closeFn"
   >
     <div class="container">
@@ -36,6 +36,9 @@
         </el-row>
       </el-form>
       <div class="map-container">
+        <div class="toolControl" id="toolControl">
+          <div class="toolItem active" id="polygon"></div>
+        </div>
         <div id="map" v-show="isShowMap"></div>
         <div class="tips" v-show="!isShowMap">
           <el-empty description="地图加载失败，请刷新或清理缓存后再重试">
@@ -50,7 +53,8 @@
     <div slot="footer">
 
         <el-button  size="small"  type="primary">确定</el-button>
-        <el-button   size="small" plain>重画</el-button>
+        <el-button   size="small" plain @click="handleRedraw">重画</el-button>
+        <el-button   size="small" plain @click="handleRemove">删除</el-button>
     </div>
   </proxy-dialog>
 </template>
@@ -73,10 +77,15 @@ export default {
       readonly: false,
       isShowMap: true,
       hadLoadMap: false,
+      editor: null,
+      map: null,
+      TMap: null,
+      activeType: 'polygon',
       row: {},
       formData: {},
       suggestions: [],
       initialization: false,
+      editFlag: false,
       mapCenter: {
         lat: 23.130047,
         lng: 113.264464
@@ -214,18 +223,90 @@ export default {
       // this.getPOIInfo(TMap);
 
       setTimeout(() => {
-        const location = {
-          lat: this.row.latitude,
-          lng: this.row.longitude,
-          radius: this.row.radius
-        };
-        this.setMapCenter(location);
-        this.addCircle(location);
-        this.addMultiMarker(location);
+        // const location = {
+        //   lat: this.row.latitude,
+        //   lng: this.row.longitude,
+        //   radius: this.row.radius
+        // };
+        // this.setMapCenter(location);
+        // this.addCircle(location);
+        // this.addMultiMarker(location);
       });
+      this.polygonFn(TMap);
+      // this.editorFn();
       return map;
     },
+    polygonFn (TMap) {
+      this.polygon = new TMap.MultiPolygon({
+        map: this.map,
+        styles: {
+          highlight: new TMap.PolygonStyle({
+            color: 'rgba(255, 255, 0, 0.6)'
+          })
+        }
+      });
+      this.editor = new TMap.tools.GeometryEditor({
+        // TMap.tools.GeometryEditor 文档地址：https://lbs.qq.com/webApi/javascriptGL/glDoc/glDocEditor
+        map: this.map, // 编辑器绑定的地图对象
+        overlayList: [
+          // 可编辑图层 文档地址：https://lbs.qq.com/webApi/javascriptGL/glDoc/glDocEditor#4
+          {
+            overlay: this.polygon,
+            id: 'polygon',
+            selectedStyleId: 'highlight'
+          }
+        ],
+        actionMode:
+            this.editFlag ? TMap.tools.constants.EDITOR_ACTION.INTERACT // 编辑
+              : TMap.tools.constants.EDITOR_ACTION.DRAW, // 初始化 // 编辑器的工作模式
+        activeOverlayId: 'polygon', // 激活图层
+        snappable: true, // 开启吸附
+        selectable: true
+      });
+      console.log('this.editor', this.editor);
+      this.editor.on('draw_complete', (geometry) => {
+        // 判断当前处于编辑状态的图层id是否是overlayList中id为rectangle（矩形）图层
+        // 判断当前处于编辑状态的图层id是否是overlayList中id为rectangle（矩形）图层
+        var id = geometry.id;
+        this.geometry = geometry;
+        console.log('geometry', geometry);
+        if (this.editor.getActiveOverlay().id === 'polygon') {
+          // 获取多边形顶点坐标
+          var geo = this.polygon.geometries.filter(function (item) {
+            return item.id === id;
+          });
+          this.paths = geo[0].paths;
+          this.geos = geo;
+          console.log('绘制的多边形坐标：', geo[0].paths);
+          console.log('geo：', geo);
+        }
+      });
+    },
+    handleRemove () {
+      this.editor.delete();
+      this.editor.setActionMode(2);
+      // this.editor.enable();
+      console.log(656);
+    },
+    handleRedraw () {
+      this.editor.setActionMode(1);
+      // this.polygon.remove(['polygon']);
+      this.polygon.remove([this.geometry.id]); // 删除
+      this.editor.setActionMode(2);
+      this.editor.on('select', evtResult => {
+        console.log('evtName12', evtResult);
+        console.log('getSelectedListgetSelectedList', this.editor.getSelectedList());
+      });
 
+      this.editor.on('delete_complete', evtResult => {
+        console.log('evtName', evtResult);
+      });
+      // this.map.destroy(); // 销毁地图
+      // this.EditFlag = true;
+      // this.initMap(this.TMap);
+      // this.editor.removeOverlay('polygon');
+      // this.editor.setActionMode(this.TMap.tools.constants.EDITOR_ACTION.INTERACT);
+    },
     setMapCenter (location) {
       if (this.map) {
         this.map.setCenter(new this.TMap.LatLng(location.lat, location.lng));
@@ -336,6 +417,41 @@ export default {
     height: calc(100% - 100px);
     width: 100%;
     position: relative;
+
+    .toolControl {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      right: 0;
+      margin: auto;
+      width: 252px;
+      z-index: 2002;
+      .toolItem {
+        width: 30px;
+        height: 30px;
+        float: left;
+        margin: 1px;
+        padding: 4px;
+        border-radius: 3px;
+        background-size: 30px 30px;
+        background-position: 4px 4px;
+        background-repeat: no-repeat;
+        box-shadow: 0 1px 2px 0 #e4e7ef;
+        background-color: #ffffff;
+        border: 1px solid #ffffff;
+        &:hover {
+          border-color: #789cff;
+        }
+      }
+      #polygon {
+
+        background-image: url("./img/polygon.png");
+      }
+      .active {
+        border-color: #d5dff2;
+        background-color: #d5dff2;
+      }
+    }
 
     #map {
       height: 100%;
