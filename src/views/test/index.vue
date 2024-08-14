@@ -71,6 +71,9 @@
         标签{{item}}
       </div>
     </navTabs>
+
+    <el-button style="width: 80px" type="primary" @click="showMap">编辑</el-button>
+    <tMap ref="tMapRef" v-if="isShowTMap" @closeMap="closeMap"></tMap>
   </div>
 </template>
 
@@ -79,16 +82,19 @@ import proxySelect from '@/components/proxySelect/index.vue';
 import proxyInput from '@/components/proxyInput/index.vue';
 import navTabs from '../layout/navbar/index1.vue';
 import axios from 'axios';
+import tMap from './tMap.vue';
 // import imgURL from '../imageWatermark/img/bj.jpg';
 export default {
   name: 'index',
   components: {
     navTabs,
+    tMap,
     proxySelect,
     proxyInput
   },
   data () {
     return {
+      isShowTMap: false,
       href: 'http://localhost:8888/yian/img/45.jpg',
       logoUrl: require('@/assets/45.jpg'),
       inputValue: '测试测试',
@@ -127,6 +133,25 @@ export default {
     // this.addWatermarkAndDownload(imgURL, 'Watermark Text', 'my_watermarked_image.png');
   },
   methods: {
+
+    /**
+     * @Description
+     * @author wangkangzhang
+     * @date 2024/6/29
+     */
+    closeMap () {
+      this.isShowTMap = false;
+    },
+    showMap () {
+      this.isShowTMap = true;
+      this.$nextTick(() => {
+        this.$refs.tMapRef.getInfo({
+          latitude: 23.050014,
+          longitude: 113.294975,
+          radius: 200
+        });
+      });
+    },
     getThunderLink (href) {
       return `thunder://${btoa(`AA${href}ZZ`)}`;
     },
