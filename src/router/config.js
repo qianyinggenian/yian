@@ -1,6 +1,5 @@
 import test from '@/views/test/index.vue';
 import test2 from '@/views/test2/index.vue';
-import testMap from '@/views/test/testMap.vue';
 import redirectComp from '../views/redirect';
 
 export const config = [
@@ -60,14 +59,6 @@ export const config = [
     component: test2,
     meta: {
       title: '测试2'
-    }
-  },
-  {
-    path: '/test3',
-    name: 'test3',
-    component: testMap,
-    meta: {
-      title: '测试3'
     }
   },
   {
