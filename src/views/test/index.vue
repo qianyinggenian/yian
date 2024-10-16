@@ -74,6 +74,16 @@
 
     <el-button style="width: 80px" type="primary" @click="showMap">编辑</el-button>
     <tMap ref="tMapRef" v-if="isShowTMap" @closeMap="closeMap"></tMap>
+    <div style="background: #0A1A34">
+
+      <el-tree
+          :data="data"
+          :props="defaultProps"
+          :default-expanded-keys="defaultExpandedKeys"
+          show-checkbox
+          node-key="id"
+      ></el-tree>
+    </div>
   </div>
 </template>
 
@@ -115,25 +125,94 @@ export default {
       }, {
         value: '选项5',
         label: '北京烤鸭'
-      }]
+      }],
+      data: [
+        {
+          id: 1,
+          label: 'Level 1 - 1',
+          children: [
+            {
+              id: 2,
+              label: 'Level 2 - 1',
+              children: [
+                {
+                  id: 3,
+                  label: 'Level 3 - 1'
+                },
+                {
+                  id: 4,
+                  label: 'Level 3 - 2'
+                }
+              ]
+            },
+            {
+              id: 5,
+              label: 'Level 2 - 2',
+              children: [
+                {
+                  id: 6,
+                  label: 'Level 3 - 3'
+                },
+                {
+                  id: 7,
+                  label: 'Level 3 - 4'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 8,
+          label: 'Level 1 - 2',
+          children: [
+            {
+              id: 9,
+              label: 'Level 2 - 3',
+              children: [
+                {
+                  id: 10,
+                  label: 'Level 3 - 5'
+                },
+                {
+                  id: 11,
+                  label: 'Level 3 - 6'
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      defaultExpandedKeys: []
     };
   },
   props: {},
   watch: {},
   computed: {},
   mounted () {
-    // this.$nextTick(() => {
-    //   const links = document.querySelector('a[data-thunder]');
-    //   console.log('links', links);
-    //   for (const link of links) {
-    //     const base64 = btoa(`AA${link.href}ZZ`);
-    //     link.href = `thunder://${base64}`;
-    //   }
-    // });
-    // this.addWatermarkAndDownload(imgURL, 'Watermark Text', 'my_watermarked_image.png');
+    this.setDefaultExpandedKeys();
   },
   methods: {
-
+    setDefaultExpandedKeys () {
+      const keys = [];
+      this.data.forEach(item => {
+        if (item.children) {
+          keys.push(item.id); // 展开第一级节点
+          item.children.forEach(child => {
+            if (child.children) {
+              keys.push(child.id); // 展开第二级节点
+              child.children.forEach(grandChild => {
+                keys.push(grandChild.id); // 展开第三级节点
+              });
+            }
+          });
+        }
+      });
+      this.defaultExpandedKeys = keys;
+    },
     /**
      * @Description
      * @author wangkangzhang
