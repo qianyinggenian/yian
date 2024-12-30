@@ -1,5 +1,6 @@
 <template>
   <div>
+    <embed id="RoutonReader" type="application/mozilla-npruntime-scriptable-plugin" width="1" height="1" />
     <p>测试</p>
     <p>测试</p>
     <p>测试</p>
@@ -73,16 +74,17 @@
     </navTabs>
 
     <el-button style="width: 80px" type="primary" @click="showMap">编辑</el-button>
+    <el-button style="width: 80px" type="primary" @click="readIdCard">读卡</el-button>
     <tMap ref="tMapRef" v-if="isShowTMap" @closeMap="closeMap"></tMap>
     <div style="background: #0A1A34">
+    </div>
 
-      <el-tree
-          :data="data"
-          :props="defaultProps"
-          :default-expanded-keys="defaultExpandedKeys"
-          show-checkbox
-          node-key="id"
-      ></el-tree>
+    <div class="btns-box">
+      <button class="btn type-1" @click="handleClick('参数1','参数2',false)">按钮</button>
+      <button class="btn type-2">按钮</button>
+      <button class="btn type-3">按钮</button>
+      <button disabled class="btn type-4">按钮</button>
+      <button  class="btn type-5">按钮</button>
     </div>
   </div>
 </template>
@@ -93,6 +95,7 @@ import proxyInput from '@/components/proxyInput/index.vue';
 import navTabs from '../layout/navbar/index1.vue';
 import axios from 'axios';
 import tMap from './tMap.vue';
+import { debounce } from '@/utils/util';
 // import imgURL from '../imageWatermark/img/bj.jpg';
 export default {
   name: 'index',
@@ -137,7 +140,17 @@ export default {
               children: [
                 {
                   id: 3,
-                  label: 'Level 3 - 1'
+                  label: 'Level 3 - 1',
+                  children: [
+                    {
+                      id: 20,
+                      label: 'Level 4 - 1'
+                    },
+                    {
+                      id: 21,
+                      label: 'Level 4 - 2'
+                    }
+                  ]
                 },
                 {
                   id: 4,
@@ -266,6 +279,17 @@ export default {
     handleClear () {
       console.log(111111);
     },
+    handleClick: debounce((vm, args) => {
+      const [params, params2, params3] = args;
+      console.log('params', params);
+      console.log('params2', params2);
+      console.log('params3', params3);
+      console.log('vm', vm);
+      vm.fn();
+    }, 2000),
+    fn () {
+      console.log('防抖输出');
+    },
     /**
      * @Description 选择文件后触发
      * @author qianyinggenian
@@ -309,5 +333,40 @@ export default {
 
 p {
   margin-top: 10px;
+}
+.btns-box {
+  display: flex;
+  margin-top: 100px;
+  margin-left: 100px;
+  .btn {
+    height: 32px;
+    width: 60px;
+    border-radius: 4px;
+  }
+  .btn + .btn {
+    margin-left: 10px;
+  }
+}
+$btnColors: #409eff, #b03ac2,#8b590f,#f54343,#6c6d71;
+@for $i from 1 through length($btnColors) {
+  .btn.type-#{$i} {
+    $color: nth($btnColors, $i);
+    background: $color;
+    color: #fff;
+    border: 1px solid $color;
+    &:hover {
+      background: lighten($color,10%);
+      border: 1px solid lighten($color,10%);
+    }
+    &:active {
+      background: darken($color, 10%);
+      border: 1px solid darken($color,10%);
+    }
+    &:disabled {
+      background: lighten($color,20%);
+      border: 1px solid lighten($color,20%);
+      color: #fff;
+    }
+  }
 }
 </style>

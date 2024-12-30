@@ -334,3 +334,22 @@ export const copyText = (function () {
     };
   }
 })();
+
+/**
+ * @Description 防抖函数
+ * @author qianyinggenian
+ * @params method 函数
+ * @params delay 延时时间-毫秒
+ * @date 2024/12/30
+ */
+export function debounce (method, delay) {
+  let timer = null;
+  return function () {
+    const context = this;
+    const args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      method(context, args);
+    }, delay);
+  };
+}

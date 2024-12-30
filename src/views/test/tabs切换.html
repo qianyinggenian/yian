@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vue3 Tab切换示例</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        /* 简单的样式，用于美化展示，可根据实际需求调整 */
+        .tabs {
+            display: flex;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .active-tab {
+            background-color: #f0f0f0;
+        }
+
+        .buttons {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <ul class="tabs">
+        <li v-for="(tab, index) in visibleTabs" :key="index" :class="{'active-tab': currentTab === index}"
+            @click="selectTab(index)" class="tab">{{tab.title}}</li>
+    </ul>
+    <div class="buttons">
+        <button @click="prevTabs">上一个</button>
+        <button @click="nextTabs">下一个</button>
+    </div>
+</div>
+
+<script>
+
+  const { createApp } = Vue;
+
+  createApp({
+    data() {
+      return {
+        allTabs: [
+          { title: 'Tab 1' },
+          { title: 'Tab 2' },
+          { title: 'Tab 3' },
+          { title: 'Tab 4' },
+          { title: 'Tab 5' },
+          // 可以添加更多的Tab项
+        ],
+        visibleTabs: [],
+        currentTab: 0
+      };
+    },
+    mounted() {
+      this.visibleTabs = this.allTabs.slice(0, 3);
+    },
+    methods: {
+      selectTab(index) {
+        this.currentTab = index;
+      },
+      prevTabs() {
+        if (this.visibleTabs[0].title!== this.allTabs[0].title) {
+          const startIndex = this.allTabs.indexOf(this.visibleTabs[0]) - 1;
+          this.visibleTabs = this.allTabs.slice(startIndex, startIndex + 3);
+          this.currentTab = 0;
+        }
+      },
+      nextTabs() {
+        if (this.visibleTabs[this.visibleTabs.length - 1].title!== this.allTabs[this.allTabs.length - 1].title) {
+          const startIndex = this.allTabs.indexOf(this.visibleTabs[0]) + 1;
+          this.visibleTabs = this.allTabs.slice(startIndex, startIndex + 3);
+          this.currentTab = 0;
+        }
+      }
+    }
+  }).mount('#app');
+</script>
+</body>
+
+</html>
