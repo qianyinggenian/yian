@@ -387,13 +387,16 @@ export default {
         }
       }
       .right-content {
-        height: calc(100% - 32px - 5px - 32px);
+        height: calc(100% - 32px - 5px - 42px);
         width: 100%;
         overflow-y: auto;
       }
       .btns-box {
-        height: 32px;
+        height: 42px;
         display: flex;
+        padding: 5px 0;
+        box-sizing: border-box;
+        align-items: center;
         justify-content: center;
       }
     }
