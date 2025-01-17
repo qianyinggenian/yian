@@ -29,6 +29,7 @@
       <layout>
         <div slot="left" class="left">
           <el-tree
+              ref="tree"
               :data="treeData"
               :props="defaultProps"
               node-key="id"
@@ -40,10 +41,12 @@
         <div slot="right" class="right">
           <div class="top-box">
             <div class="title">{{title}}</div>
-<!--            <el-button size="small" @click="fn">下一页</el-button>-->
-<!--            <el-button size="small">上一页</el-button>-->
           </div>
           <div class="right-content" ref="refContent" v-html="htmlContent"></div>
+          <div class="btns-box" v-if="chapterId" >
+            <el-button size="small" @click="handlePrev">上一页</el-button>
+            <el-button size="small" @click="handleNext">下一页</el-button>
+          </div>
           <el-backtop ref="backTop" target=".right-content"></el-backtop>
         </div>
       </layout>
@@ -80,6 +83,8 @@ export default {
         label: 'label',
         isLeaf: 'leaf'
       },
+      novelId: '', // 小说id
+      chapterId: '', // 章节id
       filename: '',
       textContent: '',
       htmlContent: '',
@@ -202,7 +207,9 @@ export default {
             label,
             isDirectory: false,
             // path: pathStr + path
-            path: this.websiteValue === '必去书库' ? path : pathStr + path
+            path: this.websiteValue === '必去书库' ? path : pathStr + path,
+            id: `${treeNode.id}-${label}`,
+            parentId: treeNode.id
           });
           // this.getContent(path, false, label);
         });
@@ -255,11 +262,58 @@ export default {
       this.title = '';
       if (treeNode.isDirectory) {
         this.filename = treeNode.label;
+        this.novelId = treeNode.id;
         this.textContent = '';
         this.getChapter(treeNode, treeNode.path);
       } else {
         this.title = treeNode.label;
+        this.novelId = treeNode.parentId;
+        this.chapterId = treeNode.id;
         this.getContent(treeNode.path, true);
+      }
+    },
+    /**
+     * @Description 点击上一页触发
+     * @author wangkangzhang
+     * @date 2025/1/17
+     */
+    handlePrev () {
+      const res = this.treeData.find(item => item.id === this.novelId);
+      const { children } = res || {};
+      const index = children.findIndex(item => item.id === this.chapterId);
+      if (index !== -1 && index !== 0) {
+        const chapter = children[index - 1];
+        this.title = chapter.label;
+        this.novelId = chapter.parentId;
+        this.chapterId = chapter.id;
+        this.getContent(chapter.path, true);
+        this.$nextTick(() => {
+          this.$refs.tree.setCurrentKey(this.chapterId);
+        });
+      }
+    },
+    /**
+     * @Description 点击下一页触发
+     * @author wangkangzhang
+     * @date 2025/1/17
+     */
+    handleNext () {
+      const res = this.treeData.find(item => item.id === this.novelId);
+      console.log('res', res);
+      console.log('chapterId', this.chapterId);
+      const { children } = res || {};
+      const index = children.findIndex(item => item.id === this.chapterId);
+      console.log('index', index);
+      if (index !== -1 && index !== children.length - 1) {
+        const chapter = children[index + 1];
+        console.log('chapter', chapter);
+        this.title = chapter.label;
+        this.novelId = chapter.parentId;
+        this.chapterId = chapter.id;
+        this.getContent(chapter.path, true);
+        this.$nextTick(() => {
+          this.$refs.tree.setCurrentKey(this.chapterId);
+        });
       }
     },
     loadNode (node, resolve) {
@@ -333,9 +387,14 @@ export default {
         }
       }
       .right-content {
-        height: calc(100% - 32px - 5px);
+        height: calc(100% - 32px - 5px - 32px);
         width: 100%;
         overflow-y: auto;
+      }
+      .btns-box {
+        height: 32px;
+        display: flex;
+        justify-content: center;
       }
     }
   }
