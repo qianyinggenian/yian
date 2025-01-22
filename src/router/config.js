@@ -202,5 +202,13 @@ export const config = [
     meta: {
       title: 'base64'
     }
+  },
+  {
+    path: '/testTabs',
+    name: 'testTabs',
+    component: () => import('@/views/testTabs/index.vue'),
+    meta: {
+      title: 'testTabs'
+    }
   }
 ];

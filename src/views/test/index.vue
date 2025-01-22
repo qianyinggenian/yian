@@ -95,7 +95,6 @@ import proxyInput from '@/components/proxyInput/index.vue';
 import navTabs from '../layout/navbar/index1.vue';
 import axios from 'axios';
 import tMap from './tMap.vue';
-import { debounce } from '@/utils/util';
 // import imgURL from '../imageWatermark/img/bj.jpg';
 export default {
   name: 'index',
@@ -279,16 +278,18 @@ export default {
     handleClear () {
       console.log(111111);
     },
-    handleClick: debounce((vm, args) => {
-      const [params, params2, params3] = args;
-      console.log('params', params);
-      console.log('params2', params2);
-      console.log('params3', params3);
-      console.log('vm', vm);
-      vm.fn();
-    }, 2000),
-    fn () {
-      console.log('防抖输出');
+    handleClick (vm) {
+      // this.$message({
+      //   type: 'error',
+      //   message: '所选设备（设备名称）断电/通电失败',
+      //   duration: 0,
+      //   showClose: true
+      // });
+      this.$message({
+        type: 'success',
+        message: '所选设备（设备名称）断电/通电成功',
+        duration: 5000
+      });
     },
     /**
      * @Description 选择文件后触发
