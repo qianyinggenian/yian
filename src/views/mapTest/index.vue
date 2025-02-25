@@ -70,6 +70,18 @@ export default {
         labelOptions: this.labelOptions // label样式
       });
       console.log('this.drawingManager', this.drawingManager);
+      // this.drawingManager.addEventListener('polygoncomplete', function (e) {
+      //   console.log('e', e);
+      //   console.log('getPath1', e.overlay.getPath());
+      // });
+      // 完成后触发
+      this.drawingManager.addEventListener('overlaycomplete', function (e) {
+        console.log(e.drawingMode);
+        // 获取绘制结果
+        console.log('getPath2', e.overlay.getPath());
+        console.log(e.calculate);
+        console.log(e.label);
+      });
     },
     draw (tool) {
       console.log('this.drawingManager', this.drawingManager);

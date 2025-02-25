@@ -74,7 +74,6 @@
     </navTabs>
 
     <el-button style="width: 80px" type="primary" @click="showMap">编辑</el-button>
-    <el-button style="width: 80px" type="primary" @click="readIdCard">读卡</el-button>
     <tMap ref="tMapRef" v-if="isShowTMap" @closeMap="closeMap"></tMap>
     <div style="background: #0A1A34">
     </div>

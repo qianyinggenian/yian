@@ -210,5 +210,37 @@ export const config = [
     meta: {
       title: 'testTabs'
     }
+  },
+  {
+    path: '/mapTest',
+    name: 'mapTest',
+    component: () => import('@/views/mapTest/index.vue'),
+    meta: {
+      title: '百度地图'
+    }
+  },
+  {
+    path: '/mapTest2',
+    name: 'mapTest2',
+    component: () => import('@/views/mapTest/index2.vue'),
+    meta: {
+      title: '百度地图2'
+    }
+  },
+  {
+    path: '/mapTest3',
+    name: 'mapTest3',
+    component: () => import('@/views/mapTest/index3.vue'),
+    meta: {
+      title: '高德地图'
+    }
+  },
+  {
+    path: '/mapTest6',
+    name: 'mapTest6',
+    component: () => import('@/views/mapTest/index6.vue'),
+    meta: {
+      title: '高德地图6'
+    }
   }
 ];

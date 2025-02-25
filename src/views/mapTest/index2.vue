@@ -24,13 +24,67 @@ export default {
   methods: {
     initMap () {
       /* eslint-disable-next-line no-undef */
-      const map = new BMapGL.Map(this.$refs.mapRef);
+      this.BMap = new BMapGL.Map(this.$refs.mapRef);
       /* eslint-disable-next-line no-undef */
-      map.centerAndZoom(new BMapGL.Point(116.291, 39.993), 13);
+      this.BMap.centerAndZoom(new BMapGL.Point(116.291, 39.993), 13);
       // map.setMapStyleV2({ styleJson: customStyleJSON });
-      map.enableScrollWheelZoom();
+      this.BMap.enableScrollWheelZoom();
 
-      const scene = new DrawScene(map, {
+      const po = [
+        {
+          lng: 12941275.760920327,
+          lat: 4838229.842347245,
+          latLng: {
+            lng: 116.25219320196888,
+            lat: 40.00007518540277
+          }
+        },
+        {
+          lng: 12943675.760920327,
+          lat: 4835093.842613237,
+          latLng: {
+            lng: 116.27375253420836,
+            lat: 39.97840531293305
+          }
+        },
+        {
+          lng: 12954683.760920282,
+          lat: 4837045.903820169,
+          latLng: {
+            lng: 116.37263800474632,
+            lat: 39.99189494121582
+          }
+        },
+        {
+          lng: 12948379.76092025,
+          lat: 4842325.939703013,
+          latLng: {
+            lng: 116.31600882539703,
+            lat: 40.02836893062584
+          }
+        },
+        {
+          lng: 12941275.760920327,
+          lat: 4838229.842347245,
+          latLng: {
+            lng: 116.25219320196888,
+            lat: 40.00007518540277
+          }
+        }
+      ];
+      /* eslint-disable-next-line no-undef */
+      const points = po.map(p => new BMapGL.Point(p.latLng.lng, p.latLng.lat));
+      // 创建多边形并应用样式
+      /* eslint-disable-next-line no-undef */
+      this.polygon2 = new BMapGL.Polygon(points, {
+        strokeColor: '#5E87DB',
+        fillColor: '#5E87DB',
+        strokeWeight: 2,
+        strokeOpacity: 1,
+        fillOpacity: 0.2
+      });
+      this.BMap.addOverlay(this.polygon2); // 添加到地图
+      const scene = new DrawScene(this.BMap, {
         noLimit: true
       });
       const polygon = new PolygonDraw(scene, {
@@ -75,6 +129,7 @@ export default {
     },
     clearData () {
       this.setScene.clearData();
+      this.BMap.removeOverlay(this.polygon2);
     }
   }
 };

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>百度地图 DrawingManager 示例</title>
+
+    <!-- 百度地图API加载脚本 -->
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=Lf67yUQ2w3RNpqss6UEo512mUfWPnMRM"></script>
+    <!-- 加载DrawingManager库 -->
+    <script type="text/javascript" src="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+    <link rel="stylesheet" href="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
+    <style>
+        /* 设置地图容器的大小 */
+        #container {
+            width: 100%;
+            height: 600px;
+        }
+        /* 提示框样式 */
+        .custom-tooltip {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 204, 102, 0.8);
+            border: 1px solid orange;
+            padding: 10px;
+            z-index: 9999;
+            font-size: 14px;
+            color: black;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<!-- 地图容器 -->
+<div id="container"></div>
+
+
+
+<script type="text/javascript">
+  // 初始化地图
+  var map = new BMap.Map("container");
+  var point = new BMap.Point(116.404, 39.915);  // 创建点坐标
+  map.centerAndZoom(point, 15);
+
+  // 初始化绘图管理器
+  var drawingManager = new BMapLib.DrawingManager(map, {
+    isOpen: false, // 是否开启画图模式
+    enableDrawingTool: true, // 开启工具栏
+    drawingToolOptions: {
+      offset: new BMap.Size(5, 5), // 工具栏位置偏移量
+      scale: 0.8, // 工具栏缩放比例
+    },
+    circleOptions: styleOptions, // 圆形样式
+    polylineOptions: styleOptions, // 折线样式
+    polygonOptions: styleOptions, // 多边形样式
+    rectangleOptions: styleOptions, // 矩形样式
+    labelOptions: labelOptions,      // label样式
+  });
+  var labelOptions = {
+    borderRadius: '2px',
+    background: '#FFFBCC',
+    border: '1px solid #E1E1E1',
+    color: '#703A04',
+    fontSize: '12px',
+    letterSpacing: '0',
+    padding: '5px'
+  };
+
+  // 定义图形样式
+  var styleOptions = {
+    strokeColor: "red", // 边线颜色。
+    fillColor: "red", // 填充颜色。当参数为空时，圆形将没有填充效果。
+    strokeWeight: 3, // 边线的宽度，以像素为单位。
+    strokeOpacity: 0.8, // 边线透明度，取值范围0 - 1。
+    fillOpacity: 0.6, // 填充的透明度，取值范围0 - 1。
+    strokeStyle: 'solid' // 边线的样式，solid或dashed。
+  };
+
+  // // 添加事件监听器
+  // drawingManager.addEventListener('overlaycomplete', function(e) {
+  //   hideTooltip();
+  // });
+  //
+  // drawingManager.addEventListener('drawstart', function(e) {
+  //   showTooltip("单击绘制下一个点，双击完成绘制");
+  // });
+  //
+  // // 显示提示框函数
+  // function showTooltip(message) {
+  //   var tooltip = document.createElement("div");
+  //   tooltip.className = "custom-tooltip";
+  //   tooltip.innerText = message;
+  //
+  //   document.body.appendChild(tooltip);
+  // }
+  //
+  // // 隐藏提示框函数
+  // function hideTooltip() {
+  //   var tooltips = document.querySelectorAll(".custom-tooltip");
+  //   tooltips.forEach(function(tooltip) {
+  //     tooltip.parentNode.removeChild(tooltip);
+  //   });
+  // }
+</script>
+</body>
+</html>

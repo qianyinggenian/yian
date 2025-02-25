@@ -19,7 +19,9 @@ export default {
      * @date 2023/10/12 0012
      */
     async getUserInfo ({ commit }, account) {
+      console.log('userApi', userApi);
       const data = await userApi.getUserInfo({ account });
+      console.log('获取到了', data);
       if (data.code === 200) {
         const result = await permissionApi.permissionInfo({
           indexName: 'id',

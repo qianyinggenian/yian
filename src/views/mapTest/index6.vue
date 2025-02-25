@@ -22,7 +22,10 @@
       </el-select>
     </div>
     <div id="map-container"></div>
-    <button class="draw-btn" @click="startDrawing">开始绘制</button>
+    <div class="draw-btn">
+      <button class="" @click="startDrawing">开始绘制</button>
+      <button class="" @click="resetDrawing">重画</button>
+    </div>
   </div>
 </template>
 
@@ -43,7 +46,9 @@ export default {
       suggestions: [],
       mapCenter: [113.264499, 23.130061],
       map: null,
+      currentMarker: null,
       mouseTool: null,
+      editor: null,
       currentPolygon: null
     };
   },
@@ -53,6 +58,9 @@ export default {
   methods: {
     async initMap () {
       try {
+        window._AMapSecurityConfig = {
+          securityJsCode: mk.s
+        };
         AMap = await AMapLoader.load({
           key: mk.k, // 请替换有效key
           version: '2.0',
@@ -64,22 +72,36 @@ export default {
         });
 
         this.map = new AMap.Map('map-container', {
-          zoom: 10,
-          center: [116.397428, 39.90923],
+          viewMode: '3D', // 是否为3D地图模式
+          zoom: 15, // 初始化地图级别
+          center: this.mapCenter, // 初始化地图中心点位置
           resizeEnable: true // 重要：适配Vue容器
         });
         const autoOptions = {
-          // city 限定城市，默认全国
+        // city 限定城市，默认全国
           city: '全国'
         };
         // 实例化AutoComplete
         autoComplete = new AMap.AutoComplete(autoOptions);
+        this.addMarker(this.mapCenter);
         console.log('地图初始化完成');
       } catch (error) {
         console.error('地图初始化失败:', error);
       }
     },
 
+    resetDrawing () {
+      if (this.currentPolygon) {
+        this.map.remove(this.currentPolygon); // 从地图移除
+        this.currentPolygon = null; // 释放内存
+
+        if (this.editor) {
+          this.editor.close(); // 关闭编辑器
+          this.editor = null;
+        }
+        this.startDrawing();
+      }
+    },
     async startDrawing () {
       try {
         // 销毁旧实例
@@ -95,7 +117,8 @@ export default {
         // 多边形绘制配置
         this.mouseTool.polygon({
           strokeColor: '#1890FF',
-          fillColor: '#E6F7FF',
+          fillColor: '#1890FF',
+          fillOpacity: 0.2,
           strokeWeight: 3
         });
 
@@ -105,9 +128,14 @@ export default {
           console.log('绘制完成，路径:', event.obj.getPath());
 
           // 自动进入编辑模式
-          const editor = new AMap.PolyEditor(this.map, this.currentPolygon);
-          editor.open();
-
+          this.editor = new AMap.PolyEditor(this.map, this.currentPolygon);
+          this.editor.open();
+          this.editor.on('adjust', ({ target, lnglat, pixel }) => {
+            console.log('节点调整后路径:', target.getPath().map(p => [p.lng, p.lat]));
+          });
+          this.editor.on('addnode', ({ target, lnglat, pixel }) => {
+            console.log('增加节点调整后路径:', target.getPath().map(p => [p.lng, p.lat]));
+          });
           // 销毁绘制工具
           this.mouseTool.close();
         });
@@ -117,6 +145,10 @@ export default {
     },
     // 添加标记点
     addMarker (position) {
+      if (this.currentMarker) {
+        this.map.remove(this.currentMarker);
+        this.currentMarker = null;
+      }
       this.currentMarker = new AMap.Marker({
         position: position,
         icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png'
@@ -163,8 +195,11 @@ export default {
       }, 500);
     },
     getSuggestions (keyword) {
+      console.log('keyword', keyword);
       if (autoComplete) {
+        console.log(111111);
         autoComplete.search(keyword, (status, result) => {
+          console.log('result', result);
           const { info = '', tips = [] } = result || {};
           // 搜索成功时，result 即是对应的匹配数据
           if (info === 'OK') {
@@ -215,7 +250,7 @@ export default {
 .draw-btn {
   position: absolute;
   top: 20px;
-  left: 20px;
+  right: 200px;
   z-index: 999;
   padding: 8px 16px;
   background: #1890FF;
