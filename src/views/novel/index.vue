@@ -326,9 +326,9 @@ export default {
       }
     },
     /**
-     * @Description 点击上一页触发
-     * @author wangkangzhang
-     * @date 2025/1/17
+     * @Description 点击上一章触发
+     * @author qianyinggenian
+     * @date 2025/3/28
      */
     handlePrev () {
       const res = this.treeData.find(item => item.id === this.novelId);
@@ -346,9 +346,9 @@ export default {
       }
     },
     /**
-     * @Description 点击下一页触发
-     * @author wangkangzhang
-     * @date 2025/1/17
+     * @Description 点击下一章触发
+     * @author qianyinggenian
+     * @date 2025/3/28
      */
     handleNext () {
       const res = this.treeData.find(item => item.id === this.novelId);
