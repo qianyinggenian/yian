@@ -89,20 +89,52 @@ export default {
       textContent: '',
       htmlContent: '',
       searchValue: '',
-      websiteValue: '笔趣阁',
-      websiteUrl: 'http://www.xbiquzw.com',
+      websiteValue: '书库3',
+      websiteUrl: 'https://www.douyinxs.com/',
       websiteList: [
         {
-          url: 'https://www.biqusk.com/',
-          value: '必去书库',
-          label: '必去书库'
+          url: 'http://www.xbiquzw.com',
+          value: '书库1',
+          label: '书库1'
         },
         {
-          url: 'http://www.xbiquzw.com',
-          value: '笔趣阁',
-          label: '笔趣阁'
+          url: 'https://www.biqusk.com/',
+          value: '书库2',
+          label: '书库2'
+        },
+        {
+          url: 'https://www.douyinxs.com/',
+          value: '书库3',
+          label: '书库3'
         }
-      ]
+      ],
+      div: `<div id="main">
+            <div class="novelslist2">
+                <h2>  搜索 "都重生了谁还追妻啊" 共有 "1" 相关小说</h2>
+                <ul>
+                    <li><span class="s1"><b>作品分类</b></span>
+                    <span class="s2"><b>作品名称</b></span>
+                    <span class="s3"><b>最新章节</b></span>
+                    <span class="s4"><b>作者</b></span>
+                    <span class="s5"><b>字数</b></span>
+                    <span class="s6"><b>更新时间</b></span>
+                    <span class="s7"><b>状态</b></span>
+                </li>
+                    <li><span class="s1">[都市]</span>
+                        <span class="s2"><a href="/bqg/1229448/" target="_blank">
+                            都重生了谁还追妻啊</a>
+                    </span>
+                        <span class="s3"><a href="/bqg/1229448/301486656.html" target="_blank">第207章 老狼</a>
+                    </span>
+                        <span class="s4">楼下赫本</span>
+                        <span class="s5">77w</span>
+                        <span class="s6">09-11</span>
+                        <span class="s7">连载</span>
+                    </li>
+\t                </ul>
+            </div>
+            <div class="clear"></div>
+        </div>`
     };
   },
   props: {},
@@ -110,6 +142,28 @@ export default {
   computed: {},
   created () {},
   mounted () {
+    const $ = cheerio.load(this.div);
+
+    // 初始化结果数组
+    const arr = [];
+
+    // 获取 ul 下的所有 li 标签
+    $('ul li').each((index, element) => {
+      // 忽略第一个 li 标签（表头）
+      if (index === 0) return;
+
+      // 提取目标内容
+      const title = $(element).find('.s2 a').text().trim();
+      const author = $(element).find('.s4').text().trim();
+      const url = $(element).find('.s2 a').attr('href');
+
+      // 将提取的内容封装为对象并添加到数组中
+      arr.push({
+        title: `${title}-${author}`,
+        url: url
+      });
+    });
+    console.log(arr);
   },
   methods: {
     backTop () {
@@ -147,38 +201,83 @@ export default {
       // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
       // axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
       let url = '';
-      if (this.websiteValue === '必去书库') {
-        url = `/biqusk/s.php?q=${this.searchValue}`;
-      } else if (this.websiteValue === '笔趣阁') {
-        url = `/biquge/modules/article/search.php?searchkey=${this.searchValue}`;
+      let method = 'get';
+      let params = {};
+      if (this.websiteValue === '书库2') {
+        // url = `/biqusk/s.php?q=${this.searchValue}`;
+        url = '/biqusk/s.php';
+        params = {
+          q: this.searchValue
+        };
+      } else if (this.websiteValue === '书库1') {
+        // url = `/biquge/modules/article/search.php?searchkey=${this.searchValue}`;
+        url = '/biquge/modules/article/search.php';
+        params = {
+          searchkey: this.searchValue
+        };
+      } else if (this.websiteValue === '书库3') {
+        method = 'post';
+        url = '/douyinxs/search/';
+        params = {
+          searchkey: this.searchValue
+        };
       }
-      this.loading = true;
-      axios.get(url).then(response => {
-        const result = [];
-        const res = response.data;
-        const $ = cheerio.load(res);
-        $('.grid tbody > tr').each(function (i, elem) {
-          const title = $(elem).find('td:nth-child(1)').text();
-          const author = $(elem).find('td:nth-child(3)').text();
-          const path = $(elem).find('td:nth-child(1)').find('a').attr('href');
-          if (title && author) {
-            result.push({
-              type: 'root',
-              label: `${title} - ${author}`,
-              children: [],
-              id: `${title} - ${author}-1`,
-              isDirectory: true,
-              path
+      axios({
+        method: method,
+        url: url,
+        data: method === 'post' ? params : null, // POST 请求传递 data
+        params: method === 'get' ? params : null // GET 请求传递 params
+      })
+        .then(response => {
+          const result = [];
+          const res = response.data;
+          const $ = cheerio.load(res);
+          if (this.websiteValue === '书库3') {
+            // 获取 ul 下的所有 li 标签
+            $('ul li').each((index, element) => {
+              // 忽略第一个 li 标签（表头）
+              if (index === 0) return;
+
+              // 提取目标内容
+              const title = $(element).find('.s2 a').text().trim();
+              const author = $(element).find('.s4').text().trim();
+              const path = $(element).find('.s2 a').attr('href');
+
+              if (title && author) {
+                result.push({
+                  type: 'root',
+                  label: `${title} - ${author}`,
+                  children: [],
+                  id: `${title} - ${author}-1`,
+                  isDirectory: true,
+                  path
+                });
+              }
+            });
+          } else {
+            $('.grid tbody > tr').each(function (i, elem) {
+              const title = $(elem).find('td:nth-child(1)').text();
+              const author = $(elem).find('td:nth-child(3)').text();
+              const path = $(elem).find('td:nth-child(1)').find('a').attr('href');
+              if (title && author) {
+                result.push({
+                  type: 'root',
+                  label: `${title} - ${author}`,
+                  children: [],
+                  id: `${title} - ${author}-1`,
+                  isDirectory: true,
+                  path
+                });
+              }
             });
           }
+          this.treeData = result;
+          this.loading = false;
+          console.log('result', result);
+        })
+        .catch(error => {
+          console.error('Error:', error);
         });
-        this.treeData = result;
-        this.loading = false;
-        console.log('result', result);
-      }).catch(error => {
-        console.log('Error:', error);
-      });
-      // console.log($);
     },
     /**
      * @Description 获取章节列表
@@ -187,11 +286,13 @@ export default {
      */
     async getChapter (treeNode, pathStr) {
       let url = '';
-      if (this.websiteValue === '必去书库') {
+      if (this.websiteValue === '书库2') {
         url = pathStr.replace(/https:\/\/www.biqusk.com/g, '/biqusk');
-      } else if (this.websiteValue === '笔趣阁') {
+      } else if (this.websiteValue === '书库1') {
         const url1 = `${this.websiteUrl}${pathStr}`;
         url = url1.replace(/http:\/\/www.xbiquzw.com/g, '/biquge');
+      } else {
+        url = `/douyinxs${pathStr}`;
       }
       this.loading = true;
       await axios.get(url).then(async (response) => {
@@ -207,7 +308,7 @@ export default {
             label,
             isDirectory: false,
             // path: pathStr + path
-            path: this.websiteValue === '必去书库' ? path : pathStr + path,
+            path: ['书库2', '书库3'].includes(this.websiteValue) ? path : pathStr + path,
             id: `${treeNode.id}-${label}`,
             parentId: treeNode.id
           });
@@ -232,12 +333,14 @@ export default {
      */
     async getContent (pathStr, flag = true, label = '') {
       let url = '';
-      if (this.websiteValue === '必去书库') {
+      if (this.websiteValue === '书库2') {
         url = this.websiteUrl + pathStr;
         url = url.replace(/https:\/\/www.biqusk.com/g, '/biqusk'); // g标志表示全局替换
-      } else if (this.websiteValue === '笔趣阁') {
+      } else if (this.websiteValue === '书库1') {
         const url1 = `${this.websiteUrl}${pathStr}`;
         url = url1.replace(/http:\/\/www.xbiquzw.com/g, '/biquge');
+      } else {
+        url = `/douyinxs${pathStr}`;
       }
       const t = new Date().getTime();
       axios.get(`${url}?t=${t}`).then(response => {

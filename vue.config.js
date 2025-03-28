@@ -50,6 +50,12 @@ module.exports = {
         target: 'http://www.xbiquzw.com', // 代理的目标地址
         changeOrigin: true,
         pathRewrite: { '^/biquge': '' }
+      },
+      // 笔趣阁
+      '/douyinxs': {
+        target: 'https://www.douyinxs.com/', // 代理的目标地址
+        changeOrigin: true,
+        pathRewrite: { '^/douyinxs': '' }
       }
     }
   },
