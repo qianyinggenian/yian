@@ -315,7 +315,8 @@ export default {
         const res = response.data.replace(/&nbsp;&nbsp;&nbsp;&nbsp;/g, '\n&nbsp;&nbsp;&nbsp;&nbsp;');
         const $ = cheerio.load(res);
         if (flag) {
-          const html = $('#content').html();
+          // const html = $('#content').html();
+          const html = $('#content');
           this.htmlContent = html || '';
           this.$nextTick(() => {
             this.backTop();
