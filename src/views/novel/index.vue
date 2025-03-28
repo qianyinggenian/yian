@@ -44,8 +44,8 @@
           </div>
           <div class="right-content" ref="refContent" v-html="htmlContent"></div>
           <div class="btns-box" v-if="chapterId" >
-            <el-button size="small" @click="handlePrev">上一页</el-button>
-            <el-button size="small" @click="handleNext">下一页</el-button>
+            <el-button size="small" @click="handlePrev">上一章</el-button>
+            <el-button size="small" @click="handleNext">下一章</el-button>
           </div>
           <el-backtop ref="backTop" target=".right-content"></el-backtop>
         </div>
@@ -107,64 +107,14 @@ export default {
           value: '书库3',
           label: '书库3'
         }
-      ],
-      div: `<div id="main">
-            <div class="novelslist2">
-                <h2>  搜索 "都重生了谁还追妻啊" 共有 "1" 相关小说</h2>
-                <ul>
-                    <li><span class="s1"><b>作品分类</b></span>
-                    <span class="s2"><b>作品名称</b></span>
-                    <span class="s3"><b>最新章节</b></span>
-                    <span class="s4"><b>作者</b></span>
-                    <span class="s5"><b>字数</b></span>
-                    <span class="s6"><b>更新时间</b></span>
-                    <span class="s7"><b>状态</b></span>
-                </li>
-                    <li><span class="s1">[都市]</span>
-                        <span class="s2"><a href="/bqg/1229448/" target="_blank">
-                            都重生了谁还追妻啊</a>
-                    </span>
-                        <span class="s3"><a href="/bqg/1229448/301486656.html" target="_blank">第207章 老狼</a>
-                    </span>
-                        <span class="s4">楼下赫本</span>
-                        <span class="s5">77w</span>
-                        <span class="s6">09-11</span>
-                        <span class="s7">连载</span>
-                    </li>
-\t                </ul>
-            </div>
-            <div class="clear"></div>
-        </div>`
+      ]
     };
   },
   props: {},
   watch: {},
   computed: {},
   created () {},
-  mounted () {
-    const $ = cheerio.load(this.div);
-
-    // 初始化结果数组
-    const arr = [];
-
-    // 获取 ul 下的所有 li 标签
-    $('ul li').each((index, element) => {
-      // 忽略第一个 li 标签（表头）
-      if (index === 0) return;
-
-      // 提取目标内容
-      const title = $(element).find('.s2 a').text().trim();
-      const author = $(element).find('.s4').text().trim();
-      const url = $(element).find('.s2 a').attr('href');
-
-      // 将提取的内容封装为对象并添加到数组中
-      arr.push({
-        title: `${title}-${author}`,
-        url: url
-      });
-    });
-    console.log(arr);
-  },
+  mounted () {},
   methods: {
     backTop () {
       this.$nextTick(() => {
