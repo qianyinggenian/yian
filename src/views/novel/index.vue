@@ -124,7 +124,11 @@ export default {
   watch: {},
   computed: {},
   created () {},
-  mounted () {},
+  mounted () {
+    axios.defaults.withCredentials = true;
+    axios.defaults.crossDomain = true;
+    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+  },
   methods: {
     backTop () {
       this.$nextTick(() => {
