@@ -283,6 +283,11 @@ export default {
       });
     },
     handleClick (item) {
+      if (item.title === '上一章') {
+        this.handlePrev(false);
+      } else if (item.title === '下一章') {
+        this.handleNext(false);
+      }
       this.getContent(item.url, true);
     },
     /**
@@ -364,7 +369,7 @@ export default {
      * @author qianyinggenian
      * @date 2025/3/28
      */
-    handlePrev () {
+    handlePrev (flag = true) {
       const res = this.treeData.find(item => item.id === this.novelId);
       const { children } = res || {};
       const index = children.findIndex(item => item.id === this.chapterId);
@@ -373,7 +378,9 @@ export default {
         this.title = chapter.label;
         this.novelId = chapter.parentId;
         this.chapterId = chapter.id;
-        this.getContent(chapter.path, true);
+        if (flag) {
+          this.getContent(chapter.path, true);
+        }
         this.$nextTick(() => {
           this.$refs.tree.setCurrentKey(this.chapterId);
         });
@@ -384,20 +391,18 @@ export default {
      * @author qianyinggenian
      * @date 2025/3/28
      */
-    handleNext () {
+    handleNext (flag = true) {
       const res = this.treeData.find(item => item.id === this.novelId);
-      console.log('res', res);
-      console.log('chapterId', this.chapterId);
       const { children } = res || {};
       const index = children.findIndex(item => item.id === this.chapterId);
-      console.log('index', index);
       if (index !== -1 && index !== children.length - 1) {
         const chapter = children[index + 1];
-        console.log('chapter', chapter);
         this.title = chapter.label;
         this.novelId = chapter.parentId;
         this.chapterId = chapter.id;
-        this.getContent(chapter.path, true);
+        if (flag) {
+          this.getContent(chapter.path, true);
+        }
         this.$nextTick(() => {
           this.$refs.tree.setCurrentKey(this.chapterId);
         });
