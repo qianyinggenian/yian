@@ -44,8 +44,17 @@
           </div>
           <div class="right-content" ref="refContent" v-html="htmlContent"></div>
           <div class="btns-box" v-if="chapterId" >
-            <el-button size="small" @click="handlePrev">上一章</el-button>
-            <el-button size="small" @click="handleNext">下一章</el-button>
+            <template v-if="listBtns.length > 0">
+              <template v-for="(item,index) in listBtns" >
+                <el-button v-if="item.url" size="small" @click="handleClick(item)" :key="index">
+                  {{item.title}}
+                </el-button>
+              </template>
+            </template>
+            <template v-else>
+              <el-button size="small" @click="handlePrev">上一章</el-button>
+              <el-button size="small" @click="handleNext">下一章</el-button>
+            </template>
           </div>
           <el-backtop ref="backTop" target=".right-content"></el-backtop>
         </div>
@@ -107,7 +116,8 @@ export default {
           value: '书库3',
           label: '书库3'
         }
-      ]
+      ],
+      listBtns: []
     };
   },
   props: {},
@@ -262,19 +272,18 @@ export default {
             id: `${treeNode.id}-${label}`,
             parentId: treeNode.id
           });
-          // this.getContent(path, false, label);
         });
         treeNode.children = result;
         this.currentChildren = result;
         if (result && result.length > 0) {
           this.defaultExpandedKeys.push(treeNode.id);
-          // for (const resultElement of result) {
-          //   await this.getContent(resultElement.path, false, resultElement.label);
-          // }
         }
       }).catch(error => {
         console.log('Error:', error);
       });
+    },
+    handleClick (item) {
+      this.getContent(item.url, true);
     },
     /**
      * @Description 获取具体内容
@@ -302,6 +311,31 @@ export default {
           this.$nextTick(() => {
             this.backTop();
           });
+          // 初始化结果数组
+          const arr = [];
+
+          // 定义目标标题的顺序
+          const targetOrder = ['上一章', '上一页', '下一页', '下一章'];
+
+          // 遍历所有 a 标签
+          $('.bottem2 a').each((index, element) => {
+            const text = $(element).text().trim(); // 提取标签的文本内容
+            const href = $(element).attr('href'); // 提取 href 属性
+
+            // 判断是否为目标内容
+            if (targetOrder.includes(text)) {
+              arr.push({
+                title: text,
+                url: href || null // 如果没有 href，则设置为 null
+              });
+            }
+          });
+
+          // 按照目标顺序重新排序数组
+          this.listBtns = targetOrder.map(title =>
+            arr.find(item => item.title === title) || { title, url: null }
+          );
+          console.log('sortedArr', this.listBtns);
         } else {
           this.textContent += `${label}\n\n${$('#content').text()}\n\n`;
         }
@@ -368,23 +402,6 @@ export default {
           this.$refs.tree.setCurrentKey(this.chapterId);
         });
       }
-    },
-    loadNode (node, resolve) {
-      console.log('node', node);
-      if (node.level === 0) {
-        return resolve(this.rootData);
-      }
-      // if (node.level > 1) return resolve([]);
-      setTimeout(() => {
-        const data = [{
-          label: 'leaf',
-          leaf: true
-        }, {
-          label: 'zone'
-        }];
-
-        resolve(data);
-      }, 500);
     }
   }
 };
