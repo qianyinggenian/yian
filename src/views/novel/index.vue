@@ -98,8 +98,8 @@ export default {
       textContent: '',
       htmlContent: '',
       searchValue: '',
-      websiteValue: '书库3',
-      websiteUrl: 'https://www.douyinxs.com/',
+      websiteValue: '书库4',
+      websiteUrl: 'http://www.ujxsw.net',
       websiteList: [
         {
           url: 'http://www.xbiquzw.com',
@@ -115,6 +115,11 @@ export default {
           url: 'https://www.douyinxs.com/',
           value: '书库3',
           label: '书库3'
+        },
+        {
+          url: 'http://www.ujxsw.net',
+          value: '书库4',
+          label: '书库4'
         }
       ],
       listBtns: []
@@ -185,6 +190,12 @@ export default {
         params = {
           searchkey: this.searchValue
         };
+      } else if (this.websiteValue === '书库4') {
+        method = 'post';
+        url = '/ujxsw/searchbooks.php';
+        params = {
+          searchkey: this.searchValue
+        };
       }
       axios({
         method: method,
@@ -218,7 +229,7 @@ export default {
                 });
               }
             });
-          } else {
+          } else if (['书库1', '书库2'].includes(this.websiteValue)) {
             $('.grid tbody > tr').each(function (i, elem) {
               const title = $(elem).find('td:nth-child(1)').text();
               const author = $(elem).find('td:nth-child(3)').text();
@@ -231,6 +242,25 @@ export default {
                   id: `${title} - ${author}-1`,
                   isDirectory: true,
                   path
+                });
+              }
+            });
+          } else if (this.websiteValue === '书库4') {
+            $('.shulist ul').each(function (i, elem) {
+              const titleElement = $(elem).find('li.three a');
+              const authorElement = $(elem).find('li.four a');
+
+              const title = titleElement.text().trim(); // 获取书名
+              const author = authorElement.text().trim(); // 获取作者名
+              const path = titleElement.attr('href'); // 获取书籍链接
+              if (title && author) {
+                result.push({
+                  type: 'root',
+                  label: `${title} - ${author}`,
+                  children: [],
+                  id: `${title} - ${author}-1`,
+                  isDirectory: true,
+                  path: path.replace('book', 'read')
                 });
               }
             });
@@ -250,13 +280,15 @@ export default {
      */
     async getChapter (treeNode, pathStr) {
       let url = '';
-      if (this.websiteValue === '书库2') {
-        url = pathStr.replace(/https:\/\/www.biqusk.com/g, '/biqusk');
-      } else if (this.websiteValue === '书库1') {
+      if (this.websiteValue === '书库1') {
         const url1 = `${this.websiteUrl}${pathStr}`;
         url = url1.replace(/http:\/\/www.xbiquzw.com/g, '/biquge');
-      } else {
+      } else if (this.websiteValue === '书库2') {
+        url = pathStr.replace(/https:\/\/www.biqusk.com/g, '/biqusk');
+      } else if (this.websiteValue === '书库3') {
         url = `/douyinxs${pathStr}`;
+      } else if (this.websiteValue === '书库4') {
+        url = `/ujxsw${pathStr}`;
       }
       this.loading = true;
       await axios.get(url).then(async (response) => {
@@ -264,19 +296,38 @@ export default {
         const result = [];
         const res = response.data;
         const $ = cheerio.load(res);
-        $('#list dd').each((i, elem) => {
-          const label = $(elem).find('a').text();
-          const path = $(elem).find('a').attr().href;
-          result.push({
-            type: 'biqusk',
-            label,
-            isDirectory: false,
-            // path: pathStr + path
-            path: ['书库2', '书库3'].includes(this.websiteValue) ? path : pathStr + path,
-            id: `${treeNode.id}-${label}`,
-            parentId: treeNode.id
+        if (['书库1', '书库2', '书库3'].includes(this.websiteValue)) {
+          $('#list dd').each((i, elem) => {
+            const label = $(elem).find('a').text();
+            const path = $(elem).find('a').attr().href;
+            result.push({
+              type: 'biqusk',
+              label,
+              isDirectory: false,
+              // path: pathStr + path
+              path: ['书库2', '书库3'].includes(this.websiteValue) ? path : pathStr + path,
+              id: `${treeNode.id}-${label}`,
+              parentId: treeNode.id
+            });
           });
-        });
+        } else {
+          $('#readerlist ul li').each((index, elem) => {
+            // 忽略第一个 li 标签（表头）
+            if (index === 0) return;
+            const titleElement = $(elem).find('li a');
+            const label = titleElement.text().trim(); // 获取书名
+            const path = titleElement.attr('href'); // 获取书籍链接
+            result.push({
+              type: 'ujxsw',
+              label,
+              isDirectory: false,
+              // path: pathStr + path
+              path: path,
+              id: `${treeNode.id}-${label}-${index}`,
+              parentId: treeNode.id
+            });
+          });
+        }
         treeNode.children = result;
         this.currentChildren = result;
         if (result && result.length > 0) {
@@ -301,14 +352,16 @@ export default {
      */
     async getContent (pathStr, flag = true, label = '') {
       let url = '';
-      if (this.websiteValue === '书库2') {
-        url = this.websiteUrl + pathStr;
-        url = url.replace(/https:\/\/www.biqusk.com/g, '/biqusk'); // g标志表示全局替换
-      } else if (this.websiteValue === '书库1') {
+      if (this.websiteValue === '书库1') {
         const url1 = `${this.websiteUrl}${pathStr}`;
         url = url1.replace(/http:\/\/www.xbiquzw.com/g, '/biquge');
-      } else {
+      } else if (this.websiteValue === '书库2') {
+        url = this.websiteUrl + pathStr;
+        url = url.replace(/https:\/\/www.biqusk.com/g, '/biqusk'); // g标志表示全局替换
+      } else if (this.websiteValue === '书库3') {
         url = `/douyinxs${pathStr}`;
+      } else if (this.websiteValue === '书库4') {
+        url = `/ujxsw${pathStr}`;
       }
       const t = new Date().getTime();
       axios.get(`${url}?t=${t}`).then(response => {
@@ -316,7 +369,13 @@ export default {
         const $ = cheerio.load(res);
         if (flag) {
           // const html = $('#content').html();
-          const html = $('#content');
+          let html;
+          if (['书库1', '书库2', '书库3'].includes(this.websiteValue)) {
+            html = $('#content');
+          } else if (this.websiteValue === '书库4') {
+            // html = $('.read-content p').first().text().trim();
+            html = $('.read-content');
+          }
           this.htmlContent = html || '';
           this.$nextTick(() => {
             this.backTop();
@@ -326,9 +385,14 @@ export default {
 
           // 定义目标标题的顺序
           const targetOrder = ['上一章', '上一页', '下一页', '下一章'];
-
+          let page;
+          if (['书库1', '书库2', '书库3'].includes(this.websiteValue)) {
+            page = '.bottem2 a';
+          } else {
+            page = '.mlfy_page a';
+          }
           // 遍历所有 a 标签
-          $('.bottem2 a').each((index, element) => {
+          $(`${page}`).each((index, element) => {
             const text = $(element).text().trim(); // 提取标签的文本内容
             const href = $(element).attr('href'); // 提取 href 属性
 
@@ -349,12 +413,9 @@ export default {
         } else {
           this.textContent += `${label}\n\n${$('#content').text()}\n\n`;
         }
-        // this.textContent += `${label}\n\n${$('#content').text()}\n\n`;
-        // console.log('textContent', this.textContent);
       });
     },
     handleNodeClick (treeNode) {
-      console.log('treeNode', treeNode);
       this.defaultExpandedKeys = [];
       this.title = '';
       if (treeNode.isDirectory) {

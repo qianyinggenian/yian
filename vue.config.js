@@ -56,6 +56,12 @@ module.exports = {
         target: 'https://www.douyinxs.com/', // 代理的目标地址
         changeOrigin: true,
         pathRewrite: { '^/douyinxs': '' }
+      },
+      // 笔趣阁
+      '/ujxsw': {
+        target: 'http://www.ujxsw.net', // 代理的目标地址
+        changeOrigin: true,
+        pathRewrite: { '^/ujxsw': '' }
       }
     }
   },
