@@ -24,10 +24,10 @@
 <!--  data:image/png;base64,-->
   <div class="base64-to-img-container" v-else>
     <div class="">
-      <el-input type="textarea" v-model="resultValue" @change="resultValueChange"></el-input>
+      <el-input type="textarea" v-model="resultValue" @input="resultValueChange"></el-input>
     </div>
     <div class="">
-      <img :src="url" alt="">
+      <img :src="resultValue" alt="">
     </div>
   </div>
 </div>
@@ -194,7 +194,8 @@ export default {
     > div {
       flex: 1;
       flex-shrink: 0;
-
+      padding: 10px;
+      box-sizing: border-box;
       :deep(.el-textarea) {
         height: 100%;
         .el-textarea__inner {
@@ -205,6 +206,7 @@ export default {
       img {
         width: 100%;
         height: 100%;
+        border-radius: 4px;
       }
     }
   }
