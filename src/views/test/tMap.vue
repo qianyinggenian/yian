@@ -151,7 +151,7 @@ export default {
 
     /**
      * @Description 选择地点坐标触发
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/7/13
      */
     handleChangeSelect (id) {
@@ -192,7 +192,7 @@ export default {
     },
     /**
      * @Description 初始化
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/6/5
      */
     initMap (TMap) {
@@ -314,7 +314,7 @@ export default {
     },
     /**
      * @Description 添加位置标示
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/6/5
      */
     addMultiMarker (params) {
@@ -350,7 +350,7 @@ export default {
     },
     /**
      * @Description 绘制打卡范围
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2023/6/5
      */
     addCircle (params) {

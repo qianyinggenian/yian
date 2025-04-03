@@ -1,6 +1,6 @@
 <template>
   <div class="add-edit-container">
-<!--    <el-button @click="startDrawing">绘制</el-button>-->
+    <el-button @click="exportAsImage">导出</el-button>
     <div class="tool-bar">
       <el-select
           v-model="formData.locationName"
@@ -30,6 +30,7 @@
 import AMapLoader from '@amap/amap-jsapi-loader';
 // import markerUrl from '@/common/images/marker.png';
 import { mk } from '@/common/js/mk';
+import html2canvas from 'html2canvas';
 
 window._AMapSecurityConfig = {
   securityJsCode: mk.s
@@ -77,20 +78,26 @@ export default {
           'AMap.ToolBar',
           'AMap.ControlBar',
           'AMap.PolygonEditor',
-          'AMap.MouseTool'
+          'AMap.MouseTool',
+          'AMap.MapExport'
         ] // 需要使用的的插件列表，如比例尺'AMap.Scale'等
       })
         .then((GDMap) => {
           AMap = GDMap;
           mapInstance = new AMap.Map('map-container', {
-          // 设置地图容器id
+            // renderer: 'canvas', // 强制 Canvas 渲染
+            // 设置地图容器id
             resizeEnable: true,
             expandZoomRange: true,
             viewMode: '3D', // 是否为3D地图模式
             zoom: 15, // 初始化地图级别
-            center: this.mapCenter // 初始化地图中心点位置
+            center: this.mapCenter, // 初始化地图中心点位置
+            WebGLParams: {
+              preserveDrawingBuffer: true
+            }
           });
           // mapInstance.addControl(new AMap.Scale()); // 比例尺
+          // mapInstance.addControl(new AMap.ToolBar()); // 缩放工具条
           // mapInstance.addControl(new AMap.ToolBar()); // 缩放工具条
           // mapInstance.addControl(new AMap.ControlBar({
           //   position: 'RB', // 右下角定位
@@ -113,6 +120,55 @@ export default {
           console.log(e);
         });
     },
+    // 使用高德原生导出（推荐）
+    // const exportAsImage = () => {
+    //   if (!map.value) return;
+    //   map.value.plugin(["AMap.MapExport"], () => {
+    //     map.value.exportMapAsPNG({
+    //       download: true,
+    //       filename: 'map-screenshot.png'
+    //     });
+    //   });
+    // };
+    exportAsImage () {
+      console.log('mapInstance', mapInstance);
+      mapInstance.getScreenShot();
+      console.log('mapInstance.getScreenShot()', mapInstance.getScreenShot());
+      // map.value.plugin(["AMap.MapExport"], () => {
+      //   map.value.exportMapAsPNG({
+      //     download: true,
+      //     filename: 'map-screenshot.png'
+      //   });
+      // });
+      // mapInstance.exportMapAsPNG({
+      //   download: true,
+      //   filename: 'map-screenshot.png'
+      // });
+      setTimeout(() => {
+        html2canvas(document.getElementById('map-container'), {
+          useCORS: true, // 允许跨域资源加载
+          logging: true, // 开启控制台日志（调试用）
+          scale: 1 // 提高清晰度（可调整）
+        }).then(canvas => {
+          const link = document.createElement('a');
+          link.download = 'map.jpg';
+          link.href = canvas.toDataURL();
+          link.click();
+        });
+      }, 500);
+    },
+
+    // exportDataAsJSON () {
+    //   const data = {
+    //     markers: markers.value.map(m => m.getPosition()),
+    //     paths: paths.value
+    //   };
+    //   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    //   const link = document.createElement('a');
+    //   link.download = 'map-data.json';
+    //   link.href = URL.createObjectURL(blob);
+    //   link.click();
+    // },
     resetMap (position) {
       this.clearResources(); // 清理旧资源
       mapInstance.setCenter(position);

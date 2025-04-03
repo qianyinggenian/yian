@@ -226,7 +226,7 @@ export default {
     },
     /**
      * @Description
-     * @author wangkangzhang
+     * @author qianyinggenian
      * @date 2024/6/29
      */
     closeMap () {
