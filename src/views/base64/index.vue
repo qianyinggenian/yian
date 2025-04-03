@@ -2,15 +2,33 @@
 <template>
 <div class="container">
   <div class="tool-box">
-    <div class="tips">图片转base64:</div>
-    <input style="display: none" type="file" ref="uploadBtn" accept=".png,.jpeg,.jpg"  @change="onFileChange">
-    <el-button size="small" @click="handleUpload">选择文件</el-button>
-    <span style="margin-left: 10px" v-if="file">已选择的文件：{{file.name}}</span>
+    <el-select size="small" filterable v-model="type" placeholder="请选择">
+      <el-option
+          v-for="item in list"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+      </el-option>
+    </el-select>
+    <template v-if="type ==='图片转base64'">
+      <input style="display: none" type="file" ref="uploadBtn" accept=".png,.jpeg,.jpg"  @change="onFileChange">
+      <el-button size="small" @click="handleUpload">选择文件</el-button>
+      <span style="margin-left: 10px" v-if="file">已选择的文件：{{file.name}}</span>
+    </template>
     <el-button class="btn" size="small" @click="handleDownload">下载</el-button>
     <el-button class="btn" size="small" @click="handleCopyResult">拷贝</el-button>
   </div>
-  <div class="base64-container">
+  <div class="img-to-base64-container" v-if="type ==='图片转base64'">
     {{resultValue}}
+  </div>
+<!--  data:image/png;base64,-->
+  <div class="base64-to-img-container" v-else>
+    <div class="">
+      <el-input type="textarea" v-model="resultValue" @change="resultValueChange"></el-input>
+    </div>
+    <div class="">
+      <img :src="url" alt="">
+    </div>
   </div>
 </div>
 </template>
@@ -24,7 +42,19 @@ export default {
       file: null,
       resultValue: '',
       fileName: '',
-      fileType: ['image/jpeg', 'image/jpg', 'image/png']
+      type: '图片转base64',
+      url: '',
+      fileType: ['image/jpeg', 'image/jpg', 'image/png'],
+      list: [
+        {
+          label: 'base64转图片',
+          value: 'base64转图片'
+        },
+        {
+          label: '图片转base64',
+          value: '图片转base64'
+        }
+      ]
     };
   },
   props: {},
@@ -33,6 +63,9 @@ export default {
   created () {},
   mounted () {},
   methods: {
+    resultValueChange () {
+      this.url = this.resultValue;
+    },
     /**
      * @Description
      * @author qianyinggenian
@@ -139,7 +172,7 @@ export default {
     letter-spacing: 2px;
     margin-left: 20px;
   }
-  .base64-container {
+  .img-to-base64-container {
     width: 100%;
     margin-top: 10px;
     height: calc(100% - 65px - 10px);
@@ -148,6 +181,32 @@ export default {
     padding: 10px;
     box-sizing: border-box;
     overflow-wrap: break-word; /* 当文本过长时允许换行 */
+  }
+  .base64-to-img-container {
+    width: 100%;
+    margin-top: 10px;
+    height: calc(100% - 65px - 10px);
+    border: 1px solid red;
+    overflow-y: auto;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    > div {
+      flex: 1;
+      flex-shrink: 0;
+
+      :deep(.el-textarea) {
+        height: 100%;
+        .el-textarea__inner {
+          height: 100%;
+        }
+      }
+      margin-right: 10px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
 }
 </style>
