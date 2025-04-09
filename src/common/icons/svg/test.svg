@@ -1,0 +1,13 @@
+<?xml version="1.0" standalone="no"?>
+<svg class="icon" viewBox="0 0 1024 4096" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="800">
+  <!-- 外层翻转 -->
+  <g transform="scale(-1 1) translate(-1024 0)">
+    <!-- 原始变换 -->
+    <g transform="rotate(-90) translate(-4096 0)">
+      <path
+              d="M819.2 0h2457.6a307.2 307.2 0 0 1 307.2 307.2v97.5872c0 245.248 147.2 466.432 373.3504 561.152L4096 1024H0l138.6496-58.0608A608.3584 608.3584 0 0 0 512 404.7872V307.2a307.2 307.2 0 0 1 307.2-307.2z m1536 348.3136L2333.952 307.2 2048"
+              fill="#0DA1C5"
+      />
+    </g>
+  </g>
+</svg>
