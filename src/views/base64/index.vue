@@ -1,6 +1,6 @@
 
 <template>
-<div class="container">
+<div class="container" id="container">
   <div class="tool-box">
     <el-select size="small" filterable v-model="type" placeholder="请选择">
       <el-option
@@ -12,11 +12,13 @@
     </el-select>
     <template v-if="type ==='图片转base64'">
       <input style="display: none" type="file" ref="uploadBtn" accept=".png,.jpeg,.jpg"  @change="onFileChange">
-      <el-button size="small" @click="handleUpload">选择文件</el-button>
+      <el-button class="btn" size="small" @click="handleUpload">选择文件</el-button>
       <span style="margin-left: 10px" v-if="file">已选择的文件：{{file.name}}</span>
     </template>
     <el-button class="btn" size="small" @click="handleDownload">下载</el-button>
     <el-button class="btn" size="small" @click="handleCopyResult">拷贝</el-button>
+
+    <el-button  size="small" @click="exportAsImage">截图</el-button>
   </div>
   <div class="img-to-base64-container" v-if="type ==='图片转base64'">
     {{resultValue}}
@@ -34,6 +36,7 @@
 </template>
 <script>
 import { getStr } from '@/utils/util';
+import html2canvas from 'html2canvas';
 
 export default {
   components: {},
@@ -63,6 +66,21 @@ export default {
   created () {},
   mounted () {},
   methods: {
+
+    exportAsImage () {
+      setTimeout(() => {
+        html2canvas(document.getElementById('container'), {
+          useCORS: true, // 允许跨域资源加载
+          logging: true, // 开启控制台日志（调试用）
+          scale: 1 // 提高清晰度（可调整）
+        }).then(canvas => {
+          const link = document.createElement('a');
+          link.download = 'map.jpg';
+          link.href = canvas.toDataURL();
+          link.click();
+        });
+      }, 500);
+    },
     resultValueChange () {
       this.url = this.resultValue;
     },
