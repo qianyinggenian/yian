@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
     <div class="layout-left" v-if="isShowLeft"
-         :class="isDrag ? '' : (isExpand ? 'expand': 'collapse')"
+         :class="isDrag ? '' : (isExpand ? 'expand layout-left-border': 'collapse')"
          :style="{width: `${customWidth}px`}">
       <div class="layout-left-content">
         <slot name="left"></slot>
@@ -15,7 +15,15 @@
         </div>
       </div>
     </div>
-    <div class="y-resize" title="拖拽" v-if="isShowLeft"/>
+    <div class="y-resize" title="拖拽" v-if="isShowLeft && isExpand"/>
+    <div class="layout-center">
+      <div class="expand-btn"  title="折叠" v-if="isExpand" @click="handleClick('折叠')">
+        <i class="el-icon-d-arrow-left"></i>
+      </div>
+      <div class="expand-btn"  title="展开" v-else @click="handleClick('展开')">
+        <i class="el-icon-d-arrow-right"></i>
+      </div>
+    </div>
     <div class="layout-right"
          :class="rightClass">
       <div class="layout-right-container">
@@ -66,7 +74,7 @@ export default {
     handleClick (flag) {
       this.isExpand = !this.isExpand;
       if (flag === '折叠') {
-        this.customWidth = 50;
+        this.customWidth = 0;
       } else {
         this.customWidth = this.width;
       }
@@ -109,7 +117,8 @@ export default {
                 treeNodeWidth = that.width;
               }
               if (moveLen > that.width) {
-                treeNodeWidth = moveLen - that.width - 50;
+                // treeNodeWidth = moveLen - that.width - 50;
+                treeNodeWidth = moveLen - that.width;
               }
               that.$emit('moveLen', treeNodeWidth);
               // _store.commit('SET_MOVE_LEN', treeNodeWidth);
@@ -137,6 +146,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+$color: #51D1FF;
 .layout {
   width: 100%;
   height: 100%;
@@ -156,10 +166,7 @@ export default {
     border-radius: 0 0 0 0;
     opacity: 1;
     box-sizing: border-box;
-    border-top: 1px solid #51D1FF;
-    border-left: 1px solid #51D1FF;
-    border-bottom: 1px solid #51D1FF;
-
+    position: relative;
     .layout-left-content {
       height: calc(100% - 43px);
       width: 100%;
@@ -184,11 +191,61 @@ export default {
       }
     }
   }
-
+  .layout-left-border {
+    border-top: 1px solid $color;
+    border-left: 1px solid $color;
+    border-bottom: 1px solid $color;
+  }
+  .layout-center {
+    height: 100%;
+    display: flex;
+    width: 20px;
+    align-items: center;
+    justify-content: center;
+    .expand-btn {
+      height: 100px;
+      width: 20px;
+      cursor: pointer;
+      background: $color;
+      position: relative;
+      border-top-right-radius: 11px;
+      border-bottom-right-radius: 11px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      i {
+        font-size: 16px;
+      }
+      &::before,&::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+      }
+      &::before {
+        top: -20px;
+        right: 0;
+        background: radial-gradient(
+                circle at 100% 0%,
+                transparent 21px,
+                $color 23px
+        );
+      }
+      &::after {
+        bottom: -20px;
+        right: 0;
+        background: radial-gradient(
+                circle at 100% 100%,
+                transparent 21px,
+                $color 23px
+        );
+      }
+    }
+  }
   .y-resize {
     width: 2px;
     height: 100%;
-    background: #51D1FF;
+    background: $color;
     cursor: w-resize;
   }
 
@@ -213,6 +270,7 @@ export default {
         box-shadow: inset 0 1px 12px 0 rgba(3, 251, 255, 0.3);
         border: 1px solid rgba(81, 209, 255, 0.7);
         background-color: #0a1a34;
+        border-radius: 8px;
 
         > div {
           height: 100%;
@@ -240,7 +298,7 @@ export default {
 
   .collapse-right {
     transition: all 0.5s;
-    width: calc(100% - 50px - 3px) !important;
+    width: calc(100% - 3px) !important;
   }
 
   .just-right {
