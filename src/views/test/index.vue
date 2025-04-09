@@ -85,6 +85,8 @@
       <button disabled class="btn type-4">按钮</button>
       <button  class="btn type-5">按钮</button>
     </div>
+
+    <div class="nav-btn"></div>
   </div>
 </template>
 
@@ -367,6 +369,38 @@ $btnColors: #409eff, #b03ac2,#8b590f,#f54343,#6c6d71;
       border: 1px solid lighten($color,20%);
       color: #fff;
     }
+  }
+}
+.nav-btn {
+  height: 100px;
+  width: 20px;
+  background: #409eff;
+  position: relative;
+  border-top-right-radius: 11px;
+  border-bottom-right-radius: 11px;
+  &::before,&::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+  }
+  &::before {
+    top: -20px;
+    right: 0;
+    background: radial-gradient(
+      circle at 100% 0%,
+      transparent 21px,
+            #409eff 23px
+    );
+  }
+  &::after {
+    bottom: -20px;
+    right: 0;
+    background: radial-gradient(
+      circle at 100% 100%,
+      transparent 21px,
+            #409eff 23px
+    );
   }
 }
 </style>
