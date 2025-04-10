@@ -104,22 +104,51 @@ export default {
         {
           url: 'http://www.xbiquzw.com',
           value: '书库1',
-          label: '书库1'
+          label: '书库1',
+          titleInfo: {
+            info: '.grid tbody > tr',
+            title: 'td:nth-child(1)',
+            author: 'td:nth-child(3)',
+            path: 'td:nth-child(1)'
+          },
+          chapterInfo: ''
         },
         {
           url: 'https://www.biqusk.com/',
           value: '书库2',
-          label: '书库2'
+          label: '书库2',
+          titleInfo: {
+            info: '.grid tbody > tr',
+            title: 'td:nth-child(1)',
+            author: 'td:nth-child(3)',
+            path: 'td:nth-child(1)'
+          },
+          chapterInfo: ''
         },
         {
           url: 'https://www.douyinxs.com/',
           value: '书库3',
-          label: '书库3'
+          label: '书库3',
+          titleInfo: {
+            info: 'ul li',
+            title: '.s2 a',
+            author: '.s4',
+            path: '.s2 a',
+            isFirst: true
+          },
+          chapterInfo: ''
         },
         {
           url: 'http://www.ujxsw.net',
           value: '书库4',
-          label: '书库4'
+          label: '书库4',
+          titleInfo: {
+            info: '.shulist ul',
+            title: 'li.three a:first',
+            author: 'li.four a',
+            path: 'li.three a:first'
+          },
+          chapterInfo: ''
         }
       ],
       listBtns: []
@@ -197,6 +226,7 @@ export default {
           searchkey: this.searchValue
         };
       }
+      const titleInfo = this.websiteList.find(item => item.value === this.websiteValue).titleInfo;
       axios({
         method: method,
         url: url,
@@ -207,64 +237,29 @@ export default {
           const result = [];
           const res = response.data;
           const $ = cheerio.load(res);
-          if (this.websiteValue === '书库3') {
-            // 获取 ul 下的所有 li 标签
-            $('ul li').each((index, element) => {
-              // 忽略第一个 li 标签（表头）
-              if (index === 0) return;
-
-              // 提取目标内容
-              const title = $(element).find('.s2 a').text().trim();
-              const author = $(element).find('.s4').text().trim();
-              const path = $(element).find('.s2 a').attr('href');
-
-              if (title && author) {
-                result.push({
-                  type: 'root',
-                  label: `${title} - ${author}`,
-                  children: [],
-                  id: `${title} - ${author}-1`,
-                  isDirectory: true,
-                  path
-                });
-              }
-            });
-          } else if (['书库1', '书库2'].includes(this.websiteValue)) {
-            $('.grid tbody > tr').each(function (i, elem) {
-              const title = $(elem).find('td:nth-child(1)').text();
-              const author = $(elem).find('td:nth-child(3)').text();
-              const path = $(elem).find('td:nth-child(1)').find('a').attr('href');
-              if (title && author) {
-                result.push({
-                  type: 'root',
-                  label: `${title} - ${author}`,
-                  children: [],
-                  id: `${title} - ${author}-1`,
-                  isDirectory: true,
-                  path
-                });
-              }
-            });
-          } else if (this.websiteValue === '书库4') {
-            $('.shulist ul').each(function (i, elem) {
-              const titleElement = $(elem).find('li.three a');
-              const authorElement = $(elem).find('li.four a');
-
-              const title = titleElement.text().trim(); // 获取书名
-              const author = authorElement.text().trim(); // 获取作者名
-              const path = titleElement.attr('href'); // 获取书籍链接
-              if (title && author) {
-                result.push({
-                  type: 'root',
-                  label: `${title} - ${author}`,
-                  children: [],
-                  id: `${title} - ${author}-1`,
-                  isDirectory: true,
-                  path: path.replace('book', 'read')
-                });
-              }
-            });
-          }
+          const { info, title: tempTitle, author: tempAuthor } = titleInfo;
+          const that = this;
+          $(`${info}`).each(function (i, elem) {
+            // 忽略第一个 li 标签（表头）
+            if (i === 0 && titleInfo.isFirst) return;
+            const titleElement = $(elem).find(`${tempTitle}`);
+            const title = titleElement.text().trim();
+            const author = $(elem).find(`${tempAuthor}`).text().trim();
+            let path = titleElement.attr('href');
+            if (that.websiteValue === '书库4') {
+              path = path.replace('book', 'read');
+            }
+            if (title && author) {
+              result.push({
+                type: 'root',
+                label: `${title} - ${author}`,
+                children: [],
+                id: `${title} - ${author}-${i}`,
+                isDirectory: true,
+                path: path
+              });
+            }
+          });
           this.treeData = result;
           this.loading = false;
           console.log('result', result);
