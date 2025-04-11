@@ -197,6 +197,11 @@ export default {
       const res = this.websiteList.find(item => item.value === val);
       if (res) {
         this.websiteUrl = res.url;
+        // if (this.websiteUrl.includes('https://')) {
+        //   axios.defaults.withCredentials = true;
+        // } else {
+        //   axios.defaults.withCredentials = false;
+        // }
       }
     },
     resetValue () {
@@ -238,46 +243,51 @@ export default {
         };
       }
       const titleInfo = this.websiteList.find(item => item.value === this.websiteValue).titleInfo;
-      axios({
-        method: method,
-        url: url,
-        data: method === 'post' ? params : null, // POST 请求传递 data
-        params: method === 'get' ? params : null // GET 请求传递 params
-      })
-        .then(response => {
-          const result = [];
-          const res = response.data;
-          const $ = cheerio.load(res);
-          const { info, title: tempTitle, author: tempAuthor } = titleInfo;
-          const that = this;
-          $(`${info}`).each(function (i, elem) {
-            // 忽略第一个 li 标签（表头）
-            if (i === 0 && titleInfo.isFirst) return;
-            const titleElement = $(elem).find(`${tempTitle}`);
-            const title = titleElement.text().trim();
-            const author = $(elem).find(`${tempAuthor}`).text().trim();
-            let path = titleElement.attr('href');
-            if (that.websiteValue === '书库4') {
-              path = path.replace('book', 'read');
-            }
-            if (title && author) {
-              result.push({
-                type: 'root',
-                label: `${title} - ${author}`,
-                children: [],
-                id: `${title} - ${author}-${i}`,
-                isDirectory: true,
-                path: path
-              });
-            }
-          });
-          this.treeData = result;
-          this.loading = false;
-          console.log('result', result);
+      try {
+        axios({
+          method: method,
+          url: url,
+          data: method === 'post' ? params : null, // POST 请求传递 data
+          params: method === 'get' ? params : null // GET 请求传递 params
         })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+          .then(response => {
+            console.log('response', response);
+            const result = [];
+            const res = response.data;
+            const $ = cheerio.load(res);
+            const { info, title: tempTitle, author: tempAuthor } = titleInfo;
+            const that = this;
+            $(`${info}`).each(function (i, elem) {
+              // 忽略第一个 li 标签（表头）
+              if (i === 0 && titleInfo.isFirst) return;
+              const titleElement = $(elem).find(`${tempTitle}`);
+              const title = titleElement.text().trim();
+              const author = $(elem).find(`${tempAuthor}`).text().trim();
+              let path = titleElement.attr('href');
+              if (that.websiteValue === '书库4') {
+                path = path.replace('book', 'read');
+              }
+              if (title && author) {
+                result.push({
+                  type: 'root',
+                  label: `${title} - ${author}`,
+                  children: [],
+                  id: `${title} - ${author}-${i}`,
+                  isDirectory: true,
+                  path: path
+                });
+              }
+            });
+            this.treeData = result;
+            this.loading = false;
+            console.log('result', result);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      } catch (error) {
+        console.error('Error:', error);
+      }
     },
     /**
      * @Description 获取章节列表
@@ -321,38 +331,6 @@ export default {
             parentId: treeNode.id
           });
         });
-        // if (['书库1', '书库2', '书库3'].includes(this.websiteValue)) {
-        //   $('#list dd').each((i, elem) => {
-        //     const label = $(elem).find('a').text();
-        //     const path = $(elem).find('a').attr().href;
-        //     result.push({
-        //       type: 'biqusk',
-        //       label,
-        //       isDirectory: false,
-        //       // path: pathStr + path
-        //       path: ['书库2', '书库3'].includes(this.websiteValue) ? path : pathStr + path,
-        //       id: `${treeNode.id}-${label}`,
-        //       parentId: treeNode.id
-        //     });
-        //   });
-        // } else {
-        //   $('#readerlist ul li').each((index, elem) => {
-        //     // 忽略第一个 li 标签（表头）
-        //     if (index === 0) return;
-        //     const titleElement = $(elem).find('li a');
-        //     const label = titleElement.text().trim(); // 获取书名
-        //     const path = titleElement.attr('href'); // 获取书籍链接
-        //     result.push({
-        //       type: 'ujxsw',
-        //       label,
-        //       isDirectory: false,
-        //       // path: pathStr + path
-        //       path: path,
-        //       id: `${treeNode.id}-${label}-${index}`,
-        //       parentId: treeNode.id
-        //     });
-        //   });
-        // }
         treeNode.children = result;
         this.currentChildren = result;
         if (result && result.length > 0) {
