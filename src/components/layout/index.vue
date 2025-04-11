@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="y-resize" title="拖拽" v-if="isShowLeft && isExpand"/>
-    <div class="layout-center">
+    <div class="layout-center" v-if="isShowLeft">
       <div class="expand-btn"  title="折叠" v-if="isExpand" @click="handleClick('折叠')">
         <i class="el-icon-d-arrow-left"></i>
       </div>
@@ -112,6 +112,7 @@ export default {
               if (moveLen > that.width * 2) moveLen = that.width * 2; // right最小宽度度为512px
 
               resize[i].style.left = moveLen; // 设置left区域的宽度
+              that.customWidth = moveLen;
               let treeNodeWidth = 0;
               if (treeNodeWidth < 0) {
                 treeNodeWidth = that.width;
