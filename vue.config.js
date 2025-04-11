@@ -1,4 +1,6 @@
 'use strict';
+require('events').EventEmitter.defaultMaxListeners = 0;
+
 const path = require('path');
 
 // const webpack = require('webpack');
@@ -33,34 +35,32 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: { '^/api2': '' }
       },
-      // 第二个代理
-      '/api3': {
-        target: 'https://www.biqusk.com/s.php', // 代理的目标地址
-        changeOrigin: true,
-        pathRewrite: { '^/api3': '' }
-      },
       // 必去书库
       '/biqusk': {
         target: 'https://www.biqusk.com', // 代理的目标地址
         changeOrigin: true,
+        // secure: true, // 如果目标服务器使用 HTTPS，则需要设置为 true
         pathRewrite: { '^/biqusk': '' }
       },
       // 笔趣阁
       '/biquge': {
         target: 'http://www.xbiquzw.com', // 代理的目标地址
         changeOrigin: true,
+        // secure: false, // 如果目标服务器使用 HTTPS，则需要设置为 true
         pathRewrite: { '^/biquge': '' }
       },
       // 笔趣阁
       '/douyinxs': {
         target: 'https://www.douyinxs.com/', // 代理的目标地址
         changeOrigin: true,
+        // secure: true, // 如果目标服务器使用 HTTPS，则需要设置为 true
         pathRewrite: { '^/douyinxs': '' }
       },
       // 笔趣阁
       '/ujxsw': {
         target: 'http://www.ujxsw.net', // 代理的目标地址
         changeOrigin: true,
+        // secure: false, // 如果目标服务器使用 HTTPS，则需要设置为 true
         pathRewrite: { '^/ujxsw': '' }
       }
     }
