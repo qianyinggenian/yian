@@ -2,6 +2,8 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import login from '../views/login';
 import layout from '../views/layout';
+import novel from '../views/novel/index2.vue';
+import novel3 from '../views/novel/index.vue';
 import errorView from '../views/404';
 import { config } from '@/router/config';
 import home from '@/views/home/index.vue';
@@ -33,6 +35,22 @@ const routes = [
     component: login,
     meta: {
       title: '登录'
+    }
+  },
+  {
+    path: '/novel2',
+    name: 'novel',
+    component: novel,
+    meta: {
+      title: 'novel'
+    }
+  },
+  {
+    path: '/novel3',
+    name: 'novel3',
+    component: novel3,
+    meta: {
+      title: 'novel3'
     }
   },
   {

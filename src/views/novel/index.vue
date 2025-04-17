@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="item">
-        <el-button size="small" type="primary" @click="handleDownloadFile">下载txt</el-button>
+<!--        <el-button size="small" type="primary" @click="handleDownloadFile">下载txt</el-button>-->
       </div>
     </div>
     <div  class="content">
@@ -519,6 +519,7 @@ export default {
     }
     .right {
       height: 100%;
+      color: #ffffff;
       .top-box {
         height: 32px;
         display: flex;
