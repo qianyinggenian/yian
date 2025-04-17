@@ -204,14 +204,6 @@ export const config = [
     }
   },
   {
-    path: '/testTabs',
-    name: 'testTabs',
-    component: () => import('@/views/testTabs/index.vue'),
-    meta: {
-      title: 'testTabs'
-    }
-  },
-  {
     path: '/mapTest',
     name: 'mapTest',
     component: () => import('@/views/mapTest/index.vue'),
