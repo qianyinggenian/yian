@@ -166,6 +166,23 @@ export default {
             path: 'li a',
             isFirst: true
           }
+        },
+        {
+          url: 'https://www.qimao.com',
+          value: '书库5',
+          label: '书库5',
+          titleInfo: {
+            info: 'ul.qm-pic-txt > li',
+            title: '.s-tit a',
+            author: '.p-bottom .s-txt em:contains("作") + a',
+            path: '.pic a'
+          },
+          chapterInfo: {
+            info: 'book-detail-content>.qm-book-catalog-list-content',
+            title: 'li a',
+            path: 'li a',
+            isFirst: true
+          }
         }
       ],
       listBtns: []
@@ -241,6 +258,12 @@ export default {
         params = {
           searchkey: this.searchValue
         };
+      } else if (this.websiteValue === '书库5') {
+        // method = 'post';
+        url = '/qimao/search/index/';
+        params = {
+          keyword: this.searchValue
+        };
       }
       const titleInfo = this.websiteList.find(item => item.value === this.websiteValue).titleInfo;
       try {
@@ -255,15 +278,16 @@ export default {
             const result = [];
             const res = response.data;
             const $ = cheerio.load(res);
-            const { info, title: tempTitle, author: tempAuthor } = titleInfo;
+            const { info, title: tempTitle, author: tempAuthor, path: pt } = titleInfo;
             const that = this;
             $(`${info}`).each(function (i, elem) {
               // 忽略第一个 li 标签（表头）
               if (i === 0 && titleInfo.isFirst) return;
               const titleElement = $(elem).find(`${tempTitle}`);
+              const pathElement = $(elem).find(`${pt}`);
               const title = titleElement.text().trim();
               const author = $(elem).find(`${tempAuthor}`).text().trim();
-              let path = titleElement.attr('href');
+              let path = pathElement.attr('href');
               if (that.websiteValue === '书库4') {
                 path = path.replace('book', 'read');
               }
@@ -305,6 +329,8 @@ export default {
         url = `/douyinxs${pathStr}`;
       } else if (this.websiteValue === '书库4') {
         url = `/ujxsw${pathStr}`;
+      } else if (this.websiteValue === '书库5') {
+        url = `/qimao${pathStr}`;
       }
       this.loading = true;
       await axios.get(url).then(async (response) => {
@@ -313,14 +339,17 @@ export default {
         const res = response.data;
         const $ = cheerio.load(res);
         const chapterInfo = this.websiteList.find(item => item.value === this.websiteValue).chapterInfo;
-        const { info, title: tempTitle } = chapterInfo;
+        const { info, title: tempTitle, path: pt } = chapterInfo;
         const that = this;
+        console.log($(`${info}`));
         $(`${info}`).each((index, elem) => {
+          console.log('elem', elem);
           // 忽略第一个 li 标签（表头）
           if (index === 0 && chapterInfo.isFirst) return;
           const titleElement = $(elem).find(`${tempTitle}`);
+          const pathElement = $(elem).find(`${pt}`);
           const label = titleElement.text().trim(); // 获取书名
-          const path = titleElement.attr('href'); // 获取书籍链接
+          const path = pathElement.attr('href'); // 获取书籍链接
           result.push({
             type: 'chapter',
             label,

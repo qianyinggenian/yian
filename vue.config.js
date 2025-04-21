@@ -62,6 +62,13 @@ module.exports = {
         changeOrigin: true,
         // secure: false, // 如果目标服务器使用 HTTPS，则需要设置为 true
         pathRewrite: { '^/ujxsw': '' }
+      },
+      // 七猫
+      '/qimao': {
+        target: 'https://www.qimao.com', // 代理的目标地址
+        changeOrigin: true,
+        // secure: false, // 如果目标服务器使用 HTTPS，则需要设置为 true
+        pathRewrite: { '^/qimao': '' }
       }
     }
   },
