@@ -39,6 +39,8 @@
     "vue-router": "3.2.0",
     "vuex": "3.4.0",
     "watermark-dom": "^2.3.0",
+    "web-ifc": "0.0.36",
+    "web-ifc-three": "0.0.126",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

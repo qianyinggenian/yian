@@ -97,8 +97,8 @@ export default {
       filename: '',
       textContent: '',
       htmlContent: '',
-      searchValue: '',
-      websiteValue: '书库4',
+      searchValue: '贪财萌宝俏娘亲',
+      websiteValue: '书库5',
       websiteUrl: 'http://www.ujxsw.net',
       websiteList: [
         {
@@ -168,20 +168,20 @@ export default {
           }
         },
         {
-          url: 'https://www.qimao.com',
+          url: 'https://www.luoxiaxiaoshuo.com/',
           value: '书库5',
           label: '书库5',
           titleInfo: {
-            info: 'ul.qm-pic-txt > li',
-            title: '.s-tit a',
-            author: '.p-bottom .s-txt em:contains("作") + a',
-            path: '.pic a'
+            info: '.book-coverlist',
+            title: 'h4 a',
+            author: 'h4 a',
+            path: 'a.thumbnail'
           },
           chapterInfo: {
-            info: 'book-detail-content>.qm-book-catalog-list-content',
-            title: 'li a',
-            path: 'li a',
-            isFirst: true
+            info: '#newlist.panel-chapterlist dd',
+            title: 'a',
+            path: 'a',
+            isFirst: false
           }
         }
       ],
@@ -260,9 +260,9 @@ export default {
         };
       } else if (this.websiteValue === '书库5') {
         // method = 'post';
-        url = '/qimao/search/index/';
+        url = '/luoxiaxiaoshuo/search/';
         params = {
-          keyword: this.searchValue
+          searchkey: this.searchValue
         };
       }
       const titleInfo = this.websiteList.find(item => item.value === this.websiteValue).titleInfo;
@@ -330,7 +330,7 @@ export default {
       } else if (this.websiteValue === '书库4') {
         url = `/ujxsw${pathStr}`;
       } else if (this.websiteValue === '书库5') {
-        url = `/qimao${pathStr}`;
+        url = `/luoxiaxiaoshuo${pathStr}`;
       }
       this.loading = true;
       await axios.get(url).then(async (response) => {
@@ -394,6 +394,8 @@ export default {
         url = `/douyinxs${pathStr}`;
       } else if (this.websiteValue === '书库4') {
         url = `/ujxsw${pathStr}`;
+      } else if (this.websiteValue === '书库5') {
+        url = `/luoxiaxiaoshuo${pathStr}`;
       }
       const t = new Date().getTime();
       axios.get(`${url}?t=${t}`).then(response => {
@@ -407,6 +409,8 @@ export default {
           } else if (this.websiteValue === '书库4') {
             // html = $('.read-content p').first().text().trim();
             html = $('.read-content');
+          } else if (this.websiteValue === '书库5') {
+            html = $('#booktxt');
           }
           this.htmlContent = html || '';
           this.$nextTick(() => {
@@ -420,8 +424,10 @@ export default {
           let page;
           if (['书库1', '书库2', '书库3'].includes(this.websiteValue)) {
             page = '.bottem2 a';
-          } else {
+          } else if (this.websiteValue === '书库4') {
             page = '.mlfy_page a';
+          } else if (this.websiteValue === '书库5') {
+            page = '.readPager a';
           }
           // 遍历所有 a 标签
           $(`${page}`).each((index, element) => {

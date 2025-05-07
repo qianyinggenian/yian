@@ -8934,6 +8934,11 @@ thread-loader@^3.0.0:
     neo-async "^2.6.2"
     schema-utils "^3.0.0"
 
+three-mesh-bvh@0.5.21:
+  version "0.5.21"
+  resolved "http://192.1.80.40:8081/repository/npm_group/three-mesh-bvh/-/three-mesh-bvh-0.5.21.tgz#e08f5f3052d624cce36d0975692949c02359832f"
+  integrity sha512-TGXPk7YwtlU5rgQJYA25OT6yAdBMeekfC4BTkGNtTWA5glb2rmEpjxvhZncRQSl73QZir2LFOQT0FjfzgG55xw==
+
 three@0.130.1:
   version "0.130.1"
   resolved "http://192.1.80.40:8081/repository/npm_group/three/-/three-0.130.1.tgz#797588b2877ace31603bbbc864eb2e3022f0b3b4"
@@ -9473,6 +9478,24 @@ wcwidth@^1.0.1:
   integrity sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==
   dependencies:
     defaults "^1.0.3"
+
+web-ifc-three@0.0.126:
+  version "0.0.126"
+  resolved "http://192.1.80.40:8081/repository/npm_group/web-ifc-three/-/web-ifc-three-0.0.126.tgz#407ca578ac0064897515fe805927ebe56f15c72b"
+  integrity sha512-P2/jcuSZvpLnGiLcd1H+8N01oWuyIjmU5zUy/rzx8HTrbJn7FCE6uC4SFJyYvmxwN6+uFCRmEvzHkfHrdJzpcQ==
+  dependencies:
+    three-mesh-bvh "0.5.21"
+    web-ifc "^0.0.39"
+
+web-ifc@0.0.36:
+  version "0.0.36"
+  resolved "http://192.1.80.40:8081/repository/npm_group/web-ifc/-/web-ifc-0.0.36.tgz#205de7d3ad74916bf837bf72bdf76e18d9712571"
+  integrity sha512-1C3h8Qf7TpEByJTpTt/yzZbnAuByH0hEEfOiVQho83Y6lKNCDWe/0cKObExZMAi2XMDIiES6cYL43PsQ3rHo2A==
+
+web-ifc@^0.0.39:
+  version "0.0.39"
+  resolved "http://192.1.80.40:8081/repository/npm_group/web-ifc/-/web-ifc-0.0.39.tgz#c3c7e9b16aad79f8ad78e346671cb5b854480737"
+  integrity sha512-sg+DyxDiyXBqlXXbz+uSqw8IGX+mVvHmn2+hg6UXDvAcrzJJw8EI2H4ZzlxWxCqqdpGVeK0wCpdeQm43UCDbrA==
 
 webidl-conversions@^3.0.0:
   version "3.0.1"

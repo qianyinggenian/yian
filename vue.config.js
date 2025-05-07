@@ -69,6 +69,13 @@ module.exports = {
         changeOrigin: true,
         // secure: false, // 如果目标服务器使用 HTTPS，则需要设置为 true
         pathRewrite: { '^/qimao': '' }
+      },
+      // 落霞
+      '/luoxiaxiaoshuo': {
+        target: 'https://www.luoxiaxiaoshuo.com', // 代理的目标地址
+        changeOrigin: true,
+        // secure: false, // 如果目标服务器使用 HTTPS，则需要设置为 true
+        pathRewrite: { '^/luoxiaxiaoshuo': '' }
       }
     }
   },
