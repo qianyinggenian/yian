@@ -151,7 +151,7 @@ export default {
           }
         },
         {
-          url: 'http://www.ujxsw.net',
+          url: 'http://www.ujxsw.org',
           value: '书库4',
           label: '书库4',
           titleInfo: {

@@ -58,7 +58,7 @@ module.exports = {
       },
       // 笔趣阁
       '/ujxsw': {
-        target: 'http://www.ujxsw.net', // 代理的目标地址
+        target: 'http://www.ujxsw.org', // 代理的目标地址
         changeOrigin: true,
         // secure: false, // 如果目标服务器使用 HTTPS，则需要设置为 true
         pathRewrite: { '^/ujxsw': '' }
