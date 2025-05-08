@@ -97,7 +97,7 @@ export default {
       filename: '',
       textContent: '',
       htmlContent: '',
-      searchValue: '贪财萌宝俏娘亲',
+      searchValue: '',
       websiteValue: '书库5',
       websiteUrl: 'http://www.ujxsw.net',
       websiteList: [
