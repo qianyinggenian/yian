@@ -2,7 +2,13 @@
   <div class="header-container">
     <div class="system-info">
       <div class="logo">
-        <el-avatar title="图像来源抖音号：lj771056898" fit="contain" :src="logoUrl"></el-avatar>
+        <el-avatar >
+          <el-image
+              :src="logoUrl"
+              fit="contain"
+              :preview-src-list="[logoUrl]"
+          ></el-image>
+        </el-avatar>
       </div>
       <div class="system-name">{{ systemName }}</div>
     </div>
@@ -192,6 +198,11 @@ export default {
 
     .svg-icon {
       cursor: pointer;
+    }
+  }
+  .logo {
+    ::v-deep .el-avatar > img {
+      width: 100%;
     }
   }
 }
