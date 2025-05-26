@@ -15,28 +15,36 @@
           :class="menuClass"
           :default-active="activeIndex"
           mode="horizontal"
-          unique-opened
-          menu-trigger="hover"
           @select="handleSelect"
       >
-        <!-- 使用 MenuNode 组件渲染菜单项 -->
-        <template  v-for="item in menuItems">
-          <el-menu-item class="first-menu" :index="item.id" :key="item.id"  v-if="!item.children || (item.children && item.children.length <= 0)">
-            <span >
-              {{item.name }}
-            </span>
+        <template v-for="item in menuItems">
+          <!-- 菜单项 -->
+          <el-menu-item
+              v-if="!item.children"
+              :key="item.index"
+              :index="item.index"
+          >
+            {{ item.label }}
           </el-menu-item>
-          <el-submenu :index="item.id" class="first-submenu-menu" popper-class="custom-menu-popper" :key="`1-${item.id}`" v-else>
-            <template v-slot:title>
-              {{ item.name }}
+
+          <!-- 子菜单 -->
+          <el-submenu
+              v-else
+              :key="item.index"
+              :index="item.index"
+          >
+            <template #title>
+              {{ item.label }}
             </template>
-            <MenuNode
-                :activeIndex="activeIndex"
-                :is-nest="true"
-                customClass="second-menu"
-                :routes="item.children"
-                class="nest-menu"
-            ></MenuNode>
+            <el-menu-item-group>
+              <el-menu-item
+                  v-for="subItem in item.children"
+                  :key="subItem.index"
+                  :index="subItem.index"
+              >
+                {{ subItem.label }}
+              </el-menu-item>
+            </el-menu-item-group>
           </el-submenu>
         </template>
       </el-menu>
@@ -54,13 +62,8 @@
 </template>
 
 <script>
-import MenuNode from './MenuNode.vue';
-
 export default {
   name: 'ScrollableElMenu',
-  components: {
-    MenuNode
-  },
   props: {
     menuItems: {
       type: Array,
@@ -87,8 +90,7 @@ export default {
     return {
       scrollPosition: 0,
       maxScroll: 0,
-      buttonWidth: 32,
-      expandedSubmenu: null
+      buttonWidth: 32 // 按钮宽度，用于计算可视区域
     };
   },
   computed: {
@@ -108,15 +110,13 @@ export default {
       this.updateScrollState();
       window.addEventListener('resize', this.handleResize);
 
-      // 监听子菜单展开/收起事件
-      this.$el.addEventListener('mouseenter', this.onMenuHover);
-      this.$el.addEventListener('mouseleave', this.onMenuLeave);
+      // 监听子菜单展开/收起事件，更新滚动状态
+      document.addEventListener('click', this.onDocumentClick);
     });
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.handleResize);
-    this.$el.removeEventListener('mouseenter', this.onMenuHover);
-    this.$el.removeEventListener('mouseleave', this.onMenuLeave);
+    document.removeEventListener('click', this.onDocumentClick);
   },
   watch: {
     menuItems: {
@@ -143,9 +143,13 @@ export default {
         return;
       }
 
-      // 计算最大滚动距离
+      // 计算最后一个菜单项的右边界
       const lastItemRight = lastItem.offsetLeft + lastItem.offsetWidth;
+
+      // 计算可视区域宽度（减去按钮可能遮挡的部分）
       const effectiveVisibleWidth = this.visibleWidth - this.buttonWidth;
+
+      // 计算最大滚动距离，确保最后一个菜单项完全可见
       this.maxScroll = Math.max(0, lastItemRight - effectiveVisibleWidth);
 
       // 确保当前滚动位置不超过最大滚动距离
@@ -161,6 +165,7 @@ export default {
       this.smoothScrollTo(menuWrapper, this.scrollPosition);
     },
     smoothScrollTo (element, target) {
+      // 平滑滚动函数
       const start = element.scrollLeft;
       const distance = target - start;
       const duration = this.animationDuration;
@@ -186,10 +191,12 @@ export default {
       requestAnimationFrame(animateScroll);
     },
     scrollLeft () {
+      // 向左滚动一步
       this.scrollPosition = Math.max(0, this.scrollPosition - this.scrollStep);
       this.applyScrollPosition();
     },
     scrollRight () {
+      // 向右滚动一步，确保最后一项完全可见
       const menuWrapper = this.$refs.menuWrapper;
       const menuEl = menuWrapper.querySelector('.el-menu');
       const visibleWidth = this.visibleWidth;
@@ -212,6 +219,7 @@ export default {
         const targetScroll = nextItem.offsetLeft - (visibleWidth - nextItem.offsetWidth);
         this.scrollPosition = Math.min(this.maxScroll, targetScroll);
       } else {
+        // 如果没有找到，使用默认步长
         this.scrollPosition = Math.min(
           this.maxScroll,
           this.scrollPosition + this.scrollStep
@@ -226,23 +234,17 @@ export default {
     handleSelect (index, indexPath) {
       this.$emit('select', index, indexPath);
     },
-    onMenuHover (event) {
-      const submenuEl = event.target.closest('.el-submenu');
-      if (submenuEl) {
-        this.expandedSubmenu = submenuEl;
-        this.$nextTick(() => this.updateScrollState());
-      }
-    },
-    onMenuLeave () {
-      this.expandedSubmenu = null;
-      this.$nextTick(() => this.updateScrollState());
+    onDocumentClick () {
+      // 处理子菜单展开/收起事件，更新滚动状态
+      this.$nextTick(() => {
+        this.updateScrollState();
+      });
     }
   }
 };
 </script>
 
-<style scoped lang="scss">
-$color-white: #fff;
+<style scoped>
 .scrollable-menu-container {
   display: flex;
   align-items: center;
@@ -253,69 +255,10 @@ $color-white: #fff;
 .menu-wrapper {
   flex: 1;
   overflow: hidden;
-  //margin: 0 8px;
+  margin: 0 8px;
   white-space: nowrap;
+}
 
-}
-$border-radius: 4px;
-$menu-height: 48px;
-.first-menu {
-
-  margin-right:10px;
-  font-size: 18px;
-  height: $menu-height !important;
-  line-height: $menu-height !important;
-  border-radius: $border-radius;
-  &:hover {
-    border-radius: $border-radius;
-    background: #0051FF !important;
-    color: $color-white !important;
-    font-weight: bold !important;
-  }
-  &.is-active {
-    background: #0051FF !important;
-    color: $color-white !important;
-    font-weight: bold !important;
-  }
-}
-.first-submenu-menu {
-  margin-right:10px;
-  &:last-child {
-    margin-right: 0;
-  }
-  ::v-deep .el-submenu__title {
-    border-radius:$border-radius;
-    font-size: 18px;
-    height: $menu-height !important;
-    line-height: $menu-height !important;
-    &:hover {
-      border-radius: $border-radius;
-      background: #0051FF;
-      color: $color-white !important;
-      font-weight: bold !important;
-      i {
-        color: $color-white !important;
-        font-weight: bold !important;
-      }
-    }
-  }
-  &.el-submenu.is-active ::v-deep  .el-submenu__title {
-    background: #0051FF !important;
-    color: $color-white !important;
-    font-weight: bold !important;
-    border-bottom-color: transparent !important;
-    i {
-      color: $color-white !important;
-      font-weight: bold !important;
-    }
-  }
-}
-.el-menu.el-menu--horizontal {
-  border-bottom: 0;
-}
-li:not(:nth-last-of-type(1)):before {
-  border-bottom: 0 !important;
-}
 .scroll-btn {
   background-color: transparent;
   border: none;
@@ -324,7 +267,7 @@ li:not(:nth-last-of-type(1)):before {
   padding: 8px;
   z-index: 10;
   transition: color 0.2s;
-  min-width: 32px;
+  min-width: 32px; /* 设置按钮最小宽度，用于计算 */
 }
 
 .scroll-btn:hover {
@@ -347,59 +290,5 @@ li:not(:nth-last-of-type(1)):before {
 /* 调整下拉菜单样式 */
 .el-submenu .el-menu {
   min-width: 100%;
-}
-
-/* 确保多级子菜单正确定位 */
-.el-submenu .el-submenu__popper {
-  //left: 100% !important;
-  //top: 0 !important;
-  //margin-left: -1px;
-}
-</style>
-<style lang="scss">
-$bgColor: rgba(0, 81, 255, 0.2);
-.custom-menu-popper {
-  li+li{
-    margin-top: 5px;
-  }
-  li {
-
-    height: 48px !important;
-    line-height: 48px !important;
-    font-size: 20px !important;
-    >.el-submenu__title {
-      height: 48px !important;
-      line-height: 48px !important;
-      font-size: 20px !important;
-    }
-  }
-  .el-menu-item.is-active {
-    background: $bgColor !important;
-    color: #0051FF !important;
-  }
-  .el-submenu.is-active {
-    >.el-submenu__title {
-      background: $bgColor !important;
-      color: #0051FF !important;
-    }
-  }
-  .el-menu-item.second-menu,.el-submenu.second-menu {
-    height: 48px !important;
-    line-height: 48px !important;
-  }
-  .el-menu-item {
-    &:hover {
-      background: $bgColor !important;
-    }
-  }
-  .el-submenu.second-menu {
-    >.el-submenu__title {
-      height: 48px !important;
-      line-height: 48px !important;
-      &:hover {
-        background: $bgColor !important;
-      }
-    }
-  }
 }
 </style>
