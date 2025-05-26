@@ -50,7 +50,6 @@ export default {
   methods: {
     handleMenuSelect (index) {
       this.activeIndex = index;
-      // 处理菜单选择逻辑
     }
   }
 };

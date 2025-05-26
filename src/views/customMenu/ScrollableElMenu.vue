@@ -110,7 +110,7 @@ export default {
       const menuEl = menuWrapper.querySelector('.el-menu');
       if (!menuEl) return;
 
-      // 获取最后一个菜单项
+      // 获取最后一个菜单项22
       const lastItem = menuEl.lastElementChild;
       if (!lastItem) {
         this.maxScroll = 0;
