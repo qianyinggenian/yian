@@ -234,5 +234,13 @@ export const config = [
     meta: {
       title: '高德地图6'
     }
+  },
+  {
+    path: '/customMenu',
+    name: 'customMenu',
+    component: () => import('@/views/customMenu/index.vue'),
+    meta: {
+      title: '自定义菜单'
+    }
   }
 ];
